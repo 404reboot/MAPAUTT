@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">Bienvenido</title>
+    <meta name="description" content="Página de inicio y bienvenida para la aplicación MAPAUTT construida con Spring Boot y Thymeleaf.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" th:href="@{/css/welcome.css}">
+</head>
+<body>
+
+    <div class="container">
+        <main class="card">
+            <h1 id="welcome-title" th:text="${title}">¡Bienvenido!</h1>
+            
+            <p id="welcome-message" class="subtitle" th:text="${message}">
+                Tu aplicación está lista para comenzar.
+            </p>
+
+            <div class="features-container">
+                <h2 class="features-title">Características de este inicio</h2>
+                <ul class="features-list">
+                    <li class="feature-item" th:each="feature : ${features}">
+                        <span class="feature-icon">✓</span>
+                        <span class="feature-text" th:text="${feature}">Característica</span>
+                    </li>
+                </ul>
+            </div>
+
+            <button class="btn" onclick="alert('¡Thymeleaf funciona correctamente!')">Comenzar a explorar</button>
+            
+            <div class="time-badge">
+                <span>Hora del servidor:</span>
+                <strong id="server-time" th:text="${serverTime}">12:00:00</strong>
+            </div>
+        </main>
+
+        <footer>
+            <p>© 2026 MAPAUTT - Desarrollado con Spring Boot & Thymeleaf</p>
+        </footer>
+    </div>
+
+</body>
+</html>
