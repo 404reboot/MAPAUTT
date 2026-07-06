@@ -33,7 +33,14 @@
                 </ul>
             </div>
 
-            <button class="btn" onclick="alert('¡Thymeleaf funciona correctamente!')">Comenzar a explorar</button>
+            <div class="actions-group" style="display: flex; gap: 16px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap;">
+                <a th:href="@{/admin-panel}" class="btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);">
+                    Ir al Panel Admin
+                </a>
+                <button class="btn" onclick="alert('¡Thymeleaf funciona correctamente!')">
+                    Comenzar a explorar
+                </button>
+            </div>
             
             <div class="time-badge">
                 <span>Hora del servidor:</span>

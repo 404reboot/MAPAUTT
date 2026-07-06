@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+    <!-- Fragment: Gestionar Edificios -->
+    <div th:fragment="edificios" class="section-container animate-fade-in">
+        <div class="section-header-info">
+            <h2>Gestionar Edificios</h2>
+            <p>Visualiza y administra todos los módulos y edificios del campus universitario.</p>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre del Edificio</th>
+                        <th>Código</th>
+                        <th>Nro. Pisos</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="edificio : ${edificios}">
+                        <td class="font-mono text-muted" th:text="'#' + ${edificio.id}">#1</td>
+                        <td class="font-semibold" th:text="${edificio.nombre}">Edificio Principal</td>
+                        <td>
+                            <span class="badge badge-code" th:text="${edificio.codigo}">ED-01</span>
+                        </td>
+                        <td th:text="${edificio.pisos}">3</td>
+                        <td>
+                            <span th:class="${edificio.estado == 'Activo'} ? 'badge badge-success' : 'badge badge-warning'" 
+                                  th:text="${edificio.estado}">Activo</span>
+                        </td>
+                        <td class="table-actions">
+                            <button class="btn-action btn-edit" 
+                                    th:data-nombre="${edificio.nombre}"
+                                    onclick="alert('Editar edificio: ' + this.getAttribute('data-nombre'))" 
+                                    title="Editar">
+                                ✏️
+                            </button>
+                            <button class="btn-action btn-delete" 
+                                    th:data-nombre="${edificio.nombre}"
+                                    onclick="confirm('¿Seguro que deseas eliminar el edificio: ' + this.getAttribute('data-nombre') + '?')" 
+                                    title="Eliminar">
+                                🗑️
+                            </button>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(edificios)}">
+                        <td colspan="6" class="text-center text-muted py-8">No hay edificios registrados.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Fragment: Gestionar Areas Verdes -->
+    <div th:fragment="areas-verdes" class="section-container animate-fade-in">
+        <div class="section-header-info">
+            <h2>Gestionar Áreas Verdes</h2>
+            <p>Supervisa, planifica y administra los jardines, bosques y áreas de esparcimiento ecológico.</p>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre del Área</th>
+                        <th>Sector / Ubicación</th>
+                        <th>Superficie (m²)</th>
+                        <th>Tipo de Riego</th>
+                        <th>Último Mantenimiento</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="area : ${areasVerdes}">
+                        <td class="font-mono text-muted" th:text="'#' + ${area.id}">#1</td>
+                        <td class="font-semibold" th:text="${area.nombre}">Jardín Norte</td>
+                        <td th:text="${area.sector}">Zona Norte</td>
+                        <td th:text="${area.superficie} + ' m²'">120 m²</td>
+                        <td>
+                            <span class="badge badge-info" th:text="${area.tipoRiego}">Aspersión</span>
+                        </td>
+                        <td th:text="${area.ultimoMantenimiento}">01/01/2026</td>
+                        <td class="table-actions">
+                            <button class="btn-action btn-edit" 
+                                    th:data-nombre="${area.nombre}"
+                                    onclick="alert('Editar área verde: ' + this.getAttribute('data-nombre'))" 
+                                    title="Editar">
+                                ✏️
+                            </button>
+                            <button class="btn-action btn-delete" 
+                                    th:data-nombre="${area.nombre}"
+                                    onclick="confirm('¿Seguro que deseas eliminar el área verde: ' + this.getAttribute('data-nombre') + '?')" 
+                                    title="Eliminar">
+                                🗑️
+                            </button>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(areasVerdes)}">
+                        <td colspan="7" class="text-center text-muted py-8">No hay áreas verdes registradas.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>

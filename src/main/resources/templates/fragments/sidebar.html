@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <aside th:fragment="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <span class="logo-icon">🗺️</span>
+                <span class="logo-text">MAPAUTT</span>
+            </div>
+            <div class="sidebar-subtitle">Panel de Control</div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li>
+                    <a th:href="@{/admin-panel(section='edificios')}" 
+                       th:class="${activeSection == 'edificios'} ? 'nav-item active' : 'nav-item'">
+                        <span class="nav-icon">🏢</span>
+                        <span class="nav-text">Gestionar Edificios</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/admin-panel(section='areas-verdes')}" 
+                       th:class="${activeSection == 'areas-verdes'} ? 'nav-item active' : 'nav-item'">
+                        <span class="nav-icon">🌳</span>
+                        <span class="nav-text">Gestionar áreas verdes</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <a th:href="@{/}" class="back-link">
+                <span class="back-icon">←</span> Volver al Inicio
+            </a>
+        </div>
+    </aside>
+</body>
+</html>
