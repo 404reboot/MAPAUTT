@@ -80,7 +80,7 @@
             <div th:if="${activeSection == 'areas-verdes'}">
                 <div class="form-group">
                     <label for="av-nombre">Nombre del Área</label>
-                    <input type="text" id="av-nombre" class="form-control" placeholder="Ej: Jardín del Este" required>
+                    <input type="text" id="av-nombre" class="form-control" placeholder="Ej: Jardín" required>
                 </div>
                 <div class="form-group">
                     <label for="av-sector">Sector / Ubicación</label>
@@ -91,17 +91,8 @@
                     <input type="number" id="av-superficie" step="0.1" class="form-control" placeholder="Ej: 450.5" required>
                 </div>
                 <div class="form-group">
-                    <label for="av-riego">Tipo de Riego</label>
-                    <select id="av-riego" class="form-control">
-                        <option value="Aspersión">Aspersión</option>
-                        <option value="Goteo">Goteo</option>
-                        <option value="Manual">Manual</option>
-                        <option value="Ninguno">Ninguno</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="av-mantenimiento">Último Mantenimiento</label>
-                    <input type="text" id="av-mantenimiento" class="form-control" placeholder="Ej: 05/07/2026" required>
+                    <label for="av-descripcion">Descripción</label>
+                    <input type="text" id="av-descripcion" class="form-control" placeholder="">
                 </div>
             </div>
 

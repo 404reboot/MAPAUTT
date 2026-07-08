@@ -1,30 +1,30 @@
 package model;
 
 public class AreaVerde {
-    private Long id;
+    private int id;
     private String nombre;
     private String sector;
     private Double superficie;
-    private String tipoRiego;
-    private String ultimoMantenimiento;
+    private String descripcion;
+    private double xCord;
+    private double yCord;
 
     public AreaVerde() {
     }
 
-    public AreaVerde(Long id, String nombre, String sector, Double superficie, String tipoRiego, String ultimoMantenimiento) {
+    public AreaVerde(int id, String nombre, String sector, Double superficie, String descripcion) {
         this.id = id;
         this.nombre = nombre;
         this.sector = sector;
         this.superficie = superficie;
-        this.tipoRiego = tipoRiego;
-        this.ultimoMantenimiento = ultimoMantenimiento;
+        this.descripcion = descripcion;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -52,19 +52,29 @@ public class AreaVerde {
         this.superficie = superficie;
     }
 
-    public String getTipoRiego() {
-        return tipoRiego;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setTipoRiego(String tipoRiego) {
-        this.tipoRiego = tipoRiego;
+    public void setDescripcion(String tipoRiego) {
+        this.descripcion = tipoRiego;
     }
 
-    public String getUltimoMantenimiento() {
-        return ultimoMantenimiento;
-    }
+	public double getxCord() {
+		return xCord;
+	}
 
-    public void setUltimoMantenimiento(String ultimoMantenimiento) {
-        this.ultimoMantenimiento = ultimoMantenimiento;
-    }
+	public void setxCord(double xCord) {
+		this.xCord = xCord;
+	}
+
+	public double getyCord() {
+		return yCord;
+	}
+
+	public void setyCord(double yCord) {
+		this.yCord = yCord;
+	}
+
+    
 }

@@ -3,17 +3,17 @@ package model;
 public class Edificio {
     private Long id;
     private String nombre;
-    private String codigo;
+    private String carreras;
     private Integer pisos;
     private String estado;
 
     public Edificio() {
     }
 
-    public Edificio(Long id, String nombre, String codigo, Integer pisos, String estado) {
+    public Edificio(Long id, String nombre, String carreras, Integer pisos, String estado) {
         this.id = id;
         this.nombre = nombre;
-        this.codigo = codigo;
+        this.carreras = carreras;
         this.pisos = pisos;
         this.estado = estado;
     }
@@ -34,12 +34,12 @@ public class Edificio {
         this.nombre = nombre;
     }
 
-    public String getCodigo() {
-        return codigo;
+    public String getCarreras() {
+        return carreras;
     }
 
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
+    public void setCarreras(String codigo) {
+        this.carreras = codigo;
     }
 
     public Integer getPisos() {

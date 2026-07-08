@@ -18,7 +18,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Nombre del Edificio</th>
-                        <th>Código</th>
+                        <th>Carreras</th>
                         <th>Nro. Pisos</th>
                         <th>Estado</th>
                         <th>Acciones</th>
@@ -29,9 +29,10 @@
                         <td class="font-mono text-muted" th:text="'#' + ${edificio.id}">#1</td>
                         <td class="font-semibold" th:text="${edificio.nombre}">Edificio Principal</td>
                         <td>
-                            <span class="badge badge-code" th:text="${edificio.codigo}">ED-01</span>
+                            <span class="badge badge-code"
+                                th:text="${edificio.carreras}">Ninguna</span>
                         </td>
-                        <td th:text="${edificio.pisos}">3</td>
+                        <td th:text="${edificio.pisos}">0</td>
                         <td>
                             <span th:class="${edificio.estado == 'Activo'} ? 'badge badge-success' : 'badge badge-warning'" 
                                   th:text="${edificio.estado}">Activo</span>
@@ -74,8 +75,7 @@
                         <th>Nombre del Área</th>
                         <th>Sector / Ubicación</th>
                         <th>Superficie (m²)</th>
-                        <th>Tipo de Riego</th>
-                        <th>Último Mantenimiento</th>
+                        <th>Descripción</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -86,9 +86,8 @@
                         <td th:text="${area.sector}">Zona Norte</td>
                         <td th:text="${area.superficie} + ' m²'">120 m²</td>
                         <td>
-                            <span class="badge badge-info" th:text="${area.tipoRiego}">Aspersión</span>
+                            <span th:text="${area.descripcion}">Sin descripción</span>
                         </td>
-                        <td th:text="${area.ultimoMantenimiento}">01/01/2026</td>
                         <td class="table-actions">
                             <button class="btn-action btn-edit" 
                                     th:data-nombre="${area.nombre}"
