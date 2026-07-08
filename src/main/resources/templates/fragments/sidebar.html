@@ -32,9 +32,12 @@
             </ul>
         </nav>
         
-        <div class="sidebar-footer">
+        <div class="sidebar-footer" style="display: flex; flex-direction: column; gap: 12px;">
             <a th:href="@{/}" class="back-link">
                 <span class="back-icon">←</span> Volver al Inicio
+            </a>
+            <a th:href="@{/logout}" class="back-link" style="color: #f87171;">
+                <span class="back-icon">🚪</span> Cerrar Sesión
             </a>
         </div>
     </aside>
