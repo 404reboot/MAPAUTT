@@ -15,7 +15,7 @@ public class WelcomeController {
     @GetMapping("/")
     public String welcome(Model model) {
         model.addAttribute("title", "¡Bienvenido a MAPAUTT!");
-        model.addAttribute("message", "Tu aplicación Spring Boot está lista y funcionando con Thymeleaf.");
+        model.addAttribute("message", "Vive una experiencia inolvidable con nuestros alrededores.");
         
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         model.addAttribute("serverTime", LocalDateTime.now().format(formatter));
