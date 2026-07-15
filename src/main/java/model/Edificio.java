@@ -1,7 +1,7 @@
 package model;
 
 public class Edificio {
-    private Long id;
+    private Integer id;
     private String nombre;
     private String carreras;
     private Integer pisos;
@@ -10,7 +10,7 @@ public class Edificio {
     public Edificio() {
     }
 
-    public Edificio(Long id, String nombre, String carreras, Integer pisos, String estado) {
+    public Edificio(Integer id, String nombre, String carreras, Integer pisos, String estado) {
         this.id = id;
         this.nombre = nombre;
         this.carreras = carreras;
@@ -18,11 +18,11 @@ public class Edificio {
         this.estado = estado;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

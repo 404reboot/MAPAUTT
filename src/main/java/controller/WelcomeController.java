@@ -21,13 +21,19 @@ public class WelcomeController {
         model.addAttribute("serverTime", LocalDateTime.now().format(formatter));
         
         List<String> features = Arrays.asList(
-            "Configuración automática con Spring Boot",
-            "Plantillas dinámicas con Thymeleaf",
-            "Recarga automática activa (DevTools)",
-            "Controladores MVC estructurados"
+            "Espacios naturales",
+            "Ubicación en tiempo real",
+            "Espacios para descansar y convivir",
+            "Datos sobre espacios"
         );
         model.addAttribute("features", features);
         
         return "welcome";
+    }
+
+    @GetMapping("/mapa")
+    public String mapa(Model model) {
+        model.addAttribute("title", "Mapa Interactivo del Campus - MAPAUTT");
+        return "mapa";
     }
 }

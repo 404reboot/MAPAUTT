@@ -12,11 +12,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Stylesheet -->
-    <link rel="stylesheet" th:href="@{/css/login.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
-<body>
+<body class="centered-layout">
 
-    <div class="container">
+    <div class="container" style="max-width: 50%;">
         <main class="card">
             <!-- Logo area -->
             <div class="logo-area">
@@ -68,9 +68,9 @@
             </form>
 
             <!-- Credentials Tip -->
-            <div class="credentials-tip">
-                Tip: Usa el usuario <code>admin</code> y contraseña <code>admin123</code>
-            </div>
+            <!-- <div class="credentials-tip"> -->
+            <!--     Tip: Usa el usuario <code>admin</code> y contraseña <code>admin123</code> -->
+            <!-- </div> -->
 
             <!-- Back link -->
             <a th:href="@{/}" id="link-back-welcome" class="back-home">

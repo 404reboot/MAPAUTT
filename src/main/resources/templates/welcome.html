@@ -11,9 +11,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Stylesheet -->
-    <link rel="stylesheet" th:href="@{/css/welcome.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
-<body>
+<body class="centered-layout">
 
     <div class="container">
         <main class="card">
@@ -37,9 +37,9 @@
                 <a th:href="@{/admin-panel}" class="btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);">
                     Ir al Panel Admin
                 </a>
-                <button class="btn" onclick="alert('¡Thymeleaf funciona correctamente!')">
-                    Comenzar a explorar
-                </button>
+                <a th:href="@{/mapa}" class="btn">
+                    Ver Mapa del Campus
+                </a>
             </div>
             
             <div class="time-badge">
