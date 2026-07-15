@@ -1,14 +1,14 @@
 /* Root variables for consistent styling and easy configuration */
 :root {
-    --primary: #4f46e5;
-    --primary-hover: #4338ca;
-    --primary-light: #e0e7ff;
+    --primary: #43D645;
+    --primary-hover: #ff7734;
+    --primary-light: #ff7734;
     
-    --success: #10b981;
+    --success: #f5c638;
     --success-light: #d1fae5;
-    --success-dark: #065f46;
+    --success-dark: #ff7734;
     
-    --warning: #f59e0b;
+    --warning: #fff5c6;
     --warning-light: #fef3c7;
     --warning-dark: #92400e;
 
@@ -20,15 +20,15 @@
     --danger-light: #fee2e2;
     --danger-dark: #991b1b;
     
-    --sidebar-bg: #0f172a;
-    --sidebar-text: #94a3b8;
-    --sidebar-text-active: #ffffff;
-    --sidebar-hover: #1e293b;
+    --sidebar-bg: #FFDAB9;
+    --sidebar-text: #080e15;
+    --sidebar-text-active: #1a0202;
+    --sidebar-hover: #e57318;
     
     --bg-main: #f8fafc;
     --bg-card: #ffffff;
     --text-main: #0f172a;
-    --text-muted: #64748b;
+    --text-muted: #0b1018;
     --border-color: #e2e8f0;
     
     --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;

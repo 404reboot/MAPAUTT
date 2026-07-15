@@ -15,16 +15,16 @@ public class WelcomeController {
     @GetMapping("/")
     public String welcome(Model model) {
         model.addAttribute("title", "¡Bienvenido a MAPAUTT!");
-        model.addAttribute("message", "Vive una experiencia inolvidable con nuestros alrededores.");
+        model.addAttribute("message", "Explora la Universidad Tecnológica de Tecamachalco de forma interactiva.");
         
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         model.addAttribute("serverTime", LocalDateTime.now().format(formatter));
         
         List<String> features = Arrays.asList(
-            "Configuración automática con Spring Boot",
-            "Plantillas dinámicas con Thymeleaf",
-            "Recarga automática activa (DevTools)",
-            "Controladores MVC estructurados"
+            "🌿 Espacios naturales.",
+            "📍 Ubicación en tiempo real.",
+            "💚Espacios para descansar y convivir.",
+            "🌱 Datos sobre los espacios"
         );
         model.addAttribute("features", features);
         
