@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-
 @Controller
 public class AdminPanelController {
 
@@ -20,10 +18,10 @@ public class AdminPanelController {
 
     @GetMapping("/admin-panel")
     public String adminPanel(
-            @RequestParam(name = "section", defaultValue = "edificios") String section, 
+            @RequestParam(name = "section", defaultValue = "edificios") String section,
             Model model,
             HttpSession session) {
-        
+
         // Session validation check
         if (session.getAttribute("user") == null) {
             return "redirect:/acceso?error=unauthorized";
@@ -32,9 +30,9 @@ public class AdminPanelController {
         if (!"edificios".equals(section) && !"areas-verdes".equals(section)) {
             section = "edificios";
         }
-        
+
         model.addAttribute("activeSection", section);
-        
+
         model.addAttribute("edificios", mapService.getEdificios());
         model.addAttribute("areasVerdes", mapService.getAreasVerdes());
 
@@ -48,7 +46,7 @@ public class AdminPanelController {
             @RequestParam("pisos") Integer pisos,
             @RequestParam("estado") String estado,
             HttpSession session) {
-        
+
         if (session.getAttribute("user") == null) {
             return "redirect:/acceso?error=unauthorized";
         }
@@ -66,7 +64,7 @@ public class AdminPanelController {
             @RequestParam("superficie") Double superficie,
             @RequestParam("descripcion") String descripcion,
             HttpSession session) {
-        
+
         if (session.getAttribute("user") == null) {
             return "redirect:/acceso?error=unauthorized";
         }
@@ -85,7 +83,7 @@ public class AdminPanelController {
             @RequestParam("pisos") Integer pisos,
             @RequestParam("estado") String estado,
             HttpSession session) {
-        
+
         if (session.getAttribute("user") == null) {
             return "redirect:/acceso?error=unauthorized";
         }
@@ -104,7 +102,7 @@ public class AdminPanelController {
             @RequestParam("superficie") Double superficie,
             @RequestParam("descripcion") String descripcion,
             HttpSession session) {
-        
+
         if (session.getAttribute("user") == null) {
             return "redirect:/acceso?error=unauthorized";
         }
