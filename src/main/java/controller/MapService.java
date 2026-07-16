@@ -16,13 +16,12 @@ public class MapService {
     public MapService() {
         // Initialize default mock buildings
         edificios.addAll(Arrays.asList(
-            new Edificio(1, "E", "Alimentos", 4, "Activo"),
-            new Edificio(2, "F", "Administración", 5, "Activo"),
-            new Edificio(3, "T", "Turismo", 2, "En Mantenimiento"),
-            new Edificio(4, "R", "Mecatrónica", 2, "En Mantenimiento"),
-            new Edificio(5, "M", "Agricultura", 3, "Activo"),
-            new Edificio(6, "K", "Tecnologías de la Información", 1, "Activo"),
-            new Edificio(7, "H", "Contaduría", 1, "Activo")
+            new Edificio(1, "E", "Alimentos", 1, "Activo"),
+            new Edificio(2, "F", "Administración", 2, "Activo"),
+            new Edificio(3, "R", "Mecatrónica", 2, "En Mantenimiento"),
+            new Edificio(4, "M", "Agricultura", 1, "Activo"),
+            new Edificio(5, "K", "Tecnologías de la Información", 1, "Activo"),
+            new Edificio(6, "H", "Contaduría", 2, "Activo")
         ));
 
         // Initialize default mock green areas
@@ -54,5 +53,49 @@ public class MapService {
                 .filter(a -> a.getId() == id)
                 .findFirst()
                 .orElse(null);
+    }
+
+    public void addEdificio(Edificio edificio) {
+        int nextId = edificios.stream()
+                .mapToInt(Edificio::getId)
+                .max()
+                .orElse(0) + 1;
+        edificio.setId(nextId);
+        edificios.add(edificio);
+    }
+
+    public void addAreaVerde(AreaVerde areaVerde) {
+        int nextId = areasVerdes.stream()
+                .mapToInt(AreaVerde::getId)
+                .max()
+                .orElse(0) + 1;
+        areaVerde.setId(nextId);
+        areasVerdes.add(areaVerde);
+    }
+
+    public void updateEdificio(Edificio updated) {
+        for (int i = 0; i < edificios.size(); i++) {
+            if (edificios.get(i).getId().equals(updated.getId())) {
+                edificios.set(i, updated);
+                return;
+            }
+        }
+    }
+
+    public void updateAreaVerde(AreaVerde updated) {
+        for (int i = 0; i < areasVerdes.size(); i++) {
+            if (areasVerdes.get(i).getId() == updated.getId()) {
+                areasVerdes.set(i, updated);
+                return;
+            }
+        }
+    }
+
+    public void deleteEdificio(Integer id) {
+        edificios.removeIf(e -> e.getId().equals(id));
+    }
+
+    public void deleteAreaVerde(int id) {
+        areasVerdes.removeIf(a -> a.getId() == id);
     }
 }

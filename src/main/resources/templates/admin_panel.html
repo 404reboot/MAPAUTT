@@ -52,24 +52,24 @@
             <button class="btn-close-dialog" onclick="closeAddDialog()">&times;</button>
         </div>
         
-        <form id="add-form" onsubmit="handleFormSubmit(event)">
+        <form id="add-form" method="POST" th:action="@{${activeSection == 'edificios' ? '/admin-panel/add-edificio' : '/admin-panel/add-area-verde'}}">
             <!-- Conditional fields for Edificios -->
             <div th:if="${activeSection == 'edificios'}">
                 <div class="form-group">
                     <label for="ed-nombre">Nombre del Edificio</label>
-                    <input type="text" id="ed-nombre" class="form-control" placeholder="Ej: Edificio F (Sistemas)" required>
+                    <input type="text" id="ed-nombre" name="nombre" class="form-control" placeholder="Ej: F" required>
                 </div>
                 <div class="form-group">
-                    <label for="ed-codigo">Código</label>
-                    <input type="text" id="ed-codigo" class="form-control" placeholder="Ej: ED-SYS-06" required>
+                    <label for="ed-carrera">Carrera / Uso</label>
+                    <input type="text" id="ed-carrera" name="carreras" class="form-control" placeholder="Ej: Sistemas" required>
                 </div>
                 <div class="form-group">
                     <label for="ed-pisos">Número de Pisos</label>
-                    <input type="number" id="ed-pisos" class="form-control" min="1" max="20" placeholder="Ej: 3" required>
+                    <input type="number" id="ed-pisos" name="pisos" class="form-control" min="1" max="20" placeholder="Ej: 3" required>
                 </div>
                 <div class="form-group">
                     <label for="ed-estado">Estado</label>
-                    <select id="ed-estado" class="form-control">
+                    <select id="ed-estado" name="estado" class="form-control">
                         <option value="Activo">Activo</option>
                         <option value="En Mantenimiento">En Mantenimiento</option>
                     </select>
@@ -80,19 +80,19 @@
             <div th:if="${activeSection == 'areas-verdes'}">
                 <div class="form-group">
                     <label for="av-nombre">Nombre del Área</label>
-                    <input type="text" id="av-nombre" class="form-control" placeholder="Ej: Jardín" required>
+                    <input type="text" id="av-nombre" name="nombre" class="form-control" placeholder="Ej: Jardín" required>
                 </div>
                 <div class="form-group">
                     <label for="av-sector">Sector / Ubicación</label>
-                    <input type="text" id="av-sector" class="form-control" placeholder="Ej: Zona Este" required>
+                    <input type="text" id="av-sector" name="sector" class="form-control" placeholder="Ej: Zona Este" required>
                 </div>
                 <div class="form-group">
                     <label for="av-superficie">Superficie (m²)</label>
-                    <input type="number" id="av-superficie" step="0.1" class="form-control" placeholder="Ej: 450.5" required>
+                    <input type="number" id="av-superficie" name="superficie" step="0.1" class="form-control" placeholder="Ej: 450.5" required>
                 </div>
                 <div class="form-group">
                     <label for="av-descripcion">Descripción</label>
-                    <input type="text" id="av-descripcion" class="form-control" placeholder="">
+                    <input type="text" id="av-descripcion" name="descripcion" class="form-control" placeholder="">
                 </div>
             </div>
 
@@ -103,11 +103,73 @@
         </form>
     </dialog>
 
+    <!-- Interactive HTML5 Dialog for "Editar" -->
+    <dialog id="edit-dialog">
+        <div class="dialog-header">
+            <h3 th:text="${activeSection == 'edificios' ? 'Editar Edificio' : 'Editar Área Verde'}">Editar Elemento</h3>
+            <button class="btn-close-dialog" onclick="closeEditDialog()">&times;</button>
+        </div>
+        
+        <form id="edit-form" method="POST" th:action="@{${activeSection == 'edificios' ? '/admin-panel/edit-edificio' : '/admin-panel/edit-area-verde'}}">
+            <!-- Hidden field for ID -->
+            <input type="hidden" id="edit-id" name="id">
+
+            <!-- Conditional fields for Edificios -->
+            <div th:if="${activeSection == 'edificios'}">
+                <div class="form-group">
+                    <label for="edit-ed-nombre">Nombre del Edificio</label>
+                    <input type="text" id="edit-ed-nombre" name="nombre" class="form-control" placeholder="Ej: F" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-ed-carrera">Carrera / Uso</label>
+                    <input type="text" id="edit-ed-carrera" name="carreras" class="form-control" placeholder="Ej: Sistemas" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-ed-pisos">Número de Pisos</label>
+                    <input type="number" id="edit-ed-pisos" name="pisos" class="form-control" min="1" max="20" placeholder="Ej: 3" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-ed-estado">Estado</label>
+                    <select id="edit-ed-estado" name="estado" class="form-control">
+                        <option value="Activo">Activo</option>
+                        <option value="En Mantenimiento">En Mantenimiento</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Conditional fields for Áreas Verdes -->
+            <div th:if="${activeSection == 'areas-verdes'}">
+                <div class="form-group">
+                    <label for="edit-av-nombre">Nombre del Área</label>
+                    <input type="text" id="edit-av-nombre" name="nombre" class="form-control" placeholder="Ej: Jardín" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-av-sector">Sector / Ubicación</label>
+                    <input type="text" id="edit-av-sector" name="sector" class="form-control" placeholder="Ej: Zona Este" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-av-superficie">Superficie (m²)</label>
+                    <input type="number" id="edit-av-superficie" name="superficie" step="0.1" class="form-control" placeholder="Ej: 450.5" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-av-descripcion">Descripción</label>
+                    <input type="text" id="edit-av-descripcion" name="descripcion" class="form-control" placeholder="">
+                </div>
+            </div>
+
+            <div class="dialog-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeEditDialog()">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+        </form>
+    </dialog>
+
     <!-- Dialog JS Functionality -->
     <script th:inline="javascript">
         /*<![CDATA[*/
         const activeSection = /*[[${activeSection}]]*/ 'edificios';
         const dialog = document.getElementById('add-dialog');
+        const editDialog = document.getElementById('edit-dialog');
 
         function openAddDialog() {
             dialog.showModal();
@@ -118,29 +180,50 @@
             document.getElementById('add-form').reset();
         }
 
-        function handleFormSubmit(event) {
-            event.preventDefault();
-            
-            let message = '';
+        function openEditDialog(button) {
+            const id = button.getAttribute('data-id');
+            document.getElementById('edit-id').value = id;
+
             if (activeSection === 'edificios') {
-                const nombre = document.getElementById('ed-nombre').value;
-                const codigo = document.getElementById('ed-codigo').value;
-                const pisos = document.getElementById('ed-pisos').value;
-                const estado = document.getElementById('ed-estado').value;
-                
-                message = `¡Edificio Guardado Exitosamente!\n\nNombre: ${nombre}\nCódigo: ${codigo}\nPisos: ${pisos}\nEstado: ${estado}`;
+                document.getElementById('edit-ed-nombre').value = button.getAttribute('data-nombre');
+                document.getElementById('edit-ed-carrera').value = button.getAttribute('data-carreras');
+                document.getElementById('edit-ed-pisos').value = button.getAttribute('data-pisos');
+                document.getElementById('edit-ed-estado').value = button.getAttribute('data-estado');
             } else {
-                const nombre = document.getElementById('av-nombre').value;
-                const sector = document.getElementById('av-sector').value;
-                const superficie = document.getElementById('av-superficie').value;
-                const riego = document.getElementById('av-riego').value;
-                const mantenimiento = document.getElementById('av-mantenimiento').value;
-                
-                message = `¡Área Verde Guardada Exitosamente!\n\nNombre: ${nombre}\nSector: ${sector}\nSuperficie: ${superficie} m²\nRiego: ${riego}\nÚltimo Mantenimiento: ${mantenimiento}`;
+                document.getElementById('edit-av-nombre').value = button.getAttribute('data-nombre');
+                document.getElementById('edit-av-sector').value = button.getAttribute('data-sector');
+                document.getElementById('edit-av-superficie').value = button.getAttribute('data-superficie');
+                document.getElementById('edit-av-descripcion').value = button.getAttribute('data-descripcion');
             }
-            
-            alert(message);
-            closeAddDialog();
+            editDialog.showModal();
+        }
+
+        function closeEditDialog() {
+            editDialog.close();
+            document.getElementById('edit-form').reset();
+        }
+
+        function deleteItem(id, nombre) {
+            const confirmMessage = activeSection === 'edificios' 
+                ? `¿Seguro que deseas eliminar el edificio: ${nombre}?`
+                : `¿Seguro que deseas eliminar el área verde: ${nombre}?`;
+
+            if (confirm(confirmMessage)) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = activeSection === 'edificios' 
+                    ? '/admin-panel/delete-edificio' 
+                    : '/admin-panel/delete-area-verde';
+                
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'id';
+                input.value = id;
+                
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
         }
         /*]]>*/
     </script>

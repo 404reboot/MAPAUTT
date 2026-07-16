@@ -39,14 +39,19 @@
                         </td>
                         <td class="table-actions">
                             <button class="btn-action btn-edit" 
+                                    th:data-id="${edificio.id}"
                                     th:data-nombre="${edificio.nombre}"
-                                    onclick="alert('Editar edificio: ' + this.getAttribute('data-nombre'))" 
+                                    th:data-carreras="${edificio.carreras}"
+                                    th:data-pisos="${edificio.pisos}"
+                                    th:data-estado="${edificio.estado}"
+                                    onclick="openEditDialog(this)" 
                                     title="Editar">
                                 ✏️
                             </button>
                             <button class="btn-action btn-delete" 
+                                    th:data-id="${edificio.id}"
                                     th:data-nombre="${edificio.nombre}"
-                                    onclick="confirm('¿Seguro que deseas eliminar el edificio: ' + this.getAttribute('data-nombre') + '?')" 
+                                    onclick="deleteItem(this.getAttribute('data-id'), this.getAttribute('data-nombre'))" 
                                     title="Eliminar">
                                 🗑️
                             </button>
@@ -90,14 +95,19 @@
                         </td>
                         <td class="table-actions">
                             <button class="btn-action btn-edit" 
+                                    th:data-id="${area.id}"
                                     th:data-nombre="${area.nombre}"
-                                    onclick="alert('Editar área verde: ' + this.getAttribute('data-nombre'))" 
+                                    th:data-sector="${area.sector}"
+                                    th:data-superficie="${area.superficie}"
+                                    th:data-descripcion="${area.descripcion}"
+                                    onclick="openEditDialog(this)" 
                                     title="Editar">
                                 ✏️
                             </button>
                             <button class="btn-action btn-delete" 
+                                    th:data-id="${area.id}"
                                     th:data-nombre="${area.nombre}"
-                                    onclick="confirm('¿Seguro que deseas eliminar el área verde: ' + this.getAttribute('data-nombre') + '?')" 
+                                    onclick="deleteItem(this.getAttribute('data-id'), this.getAttribute('data-nombre'))" 
                                     title="Eliminar">
                                 🗑️
                             </button>
