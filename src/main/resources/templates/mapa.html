@@ -1,574 +1,155 @@
+<!--
+    Autor: Cristobal Torres Ramos
+    Proyecto: Mapa interactivo de la UTTECAM
+-->
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${title}">Mapa del Campus Isométrico</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Main Stylesheet -->
-    <link rel="stylesheet" th:href="@{/css/main.css}">
-    
-    <style>
-        body.map-page-body {
-            height: 100vh;
-            width: 100vw;
-            margin: 0;
-            overflow: hidden;
-            display: flex;
-            background: #f0f4f2;
-            position: relative;
-        }
 
-        /* Fullscreen Map Wrapper */
-        .map-viewport {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-            position: relative;
-        }
+    <title th:text="${title}">
+        Mapa 3D UTTECAM (Blender)
+    </title>
 
-        .map-svg {
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
-            height: auto;
-            border-radius: var(--radius-xl);
-            background: #ffffff;
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--outline-variant);
-        }
+    <!-- Fuente externa -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap"
+          rel="stylesheet">
 
-        /* Clickable Elements Wrapper */
-        .clickable-map-element {
-            cursor: pointer;
-        }
+    <!-- Estilos propios -->
+    <link rel="stylesheet" th:href="@{/css/stylesmapa.css}">
+    <link rel="stylesheet" th:href="@{/css/stylesmascota.css}">
 
-        /* SVG Base Colors */
-        .map-bg-grass {
-            fill: #f4faf7;
-        }
+    <!-- Librerías Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-        /* Isometric Roads / Paths */
-        .map-road {
-            fill: #e5ebe8;
-            stroke: #d0ded8;
-            stroke-width: 1.5;
-        }
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
-        /* 3D Isometric Buildings Styling */
-        .map-face-top {
-            fill: #d6ede9; /* Light neutral-teal brand container */
-            transition: fill 0.2s ease;
-        }
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
-        .map-face-left {
-            fill: #189984; /* Medium brand teal */
-            transition: fill 0.2s ease;
-        }
 
-        .map-face-right {
-            fill: #0f6658; /* Darker brand teal (shadow face) */
-            transition: fill 0.2s ease;
-        }
+    <!-- Postprocesado para contornos -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
 
-        /* Highlight Silhouette Path (drawn on top) */
-        .map-silhouette {
-            fill: none;
-            stroke: transparent;
-            stroke-width: 5;
-            stroke-linejoin: round;
-            stroke-linecap: round;
-            transition: stroke 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
-            pointer-events: none; /* Let clicks pass through to faces */
-        }
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
 
-        /* Hover & Click outline highlighting */
-        .clickable-map-element:hover .map-silhouette {
-            stroke: var(--secondary); /* Accent orange outline on hover */
-        }
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
 
-        .clickable-map-element.active .map-silhouette {
-            stroke: var(--primary); /* Deep brand teal outline when selected */
-            stroke-width: 6;
-        }
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
 
-        /* Green Areas (Rhombus shape on ground) */
-        .map-green-path {
-            fill: #e8f5e9;
-            stroke: #c8e6c9;
-            stroke-width: 2;
-            transition: all 0.2s ease;
-        }
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/OutlinePass.js"></script>
 
-        .clickable-map-element:hover .map-green-path {
-            fill: #c8ebd3;
-            stroke: #a5d6a7;
-        }
-
-        .clickable-map-element.active .map-green-path {
-            fill: #a5d6a7;
-            stroke: #2e7d32;
-            stroke-width: 3;
-        }
-
-        /* Cute Vector 3D Isometric Trees */
-        .tree-trunk {
-            stroke: #5d4037;
-            stroke-width: 3;
-            stroke-linecap: round;
-        }
-
-        .tree-foliage-1 { fill: #2e7d32; }
-        .tree-foliage-2 { fill: #388e3c; }
-        .tree-foliage-3 { fill: #4caf50; }
-
-        /* Typography Labels */
-        .map-label {
-            font-family: var(--font-main);
-            font-size: 11px;
-            font-weight: 800;
-            fill: #004d40;
-            pointer-events: none;
-            text-anchor: middle;
-            user-select: none;
-            filter: drop-shadow(0 1px 1px #ffffff);
-        }
-
-        .map-label-green {
-            font-family: var(--font-main);
-            font-size: 10px;
-            font-weight: 700;
-            fill: #1b5e20;
-            pointer-events: none;
-            text-anchor: middle;
-            user-select: none;
-            filter: drop-shadow(0 1px 1px #ffffff);
-        }
-
-        /* Floating Back Button */
-        .back-button-overlay {
-            position: absolute;
-            top: 24px;
-            left: 24px;
-            z-index: 10;
-        }
-
-        /* Floating Details Card (Material You Overlay) */
-        .floating-details-card {
-            position: absolute;
-            bottom: 24px;
-            right: -400px; /* Hide offscreen initially */
-            width: 360px;
-            max-width: calc(100% - 48px);
-            background: var(--surface-color);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--outline-variant);
-            padding: 24px;
-            box-sizing: border-box;
-            z-index: 20;
-            transition: right 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-
-        .floating-details-card.visible {
-            right: 24px;
-        }
-
-        .card-header-overlay {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .card-header-overlay h3 {
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--text-primary);
-        }
-
-        .card-header-overlay .close-btn {
-            background: var(--surface-variant);
-            border: none;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            font-size: 18px;
-            cursor: pointer;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .card-header-overlay .close-btn:hover {
-            background: var(--outline-variant);
-            color: var(--text-primary);
-        }
-
-        .info-row {
-            margin-bottom: 12px;
-        }
-
-        .info-row .label {
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            margin-bottom: 4px;
-        }
-
-        .info-row .value {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        /* Tooltip */
-        .map-tooltip {
-            position: absolute;
-            background: rgba(25, 28, 27, 0.9);
-            color: #ffffff;
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 700;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.15s ease;
-            z-index: 100;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .map-tooltip.visible {
-            opacity: 1;
-        }
-
-        /* Responsive */
-        @media (max-width: 576px) {
-            .floating-details-card {
-                bottom: -300px;
-                right: 24px;
-                width: calc(100% - 48px);
-                transition: bottom 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-            }
-            .floating-details-card.visible {
-                bottom: 24px;
-            }
-        }
-    </style>
 </head>
-<body class="map-page-body">
 
-    <!-- Floating Back Button -->
+<body>
+
+    <!-- Pantalla de carga mientras se descarga el modelo GLB -->
+    <div id="loader">
+
+        <h2>
+            Cargando Mapa 3D UTTECAM...
+        </h2>
+
+        <p>
+            Por favor espera un momento
+        </p>
+
+    </div>
+
+    <!-- Botón volver -->
     <div class="back-button-overlay">
-        <a th:href="@{/}" class="btn btn-secondary">
-            <span>←</span> Volver
+
+        <a th:href="@{/}" class="btn-secondary">
+
+            <span>
+                ←
+            </span>
+
+            Volver
+
         </a>
+
     </div>
 
-    <!-- Map Viewport -->
-    <div class="map-viewport">
-        <!-- SVG Interactive Campus Map (Isometric Perspective) -->
-        <svg class="map-svg" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
-            <!-- Grass Background Layer -->
-            <rect class="map-bg-grass" width="1000" height="600" />
+    <!-- Contenedor donde Three.js crea el Canvas -->
+    <div id="webgl-container"></div>
 
-            <!-- Isometric Roads & Paths (30-degree grid aligned) -->
-            <!-- Main Avenue Left-Right -->
-            <polygon class="map-road" points="100,200 900,600 900,630 100,230" />
-            <!-- Main Avenue Right-Left -->
-            <polygon class="map-road" points="900,150 100,550 100,580 900,180" />
-            <!-- Cross Connecting Roads -->
-            <polygon class="map-road" points="260,280 400,210 420,220 280,290" />
-            <polygon class="map-road" points="660,370 780,310 800,320 680,380" />
-            <polygon class="map-road" points="480,390 560,350 580,360 500,400" />
-
-            <!-- ================= GREEN AREAS ================= -->
-            <!-- Jardín Norte (ID: 1) -->
-            <g class="clickable-map-element" data-type="area-verde" data-id="1">
-                <polygon class="map-green-path" points="460,70 600,40 650,90 510,120" />
-                <!-- 3D Trees decoration -->
-                <g transform="translate(520, 80)">
-                    <line x1="0" y1="0" x2="0" y2="-10" class="tree-trunk" />
-                    <polygon points="-8,-10 8,-10 0,-22" class="tree-foliage-1" />
-                    <polygon points="-6,-16 6,-16 0,-26" class="tree-foliage-2" />
-                    <polygon points="-4,-22 4,-22 0,-30" class="tree-foliage-3" />
-                </g>
-                <g transform="translate(580, 65)">
-                    <line x1="0" y1="0" x2="0" y2="-8" class="tree-trunk" />
-                    <polygon points="-6,-8 6,-8 0,-18" class="tree-foliage-1" />
-                    <polygon points="-4,-13 4,-13 0,-21" class="tree-foliage-2" />
-                </g>
-            </g>
-            
-            <!-- Pasillos verdes (ID: 2) -->
-            <g class="clickable-map-element" data-type="area-verde" data-id="2">
-                <polygon class="map-green-path" points="100,450 220,430 280,470 160,490" />
-                <!-- 3D Trees decoration -->
-                <g transform="translate(150, 460)">
-                    <line x1="0" y1="0" x2="0" y2="-10" class="tree-trunk" />
-                    <polygon points="-8,-10 8,-10 0,-22" class="tree-foliage-1" />
-                    <polygon points="-6,-16 6,-16 0,-26" class="tree-foliage-2" />
-                </g>
-                <g transform="translate(230, 450)">
-                    <line x1="0" y1="0" x2="0" y2="-10" class="tree-trunk" />
-                    <polygon points="-8,-10 8,-10 0,-22" class="tree-foliage-1" />
-                    <polygon points="-6,-16 6,-16 0,-26" class="tree-foliage-2" />
-                </g>
-            </g>
-
-            <!-- Fuente de agua (ID: 3) -->
-            <g class="clickable-map-element" data-type="area-verde" data-id="3">
-                <polygon class="map-green-path" points="760,380 880,320 940,350 820,410" />
-                <!-- Fountain Pool Visual Center -->
-                <ellipse cx="850" cy="360" rx="20" ry="10" fill="#a5d6a7" stroke="#2e7d32" stroke-width="1.5" />
-                <ellipse cx="850" cy="360" rx="12" ry="6" fill="#80deea" stroke="#00838f" />
-                <circle cx="850" cy="358" r="3" fill="#e0f7fa" />
-            </g>
-
-            <!-- Prado Central (ID: 4) -->
-            <g class="clickable-map-element" data-type="area-verde" data-id="4">
-                <polygon class="map-green-path" points="440,300 500,270 560,300 500,330" />
-                <!-- Center decoration tree -->
-                <g transform="translate(500, 305)">
-                    <line x1="0" y1="0" x2="0" y2="-12" class="tree-trunk" />
-                    <polygon points="-9,-12 9,-12 0,-26" class="tree-foliage-1" />
-                    <polygon points="-7,-19 7,-19 0,-30" class="tree-foliage-2" />
-                    <polygon points="-5,-25 5,-25 0,-35" class="tree-foliage-3" />
-                </g>
-            </g>
-
-            <!-- ================= BUILDINGS (3D ISOMETRIC PRISMS) ================= -->
-            
-            <!-- Edificio E (Alimentos, 4 pisos, h=60) -->
-            <g class="clickable-map-element" data-type="edificio" data-name="E">
-                <!-- Faces -->
-                <polygon class="map-face-left" points="130,110 200,145 200,205 130,170" />
-                <polygon class="map-face-right" points="200,145 270,110 270,170 200,205" />
-                <polygon class="map-face-top" points="130,110 200,75 270,110 200,145" />
-                <!-- Outline Highlight Silhouette -->
-                <polygon class="map-silhouette" points="130,110 200,75 270,110 270,170 200,205 130,170" />
-            </g>
-
-            <!-- Edificio F (Administración, 5 pisos, h=75) -->
-            <g class="clickable-map-element" data-type="edificio" data-name="F">
-                <!-- Faces -->
-                <polygon class="map-face-left" points="300,115 380,155 380,230 300,190" />
-                <polygon class="map-face-right" points="380,155 460,115 460,190 380,230" />
-                <polygon class="map-face-top" points="300,115 380,75 460,115 380,155" />
-                <!-- Outline Highlight Silhouette -->
-                <polygon class="map-silhouette" points="300,115 380,75 460,115 460,190 380,230 300,190" />
-            </g>
-
-            <!-- Edificio T (Turismo, 2 pisos, h=30) -->
-            <g class="clickable-map-element" data-type="edificio" data-name="T">
-                <!-- Faces -->
-                <polygon class="map-face-left" points="120,265 180,295 180,325 120,295" />
-                <polygon class="map-face-right" points="180,295 240,265 240,295 180,325" />
-                <polygon class="map-face-top" points="120,265 180,235 240,265 180,295" />
-                <!-- Outline Highlight Silhouette -->
-                <polygon class="map-silhouette" points="120,265 180,235 240,265 240,295 180,325 120,295" />
-            </g>
-
-            <!-- Edificio R (Mecatrónica, 2 pisos, h=30) -->
-            <g class="clickable-map-element" data-type="edificio" data-name="R">
-                <!-- Faces -->
-                <polygon class="map-face-left" points="260,285 320,315 320,345 260,315" />
-                <polygon class="map-face-right" points="320,315 380,285 380,315 320,345" />
-                <polygon class="map-face-top" points="260,285 320,255 380,285 320,315" />
-                <!-- Outline Highlight Silhouette -->
-                <polygon class="map-silhouette" points="260,285 320,255 380,285 380,315 320,345 260,315" />
-            </g>
-
-            <!-- Edificio M (Agricultura, 3 pisos, h=45) -->
-            <g class="clickable-map-element" data-type="edificio" data-name="M">
-                <!-- Faces -->
-                <polygon class="map-face-left" points="610,155 680,190 680,235 610,200" />
-                <polygon class="map-face-right" points="680,190 750,155 750,200 680,235" />
-                <polygon class="map-face-top" points="610,155 680,120 750,155 680,190" />
-                <!-- Outline Highlight Silhouette -->
-                <polygon class="map-silhouette" points="610,155 680,120 750,155 750,200 680,235 610,200" />
-            </g>
-
-            <!-- Edificio K (Tecnologías, 1 piso, h=15) -->
-            <g class="clickable-map-element" data-type="edificio" data-name="K">
-                <!-- Faces -->
-                <polygon class="map-face-left" points="730,270 800,305 800,320 730,285" />
-                <polygon class="map-face-right" points="800,305 870,270 870,285 800,320" />
-                <polygon class="map-face-top" points="730,270 800,235 870,270 800,305" />
-                <!-- Outline Highlight Silhouette -->
-                <polygon class="map-silhouette" points="730,270 800,235 870,270 870,285 800,320 730,285" />
-            </g>
-
-            <!-- Edificio H (Contaduría, 1 piso, h=15) -->
-            <g class="clickable-map-element" data-type="edificio" data-name="H">
-                <!-- Faces -->
-                <polygon class="map-face-left" points="460,400 540,440 540,455 460,415" />
-                <polygon class="map-face-right" points="540,440 620,400 620,415 540,455" />
-                <polygon class="map-face-top" points="460,400 540,360 620,400 540,440" />
-                <!-- Outline Highlight Silhouette -->
-                <polygon class="map-silhouette" points="460,400 540,360 620,400 620,415 540,455 460,415" />
-            </g>
-
-            <!-- ================= LABELS (PLACED IN 3D SPACE) ================= -->
-            <!-- Buildings Labels (positioned above the roofs) -->
-            <text class="map-label" x="200" y="65">Edificio E</text>
-            <text class="map-label" x="380" y="60">Edificio F</text>
-            <text class="map-label" x="180" y="222">Edificio T</text>
-            <text class="map-label" x="320" y="242">Edificio R</text>
-            <text class="map-label" x="680" y="105">Edificio M</text>
-            <text class="map-label" x="800" y="222">Edificio K</text>
-            <text class="map-label" x="540" y="347">Edificio H</text>
-
-            <!-- Green Areas Labels -->
-            <text class="map-label-green" x="560" y="110">Jardín Norte</text>
-            <text class="map-label-green" x="200" y="480">Pasillos Verdes</text>
-            <text class="map-label-green" x="850" y="395">Fuente</text>
-            <text class="map-label-green" x="500" y="260">Prado Central</text>
-        </svg>
-    </div>
-
-    <!-- Floating Details Overlay Card (Material You) -->
+    <!-- Tarjeta lateral de información -->
     <div id="details-card" class="floating-details-card">
+
         <div class="card-header-overlay">
-            <h3 id="card-title">Detalle del Campus</h3>
-            <button class="close-btn" onclick="closeDetailsCard()">&times;</button>
+
+            <h3 id="card-title">
+                Detalle
+            </h3>
+
+            <button class="close-btn" onclick="closeDetailsCard()">
+
+                &times;
+
+            </button>
+
         </div>
-        <div id="card-body">
-            <!-- Dynamic Content populated via JS -->
-        </div>
+
+        <div id="card-body"></div>
+
     </div>
 
-    <!-- Hover Tooltip -->
+    <!-- Controles del mapa -->
+    <div class="map-controls-overlay">
+
+
+        <button class="btn-control btn-reset"
+                onclick="resetCameraView()"
+                title="Restablecer vista original">
+
+            🏠
+
+        </button>
+
+
+
+        <button class="btn-control"
+                onclick="zoomIn()"
+                title="Acercar">
+
+            ➕
+
+        </button>
+
+
+
+        <button class="btn-control"
+                onclick="zoomOut()"
+                title="Alejar">
+
+            ➖
+
+        </button>
+
+    </div>
+
+    <div id="mascota">
+
+        <img id="cola" th:src="@{/css/mascota/cola.png}">
+
+        <img id="piernas" th:src="@{/css/mascota/piernas.png}">
+
+        <img id="torso" th:src="@{/css/mascota/torso.png}">
+
+        <img id="cabeza" th:src="@{/css/mascota/cabeza.png}">
+
+    </div>
+
+    <!-- Tooltip flotante -->
     <div id="map-tooltip" class="map-tooltip"></div>
 
-    <!-- JS Functionality -->
-    <script>
-        const tooltip = document.getElementById('map-tooltip');
-        const detailsCard = document.getElementById('details-card');
-        const cardTitle = document.getElementById('card-title');
-        const cardBody = document.getElementById('card-body');
-        let activeElement = null;
+    <!-- JavaScript principal del mapa -->
+    <script th:src="@{/js/mapa.js}"></script>
+    <script th:src="@{/js/mascota.js}"></script>
 
-        // Add Event Listeners to all clickable SVG elements
-        document.querySelectorAll('.clickable-map-element').forEach(el => {
-            const type = el.getAttribute('data-type');
-            const identifier = type === 'edificio' ? el.getAttribute('data-name') : el.getAttribute('data-id');
-            const displayName = type === 'edificio' ? `Edificio ${identifier}` : getGreenAreaName(identifier);
-
-            // Hover: Show Tooltip
-            el.addEventListener('mousemove', (e) => {
-                tooltip.textContent = displayName;
-                tooltip.style.left = `${e.pageX + 15}px`;
-                tooltip.style.top = `${e.pageY + 15}px`;
-                tooltip.classList.add('visible');
-            });
-
-            el.addEventListener('mouseleave', () => {
-                tooltip.classList.remove('visible');
-            });
-
-            // Click: Highlight and fetch details
-            el.addEventListener('click', () => {
-                if (activeElement) {
-                    activeElement.classList.remove('active');
-                }
-
-                activeElement = el;
-                el.classList.add('active');
-
-                fetchDetails(type, identifier);
-            });
-        });
-
-        function getGreenAreaName(id) {
-            switch(id) {
-                case '1': return 'Jardín Norte';
-                case '2': return 'Pasillos Verdes';
-                case '3': return 'Fuente de agua';
-                case '4': return 'Prado Central';
-                default: return 'Área Verde';
-            }
-        }
-
-        // Fetch details from Spring Boot REST API
-        function fetchDetails(type, id) {
-            const url = type === 'edificio' ? `/api/edificios/${id}` : `/api/areas-verdes/${id}`;
-            
-            fetch(url)
-                .then(res => {
-                    if (!res.ok) throw new Error('No se encontraron detalles');
-                    return res.json();
-                })
-                .then(data => {
-                    showDetails(type, data);
-                })
-                .catch(err => {
-                    cardTitle.textContent = 'Error';
-                    cardBody.innerHTML = `<p style="color: var(--danger); font-weight:600;">${err.message}</p>`;
-                    detailsCard.classList.add('visible');
-                });
-        }
-
-        // Populate card content and show it
-        function showDetails(type, data) {
-            if (type === 'edificio') {
-                cardTitle.textContent = `Edificio ${data.nombre}`;
-                
-                const isMaintenance = data.estado.toLowerCase().includes('mantenimiento');
-                const badgeClass = isMaintenance ? 'badge-warning' : 'badge-success';
-
-                cardBody.innerHTML = `
-                    <div class="info-row">
-                        <div class="label">Estado del Edificio</div>
-                        <span class="badge ${badgeClass}">${data.estado}</span>
-                    </div>
-                    <div class="info-row">
-                        <div class="label">Carreras / Departamento</div>
-                        <div class="value">${data.carreras || 'Ninguna (Área Común / Servicios)'}</div>
-                    </div>
-                    <div class="info-row">
-                        <div class="label">Número de Pisos</div>
-                        <div class="value">${data.pisos} ${data.pisos === 1 ? 'piso' : 'pisos'}</div>
-                    </div>
-                `;
-            } else {
-                cardTitle.textContent = data.nombre;
-                cardBody.innerHTML = `
-                    <div class="info-row">
-                        <div class="label">Ubicación / Sector</div>
-                        <div class="value">${data.sector}</div>
-                    </div>
-                    <div class="info-row">
-                        <div class="label">Superficie Terreno</div>
-                        <div class="value">${data.superficie} m²</div>
-                    </div>
-                    <div class="info-row">
-                        <div class="label">Descripción</div>
-                        <div class="value">${data.descripcion || 'Sin descripción adicional'}</div>
-                    </div>
-                `;
-            }
-            detailsCard.classList.add('visible');
-        }
-
-        function closeDetailsCard() {
-            detailsCard.classList.remove('visible');
-            if (activeElement) {
-                activeElement.classList.remove('active');
-                activeElement = null;
-            }
-        }
-    </script>
 </body>
+
 </html>
