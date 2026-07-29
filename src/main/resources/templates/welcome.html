@@ -3,56 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${title}">Bienvenido</title>
-    <meta name="description" content="Página de inicio y bienvenida para la aplicación MAPAUTT.">
+    <title th:text="${title}">Bienvenido a MAPAUTT</title>
+    <meta name="description" content="Explora el campus y descubre los servicios disponibles en MAPAUTT.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/main.css}">
     <link rel="stylesheet" th:href="@{/css/welcome.css}">
 </head>
 <body class="centered-layout">
+    <a class="skip-link" href="#main-content">Saltar al contenido principal</a>
 
-    <div class="container">
-        <main class="card">
-
-            <!-- Mascota + globo de diálogo -->
-            <div class="mascot-wrapper">
-                
-                <img th:src="@{/css/mascota.png}" alt="Mascota TECAM" class="mascot-img">
-            </div>
-
-            <div class="header-wrapper">
-                <div class="header-text">
-                    <h1 id="welcome-title" th:text="${title}">¡Bienvenido!</h1>
+    <div class="container container-welcome">
+        <main id="main-content" class="welcome-card" tabindex="-1" aria-labelledby="welcome-title">
+            <section class="hero-section" aria-labelledby="welcome-title" aria-describedby="welcome-message">
+                <div class="hero-copy">
+                    <p class="eyebrow">Universidad Tecnológica de Tecamachalco</p>
+                    <h1 id="welcome-title" th:text="${title}">¡Bienvenido a MAPAUTT!</h1>
                     <p id="welcome-message" class="subtitle" th:text="${message}">
-                        Tu aplicación está lista para comenzar.
+                        Explora tu campus y encuentra rápidamente los espacios que necesitas.
+                    </p>
+
+                    <nav class="welcome-actions" aria-label="Accesos principales">
+                        <a th:href="@{/mapa}" class="btn btn-primary">
+                            <span>Explorar el mapa</span>
+                            <span class="btn-arrow" aria-hidden="true">→</span>
+                        </a>
+                        <a th:href="@{/admin-panel}" class="btn btn-secondary">
+                            <span>Panel administrativo</span>
+                            <span class="btn-arrow" aria-hidden="true">→</span>
+                        </a>
+                    </nav>
+                </div>
+
+                <figure class="mascot-wrapper">
+                    <img
+                        class="mascot-img"
+                        th:src="@{/css/mascota.png}"
+                        src="/css/mascota.png"
+                        width="407"
+                        height="612"
+                        alt="Ardilla mascota de UT Tecamachalco con un letrero de bienvenida"
+                        fetchpriority="high">
+                </figure>
+            </section>
+
+            <section class="features-container" aria-labelledby="features-title">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">Descubre MAPAUTT</p>
+                        <h2 id="features-title" class="features-title">Explora, aprende y cuida tu campus</h2>
+                    </div>
+                    <p class="section-description">
+                        Consulta puntos de interés y conoce mejor los espacios que forman parte de tu universidad.
                     </p>
                 </div>
-            </div>
 
-            <div class="features-container">
-                <h2 class="features-title">🌼¡Explora,aprende y cuida!¿Qué encontrarás?</h2>
                 <ul class="features-list">
                     <li class="feature-item" th:each="feature : ${features}">
-                        <span class="feature-icon">✓</span>
-                        <span class="feature-text" th:text="${feature}">Característica</span>
+                        <span class="feature-icon" aria-hidden="true">✓</span>
+                        <span class="feature-text" th:text="${feature}">Característica de MAPAUTT</span>
                     </li>
                 </ul>
-            </div>
+            </section>
 
-            <div class="actions-group" style="display: flex; gap: 16px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap;">
-                <a th:href="@{/admin-panel}" class="btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);">Ir al Panel Admin</a>
-                <a th:href="@{/mapa}" class="btn">Ver Mapa del Campus</a>
-            </div>
-
-            <div class="time-badge">
-                <span>Hora del servidor:</span>
-                <strong id="server-time" th:text="${serverTime}">12:00:00</strong>
+            <div class="welcome-meta" aria-label="Información del servidor">
+                <p class="time-badge">
+                    <span>Hora del servidor</span>
+                    <span id="server-time" th:text="${serverTime}">29/07/2026 12:00:00</span>
+                </p>
             </div>
         </main>
 
-        <footer>
-            <p>© 2026 MAPAUTT - Desarrollado con Spring Boot & Thymeleaf</p>
+        <footer class="welcome-footer">
+            <p>© <time datetime="2026">2026</time> MAPAUTT <span aria-hidden="true">·</span> Desarrollado con Spring Boot y Thymeleaf</p>
         </footer>
     </div>
 </body>
