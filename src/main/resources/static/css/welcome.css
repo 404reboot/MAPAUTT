@@ -73,30 +73,31 @@ body::after {
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.831);
     text-align: center;
     position: relative;
-    overflow: hidden;
 }
 
-/* Subtle glowing top border */
-.card::before {
-    content: '';
+.card {
+    position: relative;
+    overflow: visible;    /* clave: permite que la ardilla se salga del borde de la card */
+}
+
+/* ================================
+   MASCOTA + GLOBO DE DIÁLOGO
+   ================================ */
+
+.mascot-wrapper {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: var(--primary-glow);
+    right: -0.0000000000000001001111111px;    /* antes -100px → ahora más cerca de la card */
+    top: -10px;
+    width: 500px;    /* antes 240px → ahora más grande */
+    z-index: 10;
+    pointer-events: none;
 }
 
-/* Header Styles */
-h1 {
-    font-size: 3rem;
-    font-weight: 800;
-    margin-bottom: 16px;
-    background: var(--primary-glow);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: -1px;
-    line-height: 1.2;
+.mascot-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.25));
 }
 
 .subtitle {
@@ -216,22 +217,22 @@ h1 {
 footer {
     margin-top: 40px;
     text-align: center;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
+    line-height: 1.15;
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+    transform: rotate(-4deg);
+    z-index: 11;
 }
 
-.time-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 12px;
-    padding: 6px 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--card-border);
-    border-radius: 20px;
-    font-size: 0.8rem;
-    color: var(--text-primary);
-    font-family: monospace;
+.speech-bubble::after {
+    content: "";
+    position: absolute;
+    bottom: -12px;
+    left: 40px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 14px solid #059669;
 }
 
 /* Animations */

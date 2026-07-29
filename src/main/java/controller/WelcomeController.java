@@ -19,7 +19,7 @@ public class WelcomeController {
         
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         model.addAttribute("serverTime", LocalDateTime.now().format(formatter));
-        
+
         List<String> features = Arrays.asList(
             "🌿 Espacios naturales.",
             "📍 Ubicación en tiempo real.",
@@ -27,7 +27,13 @@ public class WelcomeController {
             "🌱 Datos sobre los espacios"
         );
         model.addAttribute("features", features);
-        
+
         return "welcome";
+    }
+
+    @GetMapping("/mapa")
+    public String mapa(Model model) {
+        model.addAttribute("title", "Mapa Interactivo del Campus - MAPAUTT");
+        return "mapa";
     }
 }

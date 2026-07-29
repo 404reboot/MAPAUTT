@@ -4,28 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${title}">Bienvenido</title>
-
-    <meta name="description" content="Página de inicio y bienvenida para la aplicación MAPAUTT construida con Spring Boot y Thymeleaf.">
-    <!-- Google Fonts -->
+    <meta name="description" content="Página de inicio y bienvenida para la aplicación MAPAUTT.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Stylesheet -->
+    <link rel="stylesheet" th:href="@{/css/main.css}">
     <link rel="stylesheet" th:href="@{/css/welcome.css}">
 </head>
-<body>
+<body class="centered-layout">
 
     <div class="container">
         <main class="card">
-            <h1 id="welcome-title" th:text="${title}">¡Bienvenido!</h1>
-            
-            <p id="welcome-message" class="subtitle" th:text="${message}">
-                Tu aplicación está lista para comenzar.
-            </p>
+
+            <!-- Mascota + globo de diálogo -->
+            <div class="mascot-wrapper">
+                
+                <img th:src="@{/css/mascota.png}" alt="Mascota TECAM" class="mascot-img">
+            </div>
+
+            <div class="header-wrapper">
+                <div class="header-text">
+                    <h1 id="welcome-title" th:text="${title}">¡Bienvenido!</h1>
+                    <p id="welcome-message" class="subtitle" th:text="${message}">
+                        Tu aplicación está lista para comenzar.
+                    </p>
+                </div>
+            </div>
 
             <div class="features-container">
-                <h2 class="features-title">"Explora, aprende y cuida,donde encontraras:"</h2>
+                <h2 class="features-title">🌼¡Explora,aprende y cuida!¿Qué encontrarás?</h2>
                 <ul class="features-list">
                     <li class="feature-item" th:each="feature : ${features}">
                         <span class="feature-icon">✓</span>
@@ -35,14 +41,10 @@
             </div>
 
             <div class="actions-group" style="display: flex; gap: 16px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap;">
-                <a th:href="@{/admin-panel}" class="btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);">
-                    Ir al Panel Admin
-                </a>
-                <button class="btn" onclick="alert('¡Thymeleaf funciona correctamente!')">
-                    Comenzar a explorar
-                </button>
+                <a th:href="@{/admin-panel}" class="btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);">Ir al Panel Admin</a>
+                <a th:href="@{/mapa}" class="btn">Ver Mapa del Campus</a>
             </div>
-            
+
             <div class="time-badge">
                 <span>Hora del servidor:</span>
                 <strong id="server-time" th:text="${serverTime}">12:00:00</strong>
@@ -53,6 +55,5 @@
             <p>© 2026 MAPAUTT - Desarrollado con Spring Boot & Thymeleaf</p>
         </footer>
     </div>
-
 </body>
 </html>

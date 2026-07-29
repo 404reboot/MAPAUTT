@@ -3,23 +3,25 @@ package controller;
 import model.AreaVerde;
 import model.Edificio;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Controller
 public class AdminPanelController {
 
+    @Autowired
+    private MapService mapService;
+
     @GetMapping("/admin-panel")
     public String adminPanel(
-            @RequestParam(name = "section", defaultValue = "edificios") String section, 
+            @RequestParam(name = "section", defaultValue = "edificios") String section,
             Model model,
             HttpSession session) {
-        
+
         // Session validation check
         if (session.getAttribute("user") == null) {
             return "redirect:/acceso?error=unauthorized";
@@ -28,30 +30,104 @@ public class AdminPanelController {
         if (!"edificios".equals(section) && !"areas-verdes".equals(section)) {
             section = "edificios";
         }
-        
-        model.addAttribute("activeSection", section);
-        
-        // Mock data for Buildings
-        List<Edificio> edificios = Arrays.asList(
-            new Edificio(1L, "E", "Alimentos", 4, "Activo"),
-            new Edificio(2L, "F", "Administración", 5, "Activo"),
-            new Edificio(3L, "T", "", 2, "En Mantenimiento"),
-            new Edificio(3L, "R", "Mecatrónica", 2, "En Mantenimiento"),
-            new Edificio(4L, "M", "Agricultura", 3, "Activo"),
-            new Edificio(5L, "K", "Tecnologías de la Información", 1, "Activo"),
-            new Edificio(5L, "H", "Contaduria", 1, "Activo")
-        );
-        model.addAttribute("edificios", edificios);
 
-        // Mock data for Green Areas
-        List<AreaVerde> areasVerdes = Arrays.asList(
-            new AreaVerde(1, "Jardin 1", "Zona Norte", 1200.5, "Ubicado frente al edificio H"),
-            new AreaVerde(2, "Pasillos verdes", "Zona Sur", 4500.0, "Predomina flora como el Ciprés y arbustos"),
-            new AreaVerde(3, "Fuente de agua", "Zona Este", 850.0, "Ubucado a un lado de la cafetería"),
-            new AreaVerde(4, "Prados", "Zona Centro", 600.2, "")
-        );
-        model.addAttribute("areasVerdes", areasVerdes);
+        model.addAttribute("activeSection", section);
+
+        model.addAttribute("edificios", mapService.getEdificios());
+        model.addAttribute("areasVerdes", mapService.getAreasVerdes());
 
         return "admin_panel";
+    }
+
+    @PostMapping("/admin-panel/add-edificio")
+    public String addEdificio(
+            @RequestParam("nombre") String nombre,
+            @RequestParam("carreras") String carreras,
+            @RequestParam("pisos") Integer pisos,
+            @RequestParam("estado") String estado,
+            HttpSession session) {
+
+        if (session.getAttribute("user") == null) {
+            return "redirect:/acceso?error=unauthorized";
+        }
+
+        Edificio nuevoEdificio = new Edificio(null, nombre, carreras, pisos, estado);
+        mapService.addEdificio(nuevoEdificio);
+
+        return "redirect:/admin-panel?section=edificios";
+    }
+
+    @PostMapping("/admin-panel/add-area-verde")
+    public String addAreaVerde(
+            @RequestParam("nombre") String nombre,
+            @RequestParam("sector") String sector,
+            @RequestParam("superficie") Double superficie,
+            @RequestParam("descripcion") String descripcion,
+            HttpSession session) {
+
+        if (session.getAttribute("user") == null) {
+            return "redirect:/acceso?error=unauthorized";
+        }
+
+        AreaVerde nuevaArea = new AreaVerde(0, nombre, sector, superficie, descripcion);
+        mapService.addAreaVerde(nuevaArea);
+
+        return "redirect:/admin-panel?section=areas-verdes";
+    }
+
+    @PostMapping("/admin-panel/edit-edificio")
+    public String editEdificio(
+            @RequestParam("id") Integer id,
+            @RequestParam("nombre") String nombre,
+            @RequestParam("carreras") String carreras,
+            @RequestParam("pisos") Integer pisos,
+            @RequestParam("estado") String estado,
+            HttpSession session) {
+
+        if (session.getAttribute("user") == null) {
+            return "redirect:/acceso?error=unauthorized";
+        }
+
+        Edificio updatedEdificio = new Edificio(id, nombre, carreras, pisos, estado);
+        mapService.updateEdificio(updatedEdificio);
+
+        return "redirect:/admin-panel?section=edificios";
+    }
+
+    @PostMapping("/admin-panel/edit-area-verde")
+    public String editAreaVerde(
+            @RequestParam("id") Integer id,
+            @RequestParam("nombre") String nombre,
+            @RequestParam("sector") String sector,
+            @RequestParam("superficie") Double superficie,
+            @RequestParam("descripcion") String descripcion,
+            HttpSession session) {
+
+        if (session.getAttribute("user") == null) {
+            return "redirect:/acceso?error=unauthorized";
+        }
+
+        AreaVerde updatedArea = new AreaVerde(id, nombre, sector, superficie, descripcion);
+        mapService.updateAreaVerde(updatedArea);
+
+        return "redirect:/admin-panel?section=areas-verdes";
+    }
+
+    @PostMapping("/admin-panel/delete-edificio")
+    public String deleteEdificio(@RequestParam("id") Integer id, HttpSession session) {
+        if (session.getAttribute("user") == null) {
+            return "redirect:/acceso?error=unauthorized";
+        }
+        mapService.deleteEdificio(id);
+        return "redirect:/admin-panel?section=edificios";
+    }
+
+    @PostMapping("/admin-panel/delete-area-verde")
+    public String deleteAreaVerde(@RequestParam("id") Integer id, HttpSession session) {
+        if (session.getAttribute("user") == null) {
+            return "redirect:/acceso?error=unauthorized";
+        }
+        mapService.deleteAreaVerde(id);
+        return "redirect:/admin-panel?section=areas-verdes";
     }
 }
