@@ -14,17 +14,18 @@ public class WelcomeController {
 
     @GetMapping("/")
     public String welcome(Model model) {
-        model.addAttribute("title", "¡Bienvenido al MAPA de la UTTECAM!");
-        model.addAttribute("message", "Vive una experiencia inolvidable con nuestros alrededores.");
-
+        model.addAttribute("title", "¡Bienvenido a MAPAUTT!");
+        model.addAttribute("message", "Explora la Universidad Tecnológica de Tecamachalco de forma interactiva.");
+        
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         model.addAttribute("serverTime", LocalDateTime.now().format(formatter));
 
         List<String> features = Arrays.asList(
-                "🌿 Espacios naturales",
-                "📍 Ubicación en tiempo real",
-                "💚Espacios para descansar y convivir",
-                "🌸 Información de cada espacio");
+            "🌿 Espacios naturales.",
+            "📍 Ubicación en tiempo real.",
+            "💚Espacios para descansar y convivir.",
+            "🌱 Datos sobre los espacios"
+        );
         model.addAttribute("features", features);
 
         return "welcome";
