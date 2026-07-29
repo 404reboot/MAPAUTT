@@ -24,7 +24,7 @@ html, body.centered-layout {
     position: absolute;
     right: -0.0000000000000001001111111px;    /* antes -100px → ahora más cerca de la card */
     top: -10px;
-    width: 500px;    /* antes 240px → ahora más grande */
+    width: 285px;    /* antes 240px → ahora más grande */
     z-index: 10;
     pointer-events: none;
 }
