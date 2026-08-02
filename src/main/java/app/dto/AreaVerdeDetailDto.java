@@ -8,4 +8,4 @@ import java.math.BigDecimal;
 public record AreaVerdeDetailDto(
         String sector,
         BigDecimal surfaceArea
-) {}
+) implements LocationDetails {}

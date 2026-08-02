@@ -12,4 +12,4 @@ public record InstalacionDetailDto(
         String academicPrograms,
         Integer floorCount,
         OperationalStatus operationalStatus
-) {}
+) implements LocationDetails {}

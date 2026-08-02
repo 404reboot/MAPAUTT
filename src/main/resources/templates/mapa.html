@@ -6,12 +6,21 @@
     <title>Mapa Interactivo - UTTECAM</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}"/>
 
+    <!-- Import map: resolves bare specifiers to vendored local copies.
+         This eliminates the CDN dependency and allows the app to run in
+         air-gapped or CSP-restricted environments. -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "/vendor/three/three.module.js",
+            "three/addons/loaders/GLTFLoader.js": "/vendor/three/GLTFLoader.js",
+            "three/addons/controls/OrbitControls.js": "/vendor/three/OrbitControls.js"
+        }
+    }
+    </script>
 </head>
 <body>
     <div id="map-container"></div>
-
-    <!-- Three.js library -->
-    <script src="https://unpkg.com/three@0.160.0/build/three.module.js" type="module"></script>
 
     <!-- Application map script -->
     <script th:src="@{/js/mapa.js}" type="module"></script>

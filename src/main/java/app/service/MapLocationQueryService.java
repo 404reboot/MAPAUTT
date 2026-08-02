@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import app.dto.AreaVerdeDetailDto;
 import app.dto.InstalacionDetailDto;
 import app.dto.LocationDetailDto;
+import app.dto.LocationDetails;
 import app.dto.LocationSummaryDto;
 import app.model.AreaVerde;
 import app.model.Instalacion;
@@ -66,7 +67,7 @@ public class MapLocationQueryService {
     }
 
     private LocationDetailDto toDetail(MapLocation location) {
-        Object details = switch (location.getLocationType()) {
+        LocationDetails details = switch (location.getLocationType()) {
             case INSTALACION -> instalacionRepository.findByMapKey(location.getMapKey())
                     .map(this::toInstalacionDetail)
                     .orElse(null);

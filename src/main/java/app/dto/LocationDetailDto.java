@@ -12,5 +12,5 @@ public record LocationDetailDto(
         LocationType locationType,
         String displayName,
         String description,
-        Object details
+        LocationDetails details
 ) {}

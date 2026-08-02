@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import app.dto.AreaVerdeUpdateCommand;
 import app.dto.InstalacionUpdateCommand;
+import app.exception.LocationNotFoundException;
 import app.model.AreaVerde;
 import app.model.Instalacion;
 import app.model.LocationType;
@@ -28,6 +29,12 @@ import jakarta.validation.Valid;
 /**
  * MVC controller for the administrative panel. Provides edit-only operations
  * on installations and green areas. No add or delete routes are exposed.
+ *
+ * <p><strong>TODO:</strong> This controller has no authentication or authorization.
+ * All routes under {@code /admin-panel} are accessible to any network client.
+ * Centralizing authentication via Spring Security (or a reverse-proxy rule) is a
+ * separate improvement tracked outside this change's scope. Until then, restrict
+ * network access to this path at the infrastructure level (firewall, ingress rules).
  */
 @Controller
 @RequestMapping("/admin-panel")
@@ -95,9 +102,9 @@ public class AdminPanelController {
     @GetMapping("/instalaciones/{mapKey}/edit")
     public String editInstalacionForm(@PathVariable String mapKey, Model model) {
         MapLocation location = mapLocationRepository.findByMapKey(mapKey)
-                .orElseThrow(() -> new IllegalArgumentException("Location not found: " + mapKey));
+                .orElseThrow(() -> new LocationNotFoundException(mapKey));
         Instalacion instalacion = instalacionRepository.findByMapKey(mapKey)
-                .orElseThrow(() -> new IllegalArgumentException("Instalacion detail not found: " + mapKey));
+                .orElseThrow(() -> new LocationNotFoundException(mapKey));
 
         model.addAttribute("location", location);
         model.addAttribute("instalacion", instalacion);
@@ -129,9 +136,9 @@ public class AdminPanelController {
                                          RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             MapLocation location = mapLocationRepository.findByMapKey(mapKey)
-                    .orElseThrow(() -> new IllegalArgumentException("Location not found: " + mapKey));
+                    .orElseThrow(() -> new LocationNotFoundException(mapKey));
             Instalacion instalacion = instalacionRepository.findByMapKey(mapKey)
-                    .orElseThrow(() -> new IllegalArgumentException("Instalacion detail not found: " + mapKey));
+                    .orElseThrow(() -> new LocationNotFoundException(mapKey));
 
             model.addAttribute("location", location);
             model.addAttribute("instalacion", instalacion);
@@ -150,9 +157,9 @@ public class AdminPanelController {
     @GetMapping("/areas-verdes/{mapKey}/edit")
     public String editAreaVerdeForm(@PathVariable String mapKey, Model model) {
         MapLocation location = mapLocationRepository.findByMapKey(mapKey)
-                .orElseThrow(() -> new IllegalArgumentException("Location not found: " + mapKey));
+                .orElseThrow(() -> new LocationNotFoundException(mapKey));
         AreaVerde areaVerde = areaVerdeRepository.findByMapKey(mapKey)
-                .orElseThrow(() -> new IllegalArgumentException("AreaVerde detail not found: " + mapKey));
+                .orElseThrow(() -> new LocationNotFoundException(mapKey));
 
         model.addAttribute("location", location);
         model.addAttribute("areaVerde", areaVerde);
@@ -181,9 +188,9 @@ public class AdminPanelController {
                                        RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             MapLocation location = mapLocationRepository.findByMapKey(mapKey)
-                    .orElseThrow(() -> new IllegalArgumentException("Location not found: " + mapKey));
+                    .orElseThrow(() -> new LocationNotFoundException(mapKey));
             AreaVerde areaVerde = areaVerdeRepository.findByMapKey(mapKey)
-                    .orElseThrow(() -> new IllegalArgumentException("AreaVerde detail not found: " + mapKey));
+                    .orElseThrow(() -> new LocationNotFoundException(mapKey));
 
             model.addAttribute("location", location);
             model.addAttribute("areaVerde", areaVerde);

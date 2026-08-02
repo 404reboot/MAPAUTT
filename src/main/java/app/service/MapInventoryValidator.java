@@ -2,8 +2,9 @@ package app.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -13,7 +14,8 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import app.model.LocationType;
+import app.model.AreaVerde;
+import app.model.Instalacion;
 import app.model.MapLocation;
 import app.repository.AreaVerdeRepository;
 import app.repository.InstalacionRepository;
@@ -23,6 +25,9 @@ import app.service.MapInventoryRegistry.RegistryEntry;
 /**
  * Validates that the database inventory is consistent with the authoritative
  * map-locations.json registry at application startup.
+ *
+ * <p>All database records are batch-fetched in 3 queries (map_location,
+ * instalacion, area_verde) and validated in memory to avoid N+1 query overhead.
  *
  * <p>Behavior is controlled by {@code app.inventory.validation-mode}:
  * <ul>
@@ -57,18 +62,30 @@ public class MapInventoryValidator {
     public void validateInventory() {
         log.info("Starting inventory validation (mode={})", validationMode);
 
+        // Batch-fetch all records in 3 queries
+        Map<String, MapLocation> locationsByMapKey = mapLocationRepository.findAll().stream()
+                .collect(Collectors.toMap(MapLocation::getMapKey, Function.identity()));
+
+        Map<String, Instalacion> instalacionesByMapKey = instalacionRepository.findAll().stream()
+                .collect(Collectors.toMap(
+                        inst -> inst.getMapLocation().getMapKey(),
+                        Function.identity()));
+
+        Map<String, AreaVerde> areasVerdesByMapKey = areaVerdeRepository.findAll().stream()
+                .collect(Collectors.toMap(
+                        av -> av.getMapLocation().getMapKey(),
+                        Function.identity()));
+
         List<String> issues = new ArrayList<>();
 
         // Check every registry entry has a matching DB record
         for (RegistryEntry entry : registry.getAllEntries()) {
-            Optional<MapLocation> locationOpt = mapLocationRepository.findByMapKey(entry.mapKey());
+            MapLocation location = locationsByMapKey.get(entry.mapKey());
 
-            if (locationOpt.isEmpty()) {
+            if (location == null) {
                 issues.add("Registry entry '%s' not found in database".formatted(entry.mapKey()));
                 continue;
             }
-
-            MapLocation location = locationOpt.get();
 
             // Verify glbObjectName matches
             if (!entry.glbObjectName().equals(location.getGlbObjectName())) {
@@ -85,12 +102,12 @@ public class MapInventoryValidator {
 
             // Verify subtype detail record exists
             if ("INSTALACION".equals(entry.locationType())) {
-                if (instalacionRepository.findByMapKey(entry.mapKey()).isEmpty()) {
+                if (!instalacionesByMapKey.containsKey(entry.mapKey())) {
                     issues.add("Registry entry '%s' is INSTALACION but has no detail record in instalacion table"
                             .formatted(entry.mapKey()));
                 }
             } else if ("AREA_VERDE".equals(entry.locationType())) {
-                if (areaVerdeRepository.findByMapKey(entry.mapKey()).isEmpty()) {
+                if (!areasVerdesByMapKey.containsKey(entry.mapKey())) {
                     issues.add("Registry entry '%s' is AREA_VERDE but has no detail record in area_verde table"
                             .formatted(entry.mapKey()));
                 }
@@ -102,9 +119,8 @@ public class MapInventoryValidator {
                 .map(RegistryEntry::mapKey)
                 .collect(Collectors.toSet());
 
-        List<MapLocation> activeLocations = mapLocationRepository.findAllByActiveTrue();
-        for (MapLocation location : activeLocations) {
-            if (!registryKeys.contains(location.getMapKey())) {
+        for (MapLocation location : locationsByMapKey.values()) {
+            if (Boolean.TRUE.equals(location.getActive()) && !registryKeys.contains(location.getMapKey())) {
                 issues.add("Active DB record '%s' (glb='%s') is not defined in registry"
                         .formatted(location.getMapKey(), location.getGlbObjectName()));
             }
