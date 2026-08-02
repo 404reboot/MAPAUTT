@@ -1,0 +1,366 @@
+/* ==========================================================================
+   Campus Map Application Styles
+   ========================================================================== */
+
+/* --- Map Container --- */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+        Ubuntu, Cantarell, sans-serif;
+}
+
+#map-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+/* --- Detail Card Overlay --- */
+.detail-card {
+    position: fixed;
+    top: 50%;
+    right: 24px;
+    transform: translateY(-50%);
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+    max-width: 360px;
+    width: 90vw;
+    max-height: 80vh;
+    overflow-y: auto;
+    z-index: 1000;
+    border: 1px solid #e0e0e0;
+}
+
+.detail-card h2 {
+    margin: 0 0 8px 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    padding-right: 32px;
+}
+
+.detail-card .type-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #e8f5e9;
+    color: #2e7d32;
+    margin-bottom: 12px;
+}
+
+.detail-card .description {
+    font-size: 0.9rem;
+    color: #555;
+    margin: 12px 0;
+    line-height: 1.5;
+}
+
+.detail-card .details-section {
+    margin-top: 16px;
+    border-top: 1px solid #f0f0f0;
+    padding-top: 12px;
+}
+
+.detail-card .field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.detail-card .field-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: #888;
+    margin-bottom: 2px;
+}
+
+.detail-card .field-value {
+    font-size: 0.9rem;
+    color: #333;
+    line-height: 1.4;
+}
+
+/* --- Close Button --- */
+.close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: #f5f5f5;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    color: #666;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+}
+
+.close-btn:hover {
+    background: #e0e0e0;
+    color: #333;
+}
+
+/* --- Fallback Card (Warning Style) --- */
+.fallback-card {
+    border: 2px solid #f59e0b;
+    background: #fffbeb;
+}
+
+.fallback-card h2 {
+    color: #92400e;
+}
+
+.fallback-card .fallback-message {
+    font-size: 0.9rem;
+    color: #78350f;
+    margin: 12px 0 8px 0;
+    line-height: 1.5;
+}
+
+.fallback-card .fallback-key {
+    font-size: 0.8rem;
+    color: #a16207;
+    font-family: monospace;
+    margin: 4px 0 0 0;
+}
+
+/* ==========================================================================
+   Admin Panel Styles
+   ========================================================================== */
+
+/* --- Admin Layout --- */
+.admin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.admin-header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+/* --- Admin Table --- */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.admin-table thead {
+    background: #f9fafb;
+}
+
+.admin-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6b7280;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-table td {
+    padding: 12px 16px;
+    font-size: 0.875rem;
+    color: #374151;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.admin-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+.admin-table .action-link {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.admin-table .action-link:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+}
+
+/* --- Admin Form --- */
+.admin-form {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    max-width: 640px;
+}
+
+.admin-form .form-group {
+    margin-bottom: 16px;
+}
+
+.admin-form label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+.admin-form input[type="text"],
+.admin-form input[type="number"],
+.admin-form textarea,
+.admin-form select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    color: #111827;
+    background: #ffffff;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.admin-form input:focus,
+.admin-form textarea:focus,
+.admin-form select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.admin-form textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+/* Read-only fields */
+.admin-form .read-only-field {
+    padding: 8px 12px;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* Validation errors */
+.admin-form .field-error {
+    font-size: 0.75rem;
+    color: #dc2626;
+    margin-top: 4px;
+}
+
+.admin-form .has-error input,
+.admin-form .has-error textarea,
+.admin-form .has-error select {
+    border-color: #dc2626;
+}
+
+/* Form actions */
+.admin-form .form-actions {
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+.btn-secondary {
+    background: #ffffff;
+    color: #374151;
+    border-color: #d1d5db;
+}
+
+.btn-secondary:hover {
+    background: #f9fafb;
+}
+
+/* ==========================================================================
+   Responsive Adjustments
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .detail-card {
+        right: 12px;
+        left: 12px;
+        width: auto;
+        max-width: none;
+        top: auto;
+        bottom: 12px;
+        transform: none;
+        max-height: 50vh;
+    }
+
+    .admin-container {
+        padding: 12px;
+    }
+
+    .admin-table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .admin-form {
+        padding: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .detail-card {
+        right: 8px;
+        left: 8px;
+        bottom: 8px;
+        padding: 16px;
+    }
+
+    .detail-card h2 {
+        font-size: 1.1rem;
+    }
+}
