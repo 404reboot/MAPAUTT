@@ -1,0 +1,39 @@
+{
+  "id": "FEAT-004",
+  "type": "feat",
+  "description": "Implement the frontend JavaScript integration with stable map keys and safe DOM rendering, plus cleanup and tests. This covers Tasks 5 and 9: rewrite mapa.js to use the registry-based API with exact GLB object name matching, safe textContent rendering, missing-data fallback, and removal of all mock/prefix-based logic. Also add unit tests for services and controllers.",
+  "status": "completed",
+  "steps": [
+    "Create src/main/resources/static/js/mapa.js: Three.js-based 3D campus map viewer. On load: fetch GET /api/map/locations to get inventory. Load the GLB model. For each inventory entry, find the scene-root group by exact glbObjectName match using scene.getObjectByName(). Attach mapKey, locationType, and displayName to the group and all descendant meshes via userData. Add only registered descendant meshes to interactiveObjects array. Set up raycasting for click detection. On click: retrieve mapKey from intersected object's userData, fetch GET /api/map/locations/{mapKey}, render detail card using safe DOM operations (createElement + textContent, never innerHTML with user data).",
+    "Implement the detail card rendering in mapa.js: create a card/panel overlay showing location details. For INSTALACION: show name, description, facility type, use description, academic programs, floor count, operational status. For AREA_VERDE: show name, description, sector, surface area. Use textContent for all data values to prevent XSS.",
+    "Implement missing-data fallback in mapa.js: if GET /api/map/locations/{mapKey} returns 404, display a fallback card with message 'Informacion no disponible - configuracion pendiente' and log a console.warn with the mapKey. Style the fallback card distinctly (e.g., muted colors, warning icon).",
+    "Implement unregistered-node handling in mapa.js: GLB objects without a matching registry entry are NOT added to interactiveObjects and are not clickable. They remain visible as decorative geometry.",
+    "Create src/main/resources/static/css/styles.css: basic styles for the map page (full viewport canvas), detail card overlay (positioned absolute, clean typography), admin panel (table styling, form layout, read-only field styling), and fallback card warning style.",
+    "Create src/test/java/app/service/MapLocationQueryServiceTest.java: unit tests using @MockBean or Mockito mocks for repositories. Test: getInventory returns all active locations as DTOs, getDetail with valid installation mapKey returns correct DTO, getDetail with valid green area mapKey returns correct DTO, getDetail with unknown mapKey returns empty Optional.",
+    "Create src/test/java/app/service/InstalacionServiceTest.java: unit tests. Test: updateMetadata with valid command updates fields, updateMetadata with wrong type throws LocationTypeMismatchException, updateMetadata with unknown mapKey throws LocationNotFoundException.",
+    "Create src/test/java/app/service/AreaVerdeServiceTest.java: unit tests. Test: updateMetadata with valid command updates fields, updateMetadata with wrong type throws exception, updateMetadata with unknown mapKey throws exception.",
+    "Create src/test/java/app/controller/rest/MapRestControllerTest.java: @WebMvcTest tests. Test: GET /api/map/locations returns 200 with list, GET /api/map/locations/{mapKey} returns 200 with detail, GET /api/map/locations/unknown returns 404 ProblemDetail.",
+    "Create src/test/java/app/service/MapInventoryRegistryTest.java: unit test that verifies the registry loads 54 entries, all mapKeys are unique, all glbObjectNames are unique, 29 are INSTALACION and 25 are AREA_VERDE.",
+    "Update src/test/java/mapavutt/MapavuttApplicationTests.java: convert to a structural test or remove if it conflicts with the new package structure. Consider replacing with a test in the app package.",
+    "Remove the wrapper/ directory (its content was moved to .mvn/wrapper/ in FEAT-001)."
+  ],
+  "acceptance_criteria": [
+    "mapa.js fetches inventory from /api/map/locations and binds GLB objects by exact glbObjectName",
+    "mapa.js uses only textContent and createElement for rendering user-editable data - no innerHTML with dynamic content",
+    "mapa.js shows a distinct fallback card for 404 responses instead of crashing",
+    "Unregistered GLB objects are not interactive",
+    "No prefix-based classification logic remains (no 'Edificio_', 'Area_' prefix checking)",
+    "Service unit tests cover happy path and error cases",
+    "REST controller tests verify correct HTTP status codes and response shapes",
+    "MapInventoryRegistryTest validates the registry JSON file integrity",
+    "Old wrapper/ directory is removed"
+  ],
+  "verification": [
+    "Read mapa.js and confirm no innerHTML usage with dynamic data, no prefix-based name parsing",
+    "Read test files and confirm they test actual service/controller logic, not just static assertions",
+    "Verify wrapper/ directory no longer exists and .mvn/wrapper/ does exist",
+    "Verify MapInventoryRegistryTest loads and validates the actual map-locations.json resource file"
+  ],
+  "blocked_reason": null,
+  "findings": "The wrapper/ directory was already removed in a prior commit (not present on disk). The old mapavutt test package was removed and replaced with app.MainApplicationTest. All frontend code uses only createElement + textContent for rendering. No innerHTML or prefix-based logic exists. MapInventoryRegistryTest validates the actual classpath JSON resource (54 entries: 29 INSTALACION, 25 AREA_VERDE). Cannot verify compilation due to INTEGRATIONS_ONLY network mode."
+}

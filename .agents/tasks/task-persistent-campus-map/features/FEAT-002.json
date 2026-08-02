@@ -1,0 +1,39 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Deliver the unified public REST API, DTOs, query services, and update services. This covers Tasks 4 and 6 from the plan: MapLocationQueryService for public read, InstalacionService and AreaVerdeService for restricted metadata updates, MapRestController with inventory and detail endpoints, and all associated DTOs.",
+  "status": "completed",
+  "steps": [
+    "Create src/main/java/app/dto/LocationSummaryDto.java: record with mapKey, glbObjectName, locationType, displayName. Used in inventory listing.",
+    "Create src/main/java/app/dto/LocationDetailDto.java: record with mapKey, locationType, displayName, description, and a 'details' object (either InstalacionDetailDto or AreaVerdeDetailDto).",
+    "Create src/main/java/app/dto/InstalacionDetailDto.java: record with facilityType, useDescription, academicPrograms, floorCount, operationalStatus.",
+    "Create src/main/java/app/dto/AreaVerdeDetailDto.java: record with sector, surfaceArea.",
+    "Create src/main/java/app/dto/InstalacionUpdateCommand.java: record with displayName, description, useDescription, academicPrograms, floorCount, operationalStatus. Add Bean Validation annotations (@NotBlank on displayName, @Size limits, @Min(1) on floorCount when present).",
+    "Create src/main/java/app/dto/AreaVerdeUpdateCommand.java: record with displayName, description, sector, surfaceArea. Add Bean Validation (@NotBlank on displayName, @DecimalMin('0') on surfaceArea).",
+    "Create src/main/java/app/service/MapLocationQueryService.java: constructor-injected with MapLocationRepository, InstalacionRepository, AreaVerdeRepository. Methods: getInventory() returns List<LocationSummaryDto> from active locations; getDetail(String mapKey) returns Optional<LocationDetailDto> by loading MapLocation and appropriate subtype; maps entities to DTOs.",
+    "Create src/main/java/app/service/InstalacionService.java: constructor-injected with MapLocationRepository and InstalacionRepository. Method: updateMetadata(String mapKey, InstalacionUpdateCommand cmd) loads location, verifies type is INSTALACION, updates only allowed display fields on MapLocation and Instalacion detail, saves transactionally. Throws appropriate exceptions for not-found, wrong-type, or optimistic lock conflict.",
+    "Create src/main/java/app/service/AreaVerdeService.java: constructor-injected with MapLocationRepository and AreaVerdeRepository. Method: updateMetadata(String mapKey, AreaVerdeUpdateCommand cmd) loads location, verifies type is AREA_VERDE, updates allowed fields, saves transactionally.",
+    "Create src/main/java/app/controller/rest/MapRestController.java: GET /api/map/locations returns List<LocationSummaryDto>; GET /api/map/locations/{mapKey} returns LocationDetailDto or 404 ProblemDetail. Use constructor injection, @RestController, proper @RequestMapping.",
+    "Create src/main/java/app/exception/LocationNotFoundException.java: extends RuntimeException, carries mapKey.",
+    "Create src/main/java/app/exception/LocationTypeMismatchException.java: extends RuntimeException.",
+    "Create src/main/java/app/exception/GlobalExceptionHandler.java: @RestControllerAdvice handling LocationNotFoundException (404 ProblemDetail), LocationTypeMismatchException (400 ProblemDetail), OptimisticLockingFailureException (409 ProblemDetail)."
+  ],
+  "acceptance_criteria": [
+    "GET /api/map/locations returns JSON array of all active locations with mapKey, glbObjectName, locationType, displayName",
+    "GET /api/map/locations/{mapKey} returns unified detail DTO with type-specific details nested",
+    "404 ProblemDetail returned for unknown mapKey",
+    "InstalacionService.updateMetadata only modifies display/metadata fields, never identity fields",
+    "AreaVerdeService.updateMetadata only modifies display/metadata fields, never identity fields",
+    "Services reject updates to locations of wrong type",
+    "All services use constructor injection with final fields",
+    "GlobalExceptionHandler produces RFC 7807 ProblemDetail responses"
+  ],
+  "verification": [
+    "Read all service and controller source files to verify correct constructor injection pattern",
+    "Verify DTOs are records with appropriate fields",
+    "Verify exception handler maps to correct HTTP status codes",
+    "Verify update services do not modify mapKey, glbObjectName, locationType, or active fields"
+  ],
+  "blocked_reason": null,
+  "findings": "All 13 files created and committed. Structural verification confirmed all internal and external imports resolve correctly. Cannot compile due to INTEGRATIONS_ONLY network (Maven Central unreachable). The app.exception package is picked up by the base 'app' component scan without needing explicit scanBasePackages entry."
+}

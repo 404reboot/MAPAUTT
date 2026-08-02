@@ -1,0 +1,21 @@
+{
+  "project_type": "Spring Boot 4.1.0 web application with Thymeleaf server-side rendering and Three.js 3D map frontend",
+  "language": "Java 25",
+  "build_system": "Maven 3.9 with Spring Boot parent POM. Wrapper files exist but .mvn directory is missing (wrapper dir is at /wrapper instead of /.mvn/wrapper). Use system Maven.",
+  "test_framework": "JUnit 5 via spring-boot-starter-webmvc-test and spring-boot-starter-thymeleaf-test. Currently only a context-load test exists.",
+  "build_command": "mvn compile -DskipTests (CANNOT RUN: INTEGRATIONS_ONLY network, Maven Central unreachable)",
+  "test_command": "mvn test (CANNOT RUN: same network constraint)",
+  "verification_instructions": "Since Maven cannot resolve dependencies, verify via: 1) Java syntax validation using javac where possible, 2) structural review of generated files, 3) confirm all referenced classes/imports exist, 4) confirm JSON registry has correct structure and counts",
+  "snapshot_or_generated_files": null,
+  "setup_instructions": "No setup possible in current sandbox. Project requires: Java 25, Maven 3.9, MariaDB server. Dependencies resolved from Maven Central.",
+  "environment_constraints": "INTEGRATIONS_ONLY network mode. Maven Central, Docker Hub, and all external registries are unreachable. No MariaDB server available. No actual compilation or test execution possible. All verification must be structural/AST-based.",
+  "contribution_requirements": "Single commit on main so far. No CONTRIBUTING.md. Feature branch created: feature/persistent-campus-map.",
+  "key_patterns": "Bare scaffold: @SpringBootApplication in package 'app'. No controllers, models, services, templates, or static assets exist yet. The plan introduces a full layered architecture with JPA entities, repositories, services, DTOs, REST controllers, MVC controllers, Thymeleaf templates, and Three.js frontend.",
+  "relevant_files": [
+    "pom.xml",
+    "src/main/java/app/Main.java",
+    "src/main/resources/application.properties",
+    "src/test/java/mapavutt/MapavuttApplicationTests.java"
+  ],
+  "directory_structure": "src/main/java/app/ - application entry point; src/main/resources/ - config; src/test/java/mapavutt/ - tests; wrapper/ - misplaced Maven wrapper"
+}

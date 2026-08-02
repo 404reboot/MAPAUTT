@@ -1,0 +1,40 @@
+{
+  "id": "FEAT-003",
+  "type": "feat",
+  "description": "Implement the admin panel MVC controllers and Thymeleaf templates for edit-only persistent management, plus the inventory consistency validator. This covers Tasks 7 and 8 from the plan: AdminPanelController with restricted edit-only operations, Thymeleaf templates listing installations and green areas, and the MapInventoryRegistry/MapInventoryValidator for environment-aware consistency checking.",
+  "status": "completed",
+  "steps": [
+    "Create src/main/java/app/service/MapInventoryRegistry.java: @Service that loads and parses src/main/resources/map/map-locations.json at startup. Provides methods: getAllEntries(), getByMapKey(String), getByGlbObjectName(String), getInstallationEntries(), getGreenAreaEntries(). Uses Jackson ObjectMapper to read the JSON.",
+    "Create src/main/java/app/service/MapInventoryValidator.java: @Component that runs on ApplicationReadyEvent. Compares registry entries against database records. Checks: every registry mapKey exists in DB, every registry glbObjectName matches DB, locationType matches, subtype detail record exists, no extra active DB records beyond registry. In dev/test profile: logs warnings for mismatches but does not fail. In prod profile: throws an exception to prevent startup if any mismatch found. Use @Value or @ConfigurationProperties for mode control.",
+    "Create src/main/resources/application.properties entry: app.inventory.validation-mode=warn (default for dev).",
+    "Create src/main/resources/application-prod.properties entry: app.inventory.validation-mode=fail.",
+    "Create src/main/java/app/controller/mvc/AdminPanelController.java: replaces the concept of the old one. Routes: GET /admin-panel (dashboard), GET /admin-panel/instalaciones (list all installations), GET /admin-panel/areas-verdes (list all green areas), GET /admin-panel/instalaciones/{mapKey}/edit (edit form for installation), POST /admin-panel/instalaciones/{mapKey}/edit (process edit), GET /admin-panel/areas-verdes/{mapKey}/edit (edit form for green area), POST /admin-panel/areas-verdes/{mapKey}/edit (process edit). No add or delete routes. Uses constructor injection with InstalacionService, AreaVerdeService, MapLocationQueryService.",
+    "Create src/main/java/app/controller/mvc/PageController.java: serves GET / (redirect to map) and GET /mapa (the 3D map page using mapa.html template).",
+    "Create src/main/resources/templates/admin_panel.html: Thymeleaf layout with sidebar navigation. Dashboard showing counts of installations and green areas.",
+    "Create src/main/resources/templates/admin/instalaciones.html: table listing all installations with columns: mapKey (read-only), displayName, facilityType, operationalStatus, and an Edit link. No add/delete buttons.",
+    "Create src/main/resources/templates/admin/areas-verdes.html: table listing all green areas with columns: mapKey (read-only), displayName, sector, surfaceArea, and an Edit link. No add/delete buttons.",
+    "Create src/main/resources/templates/admin/edit-instalacion.html: edit form showing mapKey and glbObjectName as read-only fields, editable fields: displayName (required), description, useDescription, academicPrograms, floorCount, operationalStatus dropdown. Shows validation error messages. Submit posts to the same URL.",
+    "Create src/main/resources/templates/admin/edit-area-verde.html: edit form showing mapKey and glbObjectName as read-only, editable fields: displayName (required), description, sector, surfaceArea. Shows validation error messages.",
+    "Create src/main/resources/templates/fragments/admin-sidebar.html: Thymeleaf fragment with navigation links to dashboard, instalaciones, and areas-verdes sections.",
+    "Create src/main/resources/templates/mapa.html: page that includes the Three.js libraries and mapa.js for the 3D map."
+  ],
+  "acceptance_criteria": [
+    "MapInventoryRegistry loads all 54 entries from map-locations.json at startup",
+    "MapInventoryValidator in dev mode logs warnings but allows startup with mismatches",
+    "MapInventoryValidator in prod mode throws exception on mismatch preventing startup",
+    "Admin panel has NO add or delete routes - only list and edit",
+    "Edit forms display mapKey and glbObjectName as read-only text (not editable inputs)",
+    "Edit forms show Bean Validation errors when submitted with invalid data",
+    "Admin instalaciones route uses mapKey in URL, not numeric ID",
+    "Admin areas-verdes route uses mapKey in URL, not numeric ID",
+    "All controllers use constructor injection"
+  ],
+  "verification": [
+    "Read AdminPanelController to confirm no add/delete handler methods exist",
+    "Read templates to confirm no add/delete buttons or forms exist",
+    "Read MapInventoryValidator to confirm profile-based behavior switching",
+    "Verify all controller methods use mapKey path variable, not numeric ID"
+  ],
+  "blocked_reason": null,
+  "findings": "All 13 files created/modified successfully. No compilation possible due to INTEGRATIONS_ONLY network mode. Structural verification confirms: no add/delete routes in AdminPanelController, all routes use mapKey path variable, edit forms display mapKey/glbObjectName as read-only plain text (div elements), MapInventoryValidator uses @Value for validation-mode with warn default and fail in prod, MapInventoryRegistry uses Jackson ObjectMapper to parse classpath resource. Controllers use constructor injection exclusively."
+}

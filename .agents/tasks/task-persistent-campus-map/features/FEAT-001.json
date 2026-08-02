@@ -1,0 +1,45 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Establish the GLB location registry, domain model, JPA entities, repositories, and Flyway migrations. This covers Tasks 1-3 from the plan: the authoritative map-locations.json registry with 54 entries, the MapLocation/Instalacion/AreaVerde entity hierarchy with proper constraints, and Flyway SQL migrations to create tables and seed all records.",
+  "status": "completed",
+  "steps": [
+    "Update pom.xml: add spring-boot-starter-data-jpa, mariadb-java-client driver, flyway-core, and flyway-mysql dependencies. Pin versions compatible with Spring Boot 4.1.0.",
+    "Create src/main/resources/map/map-locations.json with all 54 location entries. Each entry has: mapKey (lowercase slug like 'edificio-e'), glbObjectName (exact GLB scene-root wrapper name like 'Edificio E.'), locationType (INSTALACION or AREA_VERDE), defaultDisplayName, and facilityType (for installations). Include all 29 installations and 25 green areas per the plan classification.",
+    "Create src/main/java/app/model/LocationType.java enum with values INSTALACION, AREA_VERDE.",
+    "Create src/main/java/app/model/FacilityType.java enum with values BUILDING, SPORTS, PARKING, SERVICE, PATH, WATER_LAND, OTHER.",
+    "Create src/main/java/app/model/OperationalStatus.java enum with values ACTIVE, MAINTENANCE, CLOSED, PLANNED.",
+    "Create src/main/java/app/model/MapLocation.java JPA entity with: id (Long, generated), mapKey (String, unique, not null, max 100), glbObjectName (String, unique, not null, max 255), locationType (LocationType enum), displayName (String, not null, max 150), description (String, nullable, TEXT), active (boolean, not null default true), version (Long, @Version for optimistic locking). Add Bean Validation annotations. Add @Table with unique constraints on mapKey and glbObjectName.",
+    "Create src/main/java/app/model/Instalacion.java JPA entity with: locationId (Long, PK, shared with MapLocation via @MapsId), @OneToOne relationship to MapLocation, facilityType (FacilityType enum), useDescription (String, nullable), academicPrograms (String, nullable, TEXT), floorCount (Integer, nullable, @Min(1) when present), operationalStatus (OperationalStatus enum, default ACTIVE).",
+    "Create src/main/java/app/model/AreaVerde.java JPA entity with: locationId (Long, PK, shared with MapLocation via @MapsId), @OneToOne relationship to MapLocation, sector (String, nullable, max 100), surfaceArea (BigDecimal, nullable, column DECIMAL(12,2), @DecimalMin('0')).",
+    "Create src/main/java/app/repository/MapLocationRepository.java Spring Data JPA interface with: findByMapKey, findByGlbObjectName, existsByMapKey, existsByGlbObjectName, findAllByActiveTrue, findAllByLocationTypeAndActiveTrue.",
+    "Create src/main/java/app/repository/InstalacionRepository.java with: findById (using locationId), custom query to find by mapKey through MapLocation join.",
+    "Create src/main/java/app/repository/AreaVerdeRepository.java with: findById (using locationId), custom query to find by mapKey through MapLocation join.",
+    "Create Flyway migration src/main/resources/db/migration/V1__create_schema.sql: CREATE TABLE map_location, CREATE TABLE instalacion (FK to map_location), CREATE TABLE area_verde (FK to map_location). Use InnoDB, utf8mb4 charset, appropriate column types and constraints.",
+    "Create Flyway migration src/main/resources/db/migration/V2__seed_locations.sql: INSERT all 54 map_location records, INSERT 29 instalacion detail records, INSERT 25 area_verde detail records. Use the mapKey and glbObjectName from the registry. Set conservative defaults for nullable metadata.",
+    "Update src/main/resources/application.properties: add MariaDB datasource configuration (using environment variable placeholders for credentials), set spring.jpa.hibernate.ddl-auto=validate, enable Flyway, configure SQL logging as optional.",
+    "Create src/main/resources/application-dev.properties with development-specific overrides: ddl-auto=validate, Flyway enabled, SQL logging enabled, relaxed validation mode.",
+    "Create src/main/resources/application-prod.properties with production overrides: strict validation, SQL logging disabled.",
+    "Update src/main/java/app/Main.java: add @EntityScan and @EnableJpaRepositories scanning for app.model and app.repository packages. Add component scanning for all new packages (app.service, app.dto, app.controller.rest, app.controller.mvc).",
+    "Fix the Maven wrapper: create .mvn/wrapper/ directory and move wrapper/maven-wrapper.properties to .mvn/wrapper/maven-wrapper.properties."
+  ],
+  "acceptance_criteria": [
+    "map-locations.json contains exactly 54 entries with unique mapKey values and unique glbObjectName values",
+    "29 entries have locationType INSTALACION and 25 have AREA_VERDE",
+    "MapLocation entity has proper JPA annotations including @Version, unique constraints, and Bean Validation",
+    "Instalacion and AreaVerde use @MapsId for shared PK with MapLocation",
+    "Flyway V1 migration creates all three tables with proper FK relationships",
+    "Flyway V2 migration inserts exactly 54 map_location rows, 29 instalacion rows, and 25 area_verde rows",
+    "application.properties configures MariaDB with environment variable placeholders for sensitive values",
+    "Main.java scans all necessary packages for entities, repositories, services, and controllers"
+  ],
+  "verification": [
+    "Verify map-locations.json is valid JSON with 54 entries, all mapKey values are unique lowercase slugs, all glbObjectName values are unique",
+    "Verify entity classes have correct JPA annotations by reading the source",
+    "Verify Flyway SQL is syntactically valid MariaDB SQL",
+    "Verify the seed migration row counts match the registry counts",
+    "Verify pom.xml has all required new dependencies"
+  ],
+  "blocked_reason": null,
+  "findings": "All 54 entries verified unique for both mapKey and glbObjectName. Structural validation confirms balanced braces in all Java files, valid XML in pom.xml, correct INSERT counts (54 map_location, 29 instalacion, 25 area_verde). Maven wrapper relocated from wrapper/ to .mvn/wrapper/. Build/test commands cannot run due to INTEGRATIONS_ONLY network mode. Spring Boot 4.1.0 uses jakarta.* namespace for persistence and validation annotations."
+}

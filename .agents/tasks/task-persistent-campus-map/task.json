@@ -1,0 +1,14 @@
+{
+  "task_id": "task-persistent-campus-map",
+  "task_description": "Replace in-memory MapService with MariaDB-backed persistence using a dual-identifier design (mapKey + glbObjectName). Broaden Edificio into Instalacion. Implement strict inventory validation in production with usable fallback in development. Deliver unified REST API, edit-only admin panel, and safe Three.js frontend integration.",
+  "status": "completed",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003", "FEAT-004"],
+  "blocked_reason": null,
+  "verification": {
+    "build": "skipped",
+    "tests": "skipped",
+    "test_quality": "pass",
+    "docker_build": "skipped",
+    "summary": "Maven build/test execution impossible due to INTEGRATIONS_ONLY network (Maven Central unreachable). Structural verification performed and passed: registry JSON validated (54 entries, 29 INSTALACION/25 AREA_VERDE, all keys unique, all slugs valid format), SQL migration counts confirmed correct, no innerHTML usage with dynamic data in mapa.js, all services/controllers use constructor injection, tests exercise actual logic with meaningful assertions. Semantic review completed in 3 passes - v3 APPROVED."
+  }
+}
