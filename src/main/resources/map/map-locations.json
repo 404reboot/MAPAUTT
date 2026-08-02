@@ -1,0 +1,355 @@
+[
+  {
+    "mapKey": "almacen-taekwondo",
+    "glbObjectName": "Almacen y Salon de Taekwondo",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Almacen y Salon de Taekwondo",
+    "facilityType": "BUILDING"
+  },
+  {
+    "mapKey": "cafeteria",
+    "glbObjectName": "Cafeteria",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Cafeteria",
+    "facilityType": "SERVICE"
+  },
+  {
+    "mapKey": "camino",
+    "glbObjectName": "Camino",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Camino",
+    "facilityType": "PATH"
+  },
+  {
+    "mapKey": "campo-beisbol",
+    "glbObjectName": "Campo de Beisbol",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Campo de Beisbol",
+    "facilityType": "SPORTS"
+  },
+  {
+    "mapKey": "cancha-futbol",
+    "glbObjectName": "Cancha de Futbol",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Cancha de Futbol",
+    "facilityType": "SPORTS"
+  },
+  {
+    "mapKey": "cancha-techada-1",
+    "glbObjectName": "Cancha Techada 1",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Cancha Techada 1",
+    "facilityType": "SPORTS"
+  },
+  {
+    "mapKey": "cancha-techada-2",
+    "glbObjectName": "Cancha Techada 2",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Cancha Techada 2",
+    "facilityType": "SPORTS"
+  },
+  {
+    "mapKey": "caseta-informacion",
+    "glbObjectName": "Caseta de Informacion .",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Caseta de Informacion",
+    "facilityType": "SERVICE"
+  },
+  {
+    "mapKey": "caseta-vigilancia-1",
+    "glbObjectName": "Caseta de Vigilancia 1",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Caseta de Vigilancia 1",
+    "facilityType": "SERVICE"
+  },
+  {
+    "mapKey": "caseta-vigilancia-2",
+    "glbObjectName": "Caseta de Vigilancia 2",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Caseta de Vigilancia 2",
+    "facilityType": "SERVICE"
+  },
+  {
+    "mapKey": "caseta-vigilancia-3",
+    "glbObjectName": "Caseta de Vigilancia 3",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Caseta de Vigilancia 3",
+    "facilityType": "SERVICE"
+  },
+  {
+    "mapKey": "edificio-d",
+    "glbObjectName": "Edificio D.",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Edificio D",
+    "facilityType": "BUILDING"
+  },
+  {
+    "mapKey": "edificio-e",
+    "glbObjectName": "Edificio E.",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Edificio E",
+    "facilityType": "BUILDING"
+  },
+  {
+    "mapKey": "edificio-f",
+    "glbObjectName": "Edificio F",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Edificio F",
+    "facilityType": "BUILDING"
+  },
+  {
+    "mapKey": "edificio-g",
+    "glbObjectName": "Edificio G.",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Edificio G",
+    "facilityType": "BUILDING"
+  },
+  {
+    "mapKey": "edificio-h",
+    "glbObjectName": "Edificio H.",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Edificio H",
+    "facilityType": "BUILDING"
+  },
+  {
+    "mapKey": "edificio-k",
+    "glbObjectName": "Edificio K.",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Edificio K",
+    "facilityType": "BUILDING"
+  },
+  {
+    "mapKey": "edificio-l",
+    "glbObjectName": "Edificio L.",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Edificio L",
+    "facilityType": "BUILDING"
+  },
+  {
+    "mapKey": "edificio-m",
+    "glbObjectName": "Edificio M.",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Edificio M",
+    "facilityType": "BUILDING"
+  },
+  {
+    "mapKey": "edificio-r",
+    "glbObjectName": "Edificio R.",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Edificio R",
+    "facilityType": "BUILDING"
+  },
+  {
+    "mapKey": "edificio-t",
+    "glbObjectName": "Edificio T.",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Edificio T",
+    "facilityType": "BUILDING"
+  },
+  {
+    "mapKey": "estacionamiento-oeste",
+    "glbObjectName": "Estacionamiento 1.",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Estacionamiento Oeste",
+    "facilityType": "PARKING"
+  },
+  {
+    "mapKey": "estacionamiento-este",
+    "glbObjectName": "Estacionamiento 2",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Estacionamiento Este",
+    "facilityType": "PARKING"
+  },
+  {
+    "mapKey": "huerta-composta",
+    "glbObjectName": "Huerta Composta",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Huerta y Composta",
+    "facilityType": "WATER_LAND"
+  },
+  {
+    "mapKey": "invernaderos",
+    "glbObjectName": "Invernaderos .",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Invernaderos",
+    "facilityType": "OTHER"
+  },
+  {
+    "mapKey": "laboratorio-serigrafia",
+    "glbObjectName": "Laboratorio de Serigrafia",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Laboratorio de Serigrafia",
+    "facilityType": "SERVICE"
+  },
+  {
+    "mapKey": "pasillos",
+    "glbObjectName": "Pasillos .",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Pasillos",
+    "facilityType": "PATH"
+  },
+  {
+    "mapKey": "presa",
+    "glbObjectName": "Presa .",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Presa",
+    "facilityType": "WATER_LAND"
+  },
+  {
+    "mapKey": "terreno-irregular",
+    "glbObjectName": "Terreno Irregular del Campus",
+    "locationType": "INSTALACION",
+    "defaultDisplayName": "Terreno Irregular del Campus",
+    "facilityType": "WATER_LAND"
+  },
+  {
+    "mapKey": "zona-verde-central-campana",
+    "glbObjectName": "Zona Verde Central de la Campana",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde Central de la Campana"
+  },
+  {
+    "mapKey": "zona-verde-fuente",
+    "glbObjectName": "Zona Verde de la Fuente",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde de la Fuente"
+  },
+  {
+    "mapKey": "zona-verde-cancha-techada",
+    "glbObjectName": "Zona Verde de la Cancha Techada",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde de la Cancha Techada"
+  },
+  {
+    "mapKey": "zona-verde-entrada-1",
+    "glbObjectName": "Zona Verde de Entrada 1",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde de Entrada 1"
+  },
+  {
+    "mapKey": "zona-verde-entrada-2",
+    "glbObjectName": "Zona Verde de Entrada 2",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde de Entrada 2"
+  },
+  {
+    "mapKey": "zona-verde-pasillo",
+    "glbObjectName": "Zona Verde del Pasillo",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde del Pasillo"
+  },
+  {
+    "mapKey": "zona-verde-edificio-d",
+    "glbObjectName": "Zona Verde del Edificio D",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde del Edificio D"
+  },
+  {
+    "mapKey": "zona-verde-edificio-e",
+    "glbObjectName": "Zona Verde del Edificio E",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde del Edificio E"
+  },
+  {
+    "mapKey": "zona-verde-edificio-f",
+    "glbObjectName": "Zona Verde del Edificio F.",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde del Edificio F"
+  },
+  {
+    "mapKey": "zona-verde-edificio-g",
+    "glbObjectName": "Zona Verde del Edificio G",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde del Edificio G"
+  },
+  {
+    "mapKey": "zona-verde-edificio-h",
+    "glbObjectName": "Zona Verde del Edificio H:",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde del Edificio H"
+  },
+  {
+    "mapKey": "zona-verde-edificio-k",
+    "glbObjectName": "Zona Verde del Edificio K.",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde del Edificio K"
+  },
+  {
+    "mapKey": "zona-verde-edificio-l",
+    "glbObjectName": "Zona Verde del Edificio L",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde del Edificio L"
+  },
+  {
+    "mapKey": "zona-verde-edificio-m",
+    "glbObjectName": "Zona Verde del Edificio M",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde del Edificio M"
+  },
+  {
+    "mapKey": "zona-verde-edificio-r",
+    "glbObjectName": "Zona Verde del Edificio R",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde del Edificio R"
+  },
+  {
+    "mapKey": "zona-verde-edificio-t",
+    "glbObjectName": "Zona Verde del Edificio T",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde del Edificio T"
+  },
+  {
+    "mapKey": "zona-verde-estacionamiento-1",
+    "glbObjectName": "Zona Verde del Estacionamiento 1",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde del Estacionamiento 1"
+  },
+  {
+    "mapKey": "zona-verde-estacionamiento-2",
+    "glbObjectName": "Zona Verde del Estacionamiento 2",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde del Estacionamiento 2"
+  },
+  {
+    "mapKey": "zona-verde-este",
+    "glbObjectName": "Zona Verde Este:",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde Este"
+  },
+  {
+    "mapKey": "zona-verde-oeste",
+    "glbObjectName": "Zona Verde Oeste",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde Oeste"
+  },
+  {
+    "mapKey": "zona-verde-sur",
+    "glbObjectName": "Zona Verde Sur",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde Sur"
+  },
+  {
+    "mapKey": "zona-verde-sureste",
+    "glbObjectName": "Zona Verde Sureste",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde Sureste"
+  },
+  {
+    "mapKey": "zona-verde-suroeste",
+    "glbObjectName": "Zona Verde Suroeste",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde Suroeste"
+  },
+  {
+    "mapKey": "zona-verde-almacen",
+    "glbObjectName": "Zona Verde del Almacen.",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde del Almacen"
+  },
+  {
+    "mapKey": "zona-verde-invernadero",
+    "glbObjectName": "Zona Verde del Invernadero",
+    "locationType": "AREA_VERDE",
+    "defaultDisplayName": "Zona Verde del Invernadero"
+  }
+]
