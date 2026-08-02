@@ -67,9 +67,9 @@ public class AdminPanelController {
     @GetMapping
     public String dashboard(Model model) {
         long instalacionCount = mapLocationRepository
-                .findAllByLocationTypeAndActiveTrue(LocationType.INSTALACION).size();
+                .countByLocationTypeAndActiveTrue(LocationType.INSTALACION);
         long areaVerdeCount = mapLocationRepository
-                .findAllByLocationTypeAndActiveTrue(LocationType.AREA_VERDE).size();
+                .countByLocationTypeAndActiveTrue(LocationType.AREA_VERDE);
 
         model.addAttribute("instalacionCount", instalacionCount);
         model.addAttribute("areaVerdeCount", areaVerdeCount);

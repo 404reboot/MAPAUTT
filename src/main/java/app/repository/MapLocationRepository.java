@@ -26,4 +26,6 @@ public interface MapLocationRepository extends JpaRepository<MapLocation, Long> 
     List<MapLocation> findAllByActiveTrue();
 
     List<MapLocation> findAllByLocationTypeAndActiveTrue(LocationType locationType);
+
+    long countByLocationTypeAndActiveTrue(LocationType locationType);
 }

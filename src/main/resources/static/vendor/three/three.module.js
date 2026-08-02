@@ -1,14 +1,18 @@
 /**
- * Three.js r160 - Vendored local copy.
+ * Three.js r160 - Vendored local copy (PLACEHOLDER).
  *
- * This file should contain the full contents of:
- * https://unpkg.com/three@0.160.0/build/three.module.js
+ * IMPORTANT: This file is a placeholder that must be replaced with the actual
+ * Three.js r160 library source before deployment.
  *
- * To populate: download the library from the official Three.js GitHub release
- * (https://github.com/mrdoob/three.js/releases/tag/r160) and place the
- * build/three.module.js contents here.
+ * To vendor the real library:
+ * 1. Download Three.js r160 from https://github.com/mrdoob/three.js/releases/tag/r160
+ * 2. Extract the archive
+ * 3. Copy the contents of build/three.module.js into this file, replacing everything
  *
- * Keeping this file local ensures the application works in air-gapped
- * environments and is not affected by CDN outages.
+ * The application will not render the 3D map until this file contains the real library.
  */
-export * from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+throw new Error(
+    '[Three.js] three.module.js is a placeholder. ' +
+    'Download Three.js r160 from https://github.com/mrdoob/three.js/releases/tag/r160 ' +
+    'and replace this file with build/three.module.js'
+);

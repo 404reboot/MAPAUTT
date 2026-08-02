@@ -7,9 +7,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
- * Exception handler for MVC (non-REST) controllers. Catches domain exceptions
+ * Exception handler for MVC (non-REST) controllers. Catches known domain exceptions
  * thrown by admin panel handlers and redirects with user-friendly error messages
  * instead of exposing a raw Whitelabel Error Page.
+ *
+ * <p>Only domain-specific exceptions are handled here. Unexpected exceptions
+ * (NPE, ClassCastException, etc.) are left to Spring's default error handling,
+ * which surfaces full stack traces during development for easier debugging.
  */
 @ControllerAdvice(basePackages = "app.controller.mvc")
 public class MvcExceptionHandler {
@@ -29,14 +33,6 @@ public class MvcExceptionHandler {
         log.warn("MVC type mismatch: {}", ex.getMessage());
         redirectAttributes.addFlashAttribute("errorMessage",
                 "Tipo de ubicacion incompatible para: " + ex.getMapKey());
-        return "redirect:/admin-panel";
-    }
-
-    @ExceptionHandler(Exception.class)
-    public String handleGenericException(Exception ex, RedirectAttributes redirectAttributes) {
-        log.error("Unexpected error in admin panel", ex);
-        redirectAttributes.addFlashAttribute("errorMessage",
-                "Error inesperado. Intente nuevamente.");
         return "redirect:/admin-panel";
     }
 }

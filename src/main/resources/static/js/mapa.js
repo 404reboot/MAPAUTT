@@ -4,11 +4,25 @@
  * Loads a GLB 3D model and binds interactive locations from the server registry.
  * Clicking a registered location fetches its detail from the REST API and
  * displays it in a DOM overlay card using safe createElement + textContent.
+ *
+ * NOTE: This module requires the vendored Three.js files in /vendor/three/ to
+ * contain the real library source (not placeholders). If the imports fail,
+ * a user-facing message is displayed instead of a broken blank page.
  */
 
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+let THREE, GLTFLoader, OrbitControls;
+let threeAvailable = false;
+
+try {
+    THREE = await import('three');
+    ({ GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js'));
+    ({ OrbitControls } = await import('three/addons/controls/OrbitControls.js'));
+    threeAvailable = true;
+} catch (err) {
+    console.error('[mapa.js] Three.js libraries not available. The vendored files ' +
+        'under /vendor/three/ may be placeholders. See /vendor/three/README.md for ' +
+        'instructions on how to vendor the real library.', err);
+}
 
 const GLB_MODEL_PATH = '/models/Mapa_UTTECAM.glb';
 const API_LOCATIONS = '/api/map/locations';
@@ -18,6 +32,10 @@ let raycaster, mouse;
 const interactiveObjects = [];
 
 document.addEventListener('DOMContentLoaded', () => {
+    if (!threeAvailable) {
+        showLibraryUnavailableMessage();
+        return;
+    }
     initScene();
     initRaycaster();
     loadInventoryAndModel();
@@ -392,4 +410,28 @@ function formatOperationalStatus(status) {
         case 'PLANNED': return 'Planeado';
         default: return status;
     }
+}
+
+/**
+ * Displays a user-facing message when Three.js libraries are not available.
+ * This occurs when the vendored files are still placeholders.
+ */
+function showLibraryUnavailableMessage() {
+    const container = document.getElementById('map-container');
+    if (!container) return;
+
+    const notice = document.createElement('div');
+    notice.className = 'library-unavailable-notice';
+
+    const heading = document.createElement('h2');
+    heading.textContent = 'Mapa 3D no disponible';
+    notice.appendChild(heading);
+
+    const message = document.createElement('p');
+    message.textContent =
+        'Las librerias de visualizacion 3D (Three.js) no estan instaladas. ' +
+        'Contacte al administrador del sistema para completar la configuracion.';
+    notice.appendChild(message);
+
+    container.appendChild(notice);
 }

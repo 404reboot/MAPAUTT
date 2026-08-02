@@ -64,11 +64,10 @@ class AdminPanelControllerTest {
 
     @Test
     void dashboard_returns200WithCounts() throws Exception {
-        when(mapLocationRepository.findAllByLocationTypeAndActiveTrue(LocationType.INSTALACION))
-                .thenReturn(List.of(
-                        new MapLocation("edificio-d", "Edificio D.", LocationType.INSTALACION, "Edificio D")));
-        when(mapLocationRepository.findAllByLocationTypeAndActiveTrue(LocationType.AREA_VERDE))
-                .thenReturn(List.of());
+        when(mapLocationRepository.countByLocationTypeAndActiveTrue(LocationType.INSTALACION))
+                .thenReturn(1L);
+        when(mapLocationRepository.countByLocationTypeAndActiveTrue(LocationType.AREA_VERDE))
+                .thenReturn(0L);
 
         mockMvc.perform(get("/admin-panel"))
                 .andExpect(status().isOk())

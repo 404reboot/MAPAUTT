@@ -1,11 +1,19 @@
 /**
- * Three.js r160 OrbitControls - Vendored local copy.
+ * Three.js r160 OrbitControls - Vendored local copy (PLACEHOLDER).
  *
- * This file should contain the full contents of:
- * https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js
+ * IMPORTANT: This file is a placeholder that must be replaced with the actual
+ * OrbitControls source from Three.js r160 before deployment.
  *
- * To populate: download from the official Three.js GitHub release
- * (https://github.com/mrdoob/three.js/releases/tag/r160) and place the
- * examples/jsm/controls/OrbitControls.js contents here.
+ * To vendor the real module:
+ * 1. Download Three.js r160 from https://github.com/mrdoob/three.js/releases/tag/r160
+ * 2. Extract the archive
+ * 3. Copy the contents of examples/jsm/controls/OrbitControls.js into this file,
+ *    replacing everything
+ *
+ * The application will not have camera controls until this file contains the real module.
  */
-export { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+throw new Error(
+    '[Three.js] OrbitControls.js is a placeholder. ' +
+    'Download Three.js r160 from https://github.com/mrdoob/three.js/releases/tag/r160 ' +
+    'and replace this file with examples/jsm/controls/OrbitControls.js'
+);
