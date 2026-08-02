@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Panel de Administracion - MAPAUTT</title>
+    <style>
+        body { font-family: sans-serif; margin: 0; display: flex; min-height: 100vh; }
+        .admin-sidebar { width: 220px; background: #2c3e50; color: #ecf0f1; padding: 1rem; }
+        .admin-sidebar h3 { margin-top: 0; }
+        .sidebar-nav { list-style: none; padding: 0; }
+        .sidebar-nav li { margin-bottom: 0.5rem; }
+        .sidebar-nav a { color: #ecf0f1; text-decoration: none; }
+        .sidebar-nav a:hover { text-decoration: underline; }
+        .main-content { flex: 1; padding: 2rem; }
+        .dashboard-cards { display: flex; gap: 2rem; margin-top: 1rem; }
+        .card { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 1.5rem; min-width: 200px; }
+        .card h2 { margin: 0 0 0.5rem 0; font-size: 2rem; color: #2c3e50; }
+        .card p { margin: 0; color: #6c757d; }
+        .alert-success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 0.75rem 1rem; border-radius: 4px; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragments/admin-sidebar :: sidebar}"></div>
+    <main class="main-content">
+        <h1>Dashboard</h1>
+        <div th:if="${successMessage}" class="alert-success" th:text="${successMessage}"></div>
+        <div class="dashboard-cards">
+            <div class="card">
+                <h2 th:text="${instalacionCount}">0</h2>
+                <p>Instalaciones</p>
+            </div>
+            <div class="card">
+                <h2 th:text="${areaVerdeCount}">0</h2>
+                <p>Areas Verdes</p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

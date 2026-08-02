@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Editar Instalacion - Panel Admin</title>
+    <style>
+        body { font-family: sans-serif; margin: 0; display: flex; min-height: 100vh; }
+        .admin-sidebar { width: 220px; background: #2c3e50; color: #ecf0f1; padding: 1rem; }
+        .admin-sidebar h3 { margin-top: 0; }
+        .sidebar-nav { list-style: none; padding: 0; }
+        .sidebar-nav li { margin-bottom: 0.5rem; }
+        .sidebar-nav a { color: #ecf0f1; text-decoration: none; }
+        .sidebar-nav a:hover { text-decoration: underline; }
+        .main-content { flex: 1; padding: 2rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.25rem; font-weight: bold; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; max-width: 500px; padding: 0.5rem; border: 1px solid #ced4da; border-radius: 4px;
+        }
+        .form-group textarea { min-height: 80px; resize: vertical; }
+        .read-only-field { background: #e9ecef; padding: 0.5rem; border-radius: 4px; max-width: 500px; }
+        .error { color: #dc3545; font-size: 0.875rem; margin-top: 0.25rem; }
+        .btn-submit { background: #007bff; color: #fff; border: none; padding: 0.5rem 1.5rem; border-radius: 4px; cursor: pointer; font-size: 1rem; }
+        .btn-submit:hover { background: #0056b3; }
+        .btn-cancel { margin-left: 1rem; color: #6c757d; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragments/admin-sidebar :: sidebar}"></div>
+    <main class="main-content">
+        <h1>Editar Instalacion</h1>
+
+        <div class="form-group">
+            <label>Map Key (solo lectura)</label>
+            <div class="read-only-field" th:text="${location.mapKey}"></div>
+        </div>
+
+        <div class="form-group">
+            <label>GLB Object Name (solo lectura)</label>
+            <div class="read-only-field" th:text="${location.glbObjectName}"></div>
+        </div>
+
+        <form th:action="@{/admin-panel/instalaciones/{key}/edit(key=${location.mapKey})}"
+              th:object="${command}" method="post">
+
+            <div class="form-group">
+                <label for="displayName">Nombre de visualizacion *</label>
+                <input type="text" id="displayName" th:field="*{displayName}" required="required"/>
+                <div class="error" th:if="${#fields.hasErrors('displayName')}" th:errors="*{displayName}"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Descripcion</label>
+                <textarea id="description" th:field="*{description}"></textarea>
+                <div class="error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="useDescription">Descripcion de uso</label>
+                <input type="text" id="useDescription" th:field="*{useDescription}"/>
+                <div class="error" th:if="${#fields.hasErrors('useDescription')}" th:errors="*{useDescription}"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="academicPrograms">Programas academicos</label>
+                <textarea id="academicPrograms" th:field="*{academicPrograms}"></textarea>
+                <div class="error" th:if="${#fields.hasErrors('academicPrograms')}" th:errors="*{academicPrograms}"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="floorCount">Numero de pisos</label>
+                <input type="number" id="floorCount" th:field="*{floorCount}" min="1"/>
+                <div class="error" th:if="${#fields.hasErrors('floorCount')}" th:errors="*{floorCount}"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="operationalStatus">Estado operativo</label>
+                <select id="operationalStatus" th:field="*{operationalStatus}">
+                    <option value="">-- Seleccionar --</option>
+                    <option th:each="status : ${operationalStatuses}"
+                            th:value="${status}"
+                            th:text="${status}">
+                    </option>
+                </select>
+                <div class="error" th:if="${#fields.hasErrors('operationalStatus')}" th:errors="*{operationalStatus}"></div>
+            </div>
+
+            <button type="submit" class="btn-submit">Guardar cambios</button>
+            <a class="btn-cancel" th:href="@{/admin-panel/instalaciones}">Cancelar</a>
+        </form>
+    </main>
+</body>
+</html>

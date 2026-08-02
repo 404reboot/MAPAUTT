@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav th:fragment="sidebar" class="admin-sidebar">
+    <div class="sidebar-header">
+        <h3>Panel Admin</h3>
+    </div>
+    <ul class="sidebar-nav">
+        <li>
+            <a th:href="@{/admin-panel}">Dashboard</a>
+        </li>
+        <li>
+            <a th:href="@{/admin-panel/instalaciones}">Instalaciones</a>
+        </li>
+        <li>
+            <a th:href="@{/admin-panel/areas-verdes}">Areas Verdes</a>
+        </li>
+    </ul>
+</nav>
+</body>
+</html>
