@@ -1,6 +1,7 @@
 package controller;
 
 import jakarta.servlet.http.HttpSession;
+import model.AdministratorRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,6 +9,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class LoginController {
+
+    private final AdministratorRepository administratorRepository;
+
+    public LoginController(AdministratorRepository administratorRepository) {
+        this.administratorRepository = administratorRepository;
+    }
 
     @GetMapping("/acceso")
     public String loginPage(HttpSession session) {
@@ -23,9 +30,8 @@ public class LoginController {
             @RequestParam("username") String username,
             @RequestParam("password") String password,
             HttpSession session) {
-        
-        // Simple mock credentials validation
-        if ("admin".equals(username) && "admin123".equals(password)) {
+
+        if (administratorRepository.findByUsernameAndPassword(username, password).isPresent()) {
             session.setAttribute("user", username);
             return "redirect:/admin-panel";
         }
