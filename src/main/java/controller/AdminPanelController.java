@@ -27,7 +27,7 @@ public class AdminPanelController {
             return "redirect:/acceso?error=unauthorized";
         }
         // Validation to prevent loading arbitrary strings
-        if (!"edificios".equals(section) && !"areas-verdes".equals(section)) {
+        if (!"edificios".equals(section) && !"areas-verdes".equals(section) && !"map-editor".equals(section)) {
             section = "edificios";
         }
 

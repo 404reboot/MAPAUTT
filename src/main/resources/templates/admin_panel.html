@@ -27,11 +27,11 @@
                 <div class="breadcrumb">
                     <span>Admin</span>
                     <span class="breadcrumb-separator">/</span>
-                    <span class="breadcrumb-active" th:text="${activeSection == 'edificios' ? 'Edificios' : 'Áreas Verdes'}">Sección</span>
+                    <span class="breadcrumb-active" th:text="${activeSection == 'edificios' ? 'Edificios' : (activeSection == 'areas-verdes' ? 'Áreas Verdes' : 'Editor 3D')}">Sección</span>
                 </div>
                 
                 <!-- Action Button in upper right -->
-                <button class="btn btn-primary" onclick="openAddDialog()">
+                <button th:if="${activeSection != 'map-editor'}" class="btn btn-primary" onclick="openAddDialog()">
                     <span>➕</span> Agregar
                 </button>
             </header>
@@ -39,7 +39,15 @@
             <!-- Main Scrollable Body Content -->
             <main class="content-body">
                 <!-- Dynamically replace content using Thymeleaf Fragments -->
-                <div th:replace="~{fragments/sections :: ${activeSection}}"></div>
+                <th:block th:if="${activeSection == 'edificios'}">
+                    <div th:replace="~{fragments/sections :: edificios}"></div>
+                </th:block>
+                <th:block th:if="${activeSection == 'areas-verdes'}">
+                    <div th:replace="~{fragments/sections :: areas-verdes}"></div>
+                </th:block>
+                <th:block th:if="${activeSection == 'map-editor'}">
+                    <div th:replace="~{fragments/sections :: map-editor}"></div>
+                </th:block>
             </main>
             
         </div>
