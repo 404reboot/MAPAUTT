@@ -33,7 +33,8 @@ function init() {
     camera.position.set(0, 50, 80);
 
     renderer = new THREE.WebGLRenderer({
-        antialias: true
+        antialias: true,
+        logarithmicDepthBuffer: true
     });
 
     renderer.setSize(
