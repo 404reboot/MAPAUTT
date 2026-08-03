@@ -45,13 +45,14 @@ public class AdminPanelController {
             @RequestParam("carreras") String carreras,
             @RequestParam("pisos") Integer pisos,
             @RequestParam("estado") String estado,
+            @RequestParam(value = "codigoMesh", required = false) String codigoMesh,
             HttpSession session) {
 
         if (session.getAttribute("user") == null) {
             return "redirect:/acceso?error=unauthorized";
         }
 
-        Edificio nuevoEdificio = new Edificio(null, nombre, carreras, pisos, estado);
+        Edificio nuevoEdificio = new Edificio(null, nombre, carreras, pisos, estado, codigoMesh);
         mapService.addEdificio(nuevoEdificio);
 
         return "redirect:/admin-panel?section=edificios";
@@ -63,13 +64,14 @@ public class AdminPanelController {
             @RequestParam("sector") String sector,
             @RequestParam("superficie") Double superficie,
             @RequestParam("descripcion") String descripcion,
+            @RequestParam(value = "codigoMesh", required = false) String codigoMesh,
             HttpSession session) {
 
         if (session.getAttribute("user") == null) {
             return "redirect:/acceso?error=unauthorized";
         }
 
-        AreaVerde nuevaArea = new AreaVerde(0, nombre, sector, superficie, descripcion);
+        AreaVerde nuevaArea = new AreaVerde(0, nombre, sector, superficie, descripcion, codigoMesh);
         mapService.addAreaVerde(nuevaArea);
 
         return "redirect:/admin-panel?section=areas-verdes";
@@ -82,13 +84,14 @@ public class AdminPanelController {
             @RequestParam("carreras") String carreras,
             @RequestParam("pisos") Integer pisos,
             @RequestParam("estado") String estado,
+            @RequestParam(value = "codigoMesh", required = false) String codigoMesh,
             HttpSession session) {
 
         if (session.getAttribute("user") == null) {
             return "redirect:/acceso?error=unauthorized";
         }
 
-        Edificio updatedEdificio = new Edificio(id, nombre, carreras, pisos, estado);
+        Edificio updatedEdificio = new Edificio(id, nombre, carreras, pisos, estado, codigoMesh);
         mapService.updateEdificio(updatedEdificio);
 
         return "redirect:/admin-panel?section=edificios";
@@ -101,13 +104,14 @@ public class AdminPanelController {
             @RequestParam("sector") String sector,
             @RequestParam("superficie") Double superficie,
             @RequestParam("descripcion") String descripcion,
+            @RequestParam(value = "codigoMesh", required = false) String codigoMesh,
             HttpSession session) {
 
         if (session.getAttribute("user") == null) {
             return "redirect:/acceso?error=unauthorized";
         }
 
-        AreaVerde updatedArea = new AreaVerde(id, nombre, sector, superficie, descripcion);
+        AreaVerde updatedArea = new AreaVerde(id, nombre, sector, superficie, descripcion, codigoMesh);
         mapService.updateAreaVerde(updatedArea);
 
         return "redirect:/admin-panel?section=areas-verdes";

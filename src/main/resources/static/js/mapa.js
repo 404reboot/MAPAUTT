@@ -400,16 +400,15 @@ function onClick(event) {
             object.name;
 
 
-        let identifier =
-            rawName
-            .replace('Edificio_','')
-            .replace('Area_','');
+        let identifier = rawName;
 
 
-        let type =
-            rawName.toLowerCase()
-            .includes('area')
-            ? 'area-verde'
+        let lowerName = rawName.toLowerCase();
+        let type = (lowerName.includes('area') || lowerName.includes('zona') || 
+                    lowerName.includes('cancha') || lowerName.includes('presa') || 
+                    lowerName.includes('huerta') || lowerName.includes('invernadero') ||
+                    lowerName.includes('camino') || lowerName.includes('pasillo')) 
+            ? 'area-verde' 
             : 'edificio';
 
 
@@ -427,7 +426,7 @@ function onClick(event) {
 //Formatea el nombre del objeto para mostrarlo en la tarjeta de detalles y el tooltip
 function formatName(name) {
 
-    return name.replace(
+    return name.replaceAll(
         '_',
         ' '
     );
@@ -545,7 +544,7 @@ function showDetails(type,data) {
 
 
         cardTitle.textContent =
-            `Edificio ${data.nombre}`;
+            data.nombre;
 
 
         cardBody.innerHTML = `
@@ -599,6 +598,32 @@ function showDetails(type,data) {
 
 
         cardBody.innerHTML = `
+
+            <div class="info-row">
+
+                <div class="label">
+                    Ubicación / Sector
+                </div>
+
+                <div class="value">
+                    ${data.sector || 'Campus General'}
+                </div>
+
+            </div>
+
+
+            <div class="info-row">
+
+                <div class="label">
+                    Superficie
+                </div>
+
+                <div class="value">
+                    ${data.superficie ? data.superficie + ' m²' : 'No especificada'}
+                </div>
+
+            </div>
+
 
             <div class="info-row">
 
