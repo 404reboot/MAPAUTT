@@ -14,8 +14,8 @@ public class Edificio {
     private Integer id;
     private String nombre;
     private String carreras;
-    private Integer pisos;
-    private String estado;
+    private Integer pisos; // TODO: eliminar
+    private String estado; // TODO: eliminar
     private String codigoMesh;
 
     public Edificio() {
