@@ -496,7 +496,7 @@ function fetchDetails(type,id,rawName) {
         cardTitle.textContent =
             title;
 
-
+// TODO: Cambiar mensaje
         cardBody.innerHTML = `
 
             <div class="info-row">
