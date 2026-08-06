@@ -17,6 +17,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Identificador (3D)</th>
                         <th>Nombre del Edificio</th>
                         <th>Carreras</th>
                         <th>Nro. Pisos</th>
@@ -27,6 +28,7 @@
                 <tbody>
                     <tr th:each="edificio : ${edificios}">
                         <td class="font-mono text-muted" th:text="'#' + ${edificio.id}">#1</td>
+                        <td class="font-mono" th:text="${edificio.codigoMesh}">E</td>
                         <td class="font-semibold" th:text="${edificio.nombre}">Edificio Principal</td>
                         <td>
                             <span class="badge badge-code"
@@ -40,6 +42,7 @@
                         <td class="table-actions">
                             <button class="btn-action btn-edit" 
                                     th:data-id="${edificio.id}"
+                                    th:data-codigomesh="${edificio.codigoMesh}"
                                     th:data-nombre="${edificio.nombre}"
                                     th:data-carreras="${edificio.carreras}"
                                     th:data-pisos="${edificio.pisos}"
@@ -77,6 +80,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Identificador (3D)</th>
                         <th>Nombre del Área</th>
                         <th>Sector / Ubicación</th>
                         <th>Superficie (m²)</th>
@@ -87,6 +91,7 @@
                 <tbody>
                     <tr th:each="area : ${areasVerdes}">
                         <td class="font-mono text-muted" th:text="'#' + ${area.id}">#1</td>
+                        <td class="font-mono" th:text="${area.codigoMesh}">Jardin_Norte</td>
                         <td class="font-semibold" th:text="${area.nombre}">Jardín Norte</td>
                         <td th:text="${area.sector}">Zona Norte</td>
                         <td th:text="${area.superficie} + ' m²'">120 m²</td>
@@ -96,6 +101,7 @@
                         <td class="table-actions">
                             <button class="btn-action btn-edit" 
                                     th:data-id="${area.id}"
+                                    th:data-codigomesh="${area.codigoMesh}"
                                     th:data-nombre="${area.nombre}"
                                     th:data-sector="${area.sector}"
                                     th:data-superficie="${area.superficie}"
@@ -119,6 +125,15 @@
                 </tbody>
             </table>
         </div>
+    </div>
+
+    <!-- Fragment: Editor del Mapa -->
+    <div th:fragment="map-editor" class="section-container animate-fade-in" style="text-align: center; padding: 60px 20px;">
+        <div style="font-size: 3rem; margin-bottom: 20px;">🚧</div>
+        <h2 style="font-size: 24px; font-weight: 800; color: var(--text-primary); margin-bottom: 12px;">Editor 3D en Construcción</h2>
+        <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto; line-height: 1.6;">
+            Muy pronto podrás manipular, mover y agregar nuevas mallas al entorno universitario 3D directamente desde esta interfaz, sin necesidad de usar Blender. ¡Próximamente!
+        </p>
     </div>
 
 </body>

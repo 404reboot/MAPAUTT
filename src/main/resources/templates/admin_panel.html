@@ -27,11 +27,11 @@
                 <div class="breadcrumb">
                     <span>Admin</span>
                     <span class="breadcrumb-separator">/</span>
-                    <span class="breadcrumb-active" th:text="${activeSection == 'edificios' ? 'Edificios' : 'Áreas Verdes'}">Sección</span>
+                    <span class="breadcrumb-active" th:text="${activeSection == 'edificios' ? 'Edificios' : (activeSection == 'areas-verdes' ? 'Áreas Verdes' : 'Editor 3D')}">Sección</span>
                 </div>
                 
                 <!-- Action Button in upper right -->
-                <button class="btn btn-primary" onclick="openAddDialog()">
+                <button th:if="${activeSection != 'map-editor'}" class="btn btn-primary" onclick="openAddDialog()">
                     <span>➕</span> Agregar
                 </button>
             </header>
@@ -39,7 +39,15 @@
             <!-- Main Scrollable Body Content -->
             <main class="content-body">
                 <!-- Dynamically replace content using Thymeleaf Fragments -->
-                <div th:replace="~{fragments/sections :: ${activeSection}}"></div>
+                <th:block th:if="${activeSection == 'edificios'}">
+                    <div th:replace="~{fragments/sections :: edificios}"></div>
+                </th:block>
+                <th:block th:if="${activeSection == 'areas-verdes'}">
+                    <div th:replace="~{fragments/sections :: areas-verdes}"></div>
+                </th:block>
+                <th:block th:if="${activeSection == 'map-editor'}">
+                    <div th:replace="~{fragments/sections :: map-editor}"></div>
+                </th:block>
             </main>
             
         </div>
@@ -56,8 +64,12 @@
             <!-- Conditional fields for Edificios -->
             <div th:if="${activeSection == 'edificios'}">
                 <div class="form-group">
-                    <label for="ed-nombre">Nombre del Edificio</label>
-                    <input type="text" id="ed-nombre" name="nombre" class="form-control" placeholder="Ej: F" required>
+                    <label for="ed-codigoMesh">Identificador del Mapa 3D</label>
+                    <input type="text" id="ed-codigoMesh" name="codigoMesh" class="form-control" placeholder="Ej: E" required>
+                </div>
+                <div class="form-group">
+                    <label for="ed-nombre">Nombre Público</label>
+                    <input type="text" id="ed-nombre" name="nombre" class="form-control" placeholder="Ej: Edificio Central" required>
                 </div>
                 <div class="form-group">
                     <label for="ed-carrera">Carrera / Uso</label>
@@ -79,8 +91,12 @@
             <!-- Conditional fields for Áreas Verdes -->
             <div th:if="${activeSection == 'areas-verdes'}">
                 <div class="form-group">
+                    <label for="av-codigoMesh">Identificador del Mapa 3D</label>
+                    <input type="text" id="av-codigoMesh" name="codigoMesh" class="form-control" placeholder="Ej: Jardin_Norte" required>
+                </div>
+                <div class="form-group">
                     <label for="av-nombre">Nombre del Área</label>
-                    <input type="text" id="av-nombre" name="nombre" class="form-control" placeholder="Ej: Jardín" required>
+                    <input type="text" id="av-nombre" name="nombre" class="form-control" placeholder="Ej: Jardín Principal" required>
                 </div>
                 <div class="form-group">
                     <label for="av-sector">Sector / Ubicación</label>
@@ -117,8 +133,12 @@
             <!-- Conditional fields for Edificios -->
             <div th:if="${activeSection == 'edificios'}">
                 <div class="form-group">
-                    <label for="edit-ed-nombre">Nombre del Edificio</label>
-                    <input type="text" id="edit-ed-nombre" name="nombre" class="form-control" placeholder="Ej: F" required>
+                    <label for="edit-ed-codigoMesh">Identificador del Mapa 3D</label>
+                    <input type="text" id="edit-ed-codigoMesh" name="codigoMesh" class="form-control" placeholder="Ej: E" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-ed-nombre">Nombre Público</label>
+                    <input type="text" id="edit-ed-nombre" name="nombre" class="form-control" placeholder="Ej: Edificio Central" required>
                 </div>
                 <div class="form-group">
                     <label for="edit-ed-carrera">Carrera / Uso</label>
@@ -140,8 +160,12 @@
             <!-- Conditional fields for Áreas Verdes -->
             <div th:if="${activeSection == 'areas-verdes'}">
                 <div class="form-group">
+                    <label for="edit-av-codigoMesh">Identificador del Mapa 3D</label>
+                    <input type="text" id="edit-av-codigoMesh" name="codigoMesh" class="form-control" placeholder="Ej: Jardin_Norte" required>
+                </div>
+                <div class="form-group">
                     <label for="edit-av-nombre">Nombre del Área</label>
-                    <input type="text" id="edit-av-nombre" name="nombre" class="form-control" placeholder="Ej: Jardín" required>
+                    <input type="text" id="edit-av-nombre" name="nombre" class="form-control" placeholder="Ej: Jardín Principal" required>
                 </div>
                 <div class="form-group">
                     <label for="edit-av-sector">Sector / Ubicación</label>
@@ -185,11 +209,13 @@
             document.getElementById('edit-id').value = id;
 
             if (activeSection === 'edificios') {
+                document.getElementById('edit-ed-codigoMesh').value = button.getAttribute('data-codigomesh');
                 document.getElementById('edit-ed-nombre').value = button.getAttribute('data-nombre');
                 document.getElementById('edit-ed-carrera').value = button.getAttribute('data-carreras');
                 document.getElementById('edit-ed-pisos').value = button.getAttribute('data-pisos');
                 document.getElementById('edit-ed-estado').value = button.getAttribute('data-estado');
             } else {
+                document.getElementById('edit-av-codigoMesh').value = button.getAttribute('data-codigomesh');
                 document.getElementById('edit-av-nombre').value = button.getAttribute('data-nombre');
                 document.getElementById('edit-av-sector').value = button.getAttribute('data-sector');
                 document.getElementById('edit-av-superficie').value = button.getAttribute('data-superficie');

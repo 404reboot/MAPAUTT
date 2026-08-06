@@ -1,23 +1,33 @@
 package model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "area_verde")
 public class AreaVerde {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String nombre;
     private String sector;
     private Double superficie;
     private String descripcion;
-    private double xCord;
-    private double yCord;
+    private String codigoMesh;
 
     public AreaVerde() {
     }
 
-    public AreaVerde(int id, String nombre, String sector, Double superficie, String descripcion) {
+    public AreaVerde(int id, String nombre, String sector, Double superficie, String descripcion, String codigoMesh) {
         this.id = id;
         this.nombre = nombre;
         this.sector = sector;
         this.superficie = superficie;
         this.descripcion = descripcion;
+        this.codigoMesh = codigoMesh;
     }
 
     public int getId() {
@@ -56,25 +66,15 @@ public class AreaVerde {
         return descripcion;
     }
 
-    public void setDescripcion(String tipoRiego) {
-        this.descripcion = tipoRiego;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
-	public double getxCord() {
-		return xCord;
-	}
+    public String getCodigoMesh() {
+        return codigoMesh;
+    }
 
-	public void setxCord(double xCord) {
-		this.xCord = xCord;
-	}
-
-	public double getyCord() {
-		return yCord;
-	}
-
-	public void setyCord(double yCord) {
-		this.yCord = yCord;
-	}
-
-    
+    public void setCodigoMesh(String codigoMesh) {
+        this.codigoMesh = codigoMesh;
+    }
 }

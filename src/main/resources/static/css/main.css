@@ -519,7 +519,8 @@ h1#welcome-title {
 .admin-layout {
     display: flex;
     width: 100%;
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
 }
 
 .sidebar {
@@ -633,7 +634,7 @@ h1#welcome-title {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 40px;
+    padding: 10px 40px;
 }
 
 .breadcrumb {

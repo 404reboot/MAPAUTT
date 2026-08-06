@@ -16,18 +16,29 @@ public class MapRestController {
     @Autowired
     private MapService mapService;
 
-    @GetMapping("/edificios/{nombre}")
-    public ResponseEntity<Edificio> getEdificio(@PathVariable String nombre) {
-        Edificio edificio = mapService.getEdificioByNombre(nombre);
+    @GetMapping("/edificios/{codigoMesh}")
+    public ResponseEntity<Edificio> getEdificio(@PathVariable String codigoMesh) {
+        Edificio edificio = mapService.getEdificioByCodigoMesh(codigoMesh);
         if (edificio != null) {
             return ResponseEntity.ok(edificio);
         }
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/areas-verdes/{id}")
-    public ResponseEntity<AreaVerde> getAreaVerde(@PathVariable int id) {
-        AreaVerde areaVerde = mapService.getAreaVerdeById(id);
+    @GetMapping("/areas-verdes/{identifier}")
+    public ResponseEntity<AreaVerde> getAreaVerde(@PathVariable String identifier) {
+        AreaVerde areaVerde = null;
+        try {
+            int id = Integer.parseInt(identifier);
+            areaVerde = mapService.getAreaVerdeById(id);
+        } catch (NumberFormatException e) {
+            areaVerde = mapService.getAreaVerdeByCodigoMesh(identifier);
+        }
+
+        if (areaVerde == null) {
+            areaVerde = mapService.getAreaVerdeByCodigoMesh(identifier);
+        }
+
         if (areaVerde != null) {
             return ResponseEntity.ok(areaVerde);
         }
