@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+    <!-- Unified Dynamic Modal Fragment for Adding / Editing Items -->
+    <dialog th:fragment="item-dialog" id="item-dialog">
+        <div class="dialog-header">
+            <h3 id="dialog-title">Agregar Elemento</h3>
+            <button class="btn-close-dialog" onclick="closeItemDialog()" aria-label="Cerrar">
+                <svg class="icon"><use th:href="@{/images/icons.svg#icon-x}"></use></svg>
+            </button>
+        </div>
+        
+        <form id="item-form" class="dialog-form" method="POST" action="">
+            <div class="dialog-body">
+                <!-- Hidden field for ID (empty on Add, populated on Edit) -->
+                <input type="hidden" id="item-id" name="id">
+
+                <!-- Conditional fields for Edificios -->
+                <div th:if="${activeSection == 'edificios'}">
+                    <div class="form-group">
+                        <label for="ed-codigoMesh">Identificador del Mapa 3D</label>
+                        <input type="text" id="ed-codigoMesh" name="codigoMesh" class="form-control" placeholder="Ej: E" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ed-nombre">Nombre Público</label>
+                        <input type="text" id="ed-nombre" name="nombre" class="form-control" placeholder="Ej: Edificio Central" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ed-carrera">Carrera / Uso</label>
+                        <input type="text" id="ed-carrera" name="carreras" class="form-control" placeholder="Ej: Sistemas" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ed-pisos">Número de Pisos</label>
+                        <input type="number" id="ed-pisos" name="pisos" class="form-control" min="1" max="20" placeholder="Ej: 3" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ed-estado">Estado</label>
+                        <select id="ed-estado" name="estado" class="form-control">
+                            <option value="Activo">Activo</option>
+                            <option value="En Mantenimiento">En Mantenimiento</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Conditional fields for Áreas Verdes -->
+                <div th:if="${activeSection == 'areas-verdes'}">
+                    <div class="form-group">
+                        <label for="av-codigoMesh">Identificador del Mapa 3D</label>
+                        <input type="text" id="av-codigoMesh" name="codigoMesh" class="form-control" placeholder="Ej: Jardin_Norte" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="av-nombre">Nombre del Área</label>
+                        <input type="text" id="av-nombre" name="nombre" class="form-control" placeholder="Ej: Jardín Principal" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="av-sector">Sector / Ubicación</label>
+                        <input type="text" id="av-sector" name="sector" class="form-control" placeholder="Ej: Zona Este" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="av-superficie">Superficie (m²)</label>
+                        <input type="number" id="av-superficie" name="superficie" step="0.1" class="form-control" placeholder="Ej: 450.5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="av-descripcion">Descripción</label>
+                        <textarea id="av-descripcion" name="descripcion" class="form-control" placeholder="" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dialog-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeItemDialog()">Cancelar</button>
+                <button type="submit" id="dialog-submit-btn" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </dialog>
+
+</body>
+</html>
