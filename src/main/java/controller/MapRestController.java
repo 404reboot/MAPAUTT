@@ -9,12 +9,23 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api")
 public class MapRestController {
 
     @Autowired
     private MapService mapService;
+
+    @GetMapping("/map-data")
+    public ResponseEntity<Map<String, Object>> getMapData() {
+        Map<String, Object> data = new HashMap<>();
+        data.put("edificios", mapService.getEdificios());
+        data.put("areasVerdes", mapService.getAreasVerdes());
+        return ResponseEntity.ok(data);
+    }
 
     @GetMapping("/edificios/{codigoMesh}")
     public ResponseEntity<Edificio> getEdificio(@PathVariable String codigoMesh) {
@@ -45,3 +56,4 @@ public class MapRestController {
         return ResponseEntity.notFound().build();
     }
 }
+

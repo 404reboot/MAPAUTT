@@ -9,6 +9,7 @@ let interactiveObjects = [];
 let hoveredObject = null;
 let selectedObject = null;
 let composer, outlinePass;
+let dbItemsMap = new Map();
 
 let touchStartX = 0;
 let touchStartY = 0;
@@ -19,6 +20,86 @@ const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 
 const container = document.getElementById('webgl-container');
 const tooltip = document.getElementById('map-tooltip');
 const detailsCard = document.getElementById('details-card');
+
+function normalizeKey(str) {
+    if (!str) return '';
+    return str.toString()
+              .toLowerCase()
+              .trim()
+              .replace(/[\s\-_]+/g, '_');
+}
+
+function loadDbMapData() {
+    fetch('/api/map-data')
+        .then(res => res.json())
+        .then(data => {
+            dbItemsMap.clear();
+            if (data.edificios) {
+                data.edificios.forEach(item => {
+                    const entry = { type: 'edificio', data: item, nombre: item.nombre };
+                    if (item.codigoMesh) {
+                        dbItemsMap.set(normalizeKey(item.codigoMesh), entry);
+                    }
+                    if (item.nombre) {
+                        dbItemsMap.set(normalizeKey(item.nombre), entry);
+                    }
+                });
+            }
+            if (data.areasVerdes) {
+                data.areasVerdes.forEach(item => {
+                    const entry = { type: 'area-verde', data: item, nombre: item.nombre };
+                    if (item.codigoMesh) {
+                        dbItemsMap.set(normalizeKey(item.codigoMesh), entry);
+                    }
+                    if (item.nombre) {
+                        dbItemsMap.set(normalizeKey(item.nombre), entry);
+                    }
+                });
+            }
+        })
+        .catch(err => console.error('Error al cargar datos del mapa desde BD:', err));
+}
+
+function findDbItemForMesh(object) {
+    if (!object || !dbItemsMap || dbItemsMap.size === 0) return null;
+    
+    let current = object;
+    const candidateNames = [];
+
+    while (current && current !== scene) {
+        if (current.name) {
+            candidateNames.push(current.name);
+        }
+        current = current.parent;
+    }
+
+    for (let rawName of candidateNames) {
+        let key = normalizeKey(rawName);
+        if (dbItemsMap.has(key)) {
+            return dbItemsMap.get(key);
+        }
+
+        let strippedNumber = rawName.replace(/_[0-9]+$/, '').replace(/_+$/, '');
+        let keyStripped = normalizeKey(strippedNumber);
+        if (dbItemsMap.has(keyStripped)) {
+            return dbItemsMap.get(keyStripped);
+        }
+
+        let noPrefix = rawName.replace(/^(Edificio_|Zona_|Area_|Caseta_|Almacen_|Laboratorio_|Cafeteria_|Invernaderos_|Huerta_|Presa_|Cancha_|Biblioteca_|Estacionamiento_|Camino_|Pasillos_)/i, '');
+        let keyNoPrefix = normalizeKey(noPrefix);
+        if (dbItemsMap.has(keyNoPrefix)) {
+            return dbItemsMap.get(keyNoPrefix);
+        }
+
+        let noPrefixStripped = noPrefix.replace(/_[0-9]+$/, '').replace(/_+$/, '');
+        let keyNoPrefixStripped = normalizeKey(noPrefixStripped);
+        if (dbItemsMap.has(keyNoPrefixStripped)) {
+            return dbItemsMap.get(keyNoPrefixStripped);
+        }
+    }
+
+    return null;
+}
 
 // Actualiza los objetos iluminados con el contorno de selección (manteniendo el objeto activo y el hovered)
 function updateOutlines() {
@@ -39,6 +120,8 @@ animate();
 
 //Inicializa la escena, la cámara, el renderizador y los controles de Three.js
 function init() {
+
+    loadDbMapData();
 
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x807f7f);
@@ -324,68 +407,32 @@ function onPointerMove(event) {
         interactiveObjects
     );
 
+    if (intersects.length > 0) {
+        const object = intersects[0].object;
+        const dbItem = findDbItemForMesh(object);
 
-    if(intersects.length > 0) {
+        if (dbItem) {
+            const groupObj = getGroupObject(object);
+            if (hoveredObject !== groupObj) {
+                hoveredObject = groupObj;
+                updateOutlines();
+            }
 
-        const object = getGroupObject(
-            intersects[0].object
-        );
-
-
-        if(hoveredObject !== object) {
-
-            hoveredObject = object;
-
-            updateOutlines();
-
+            tooltip.textContent = dbItem.nombre;
+            tooltip.style.left = `${event.clientX + 15}px`;
+            tooltip.style.top = `${event.clientY + 15}px`;
+            tooltip.classList.add('visible');
+            document.body.style.cursor = 'pointer';
+            return;
         }
-
-
-        const cleanName = formatName(
-            object.name
-        );
-
-
-        tooltip.textContent = cleanName;
-
-        tooltip.style.left =
-            `${event.clientX + 15}px`;
-
-        tooltip.style.top =
-            `${event.clientY + 15}px`;
-
-
-        tooltip.classList.add(
-            'visible'
-        );
-
-
-        document.body.style.cursor =
-            'pointer';
-
-
-    } else {
-
-
-        if(hoveredObject) {
-
-            hoveredObject = null;
-
-            updateOutlines();
-
-        }
-
-
-        tooltip.classList.remove(
-            'visible'
-        );
-
-
-        document.body.style.cursor =
-            'default';
-
     }
 
+    if (hoveredObject) {
+        hoveredObject = null;
+        updateOutlines();
+    }
+    tooltip.classList.remove('visible');
+    document.body.style.cursor = 'default';
 }
 
 
@@ -515,44 +562,21 @@ function onPointerUp(event) {
         );
 
 
-    if(intersects.length > 0) {
+    if (intersects.length > 0) {
+        const object = intersects[0].object;
+        const dbItem = findDbItemForMesh(object);
 
-
-        const object =
-            getGroupObject(
-                intersects[0].object
-            );
-
-
-        selectedObject = object;
-        updateOutlines();
-
-
-        const rawName =
-            object.name;
-
-
-        let identifier = rawName;
-
-
-        let lowerName = rawName.toLowerCase();
-        let type = (lowerName.includes('area') || lowerName.includes('zona') || 
-                    lowerName.includes('cancha') || lowerName.includes('presa') || 
-                    lowerName.includes('huerta') || lowerName.includes('invernadero') ||
-                    lowerName.includes('camino') || lowerName.includes('pasillo')) 
-            ? 'area-verde' 
-            : 'edificio';
-
-
-        fetchDetails(
-            type,
-            identifier,
-            rawName
-        );
-
+        if (dbItem) {
+            const groupObj = getGroupObject(object);
+            selectedObject = groupObj;
+            updateOutlines();
+            showDetails(dbItem.type, dbItem.data);
+            return;
+        }
     }
 
 }
+
 
 
 //Formatea el nombre del objeto para mostrarlo en la tarjeta de detalles y el tooltip
