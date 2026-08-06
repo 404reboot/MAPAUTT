@@ -1,7 +1,9 @@
 package controller;
 
+import model.Animal;
 import model.AreaVerde;
 import model.Edificio;
+import model.Plant;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,7 +29,7 @@ public class AdminPanelController {
             return "redirect:/acceso?error=unauthorized";
         }
         // Validation to prevent loading arbitrary strings
-        if (!"edificios".equals(section) && !"areas-verdes".equals(section) && !"map-editor".equals(section)) {
+        if (!"edificios".equals(section) && !"areas-verdes".equals(section) && !"map-editor".equals(section) && !"seres-vivos".equals(section)) {
             section = "edificios";
         }
 
@@ -35,6 +37,8 @@ public class AdminPanelController {
 
         model.addAttribute("edificios", mapService.getEdificios());
         model.addAttribute("areasVerdes", mapService.getAreasVerdes());
+        model.addAttribute("animales", mapService.getAnimales());
+        model.addAttribute("plantas", mapService.getPlantas());
 
         return "admin_panel";
     }
@@ -75,6 +79,53 @@ public class AdminPanelController {
         return "redirect:/admin-panel?section=areas-verdes";
     }
 
+    @PostMapping("/admin-panel/add-animal")
+    public String addAnimal(
+            @RequestParam("nombre") String nombre,
+            @RequestParam(value = "reino", defaultValue = "Animalia") String reino,
+            @RequestParam(value = "clase", required = false) String clase,
+            @RequestParam(value = "subclase", required = false) String subclase,
+            @RequestParam(value = "orden", required = false) String orden,
+            @RequestParam(value = "familia", required = false) String familia,
+            @RequestParam(value = "subfamilia", required = false) String subfamilia,
+            @RequestParam(value = "genero", required = false) String genero,
+            @RequestParam(value = "especie", required = false) String especie,
+            @RequestParam(value = "assetId", required = false) String assetId,
+            HttpSession session) {
+
+        if (session.getAttribute("user") == null) {
+            return "redirect:/acceso?error=unauthorized";
+        }
+
+        Animal nuevoAnimal = new Animal(null, nombre, reino, clase, subclase, orden, familia, subfamilia, genero, especie, assetId);
+        mapService.addAnimal(nuevoAnimal);
+
+        return "redirect:/admin-panel?section=seres-vivos";
+    }
+
+    @PostMapping("/admin-panel/add-plant")
+    public String addPlant(
+            @RequestParam("nombre") String nombre,
+            @RequestParam(value = "reino", defaultValue = "Plantae") String reino,
+            @RequestParam(value = "division", required = false) String division,
+            @RequestParam(value = "clase", required = false) String clase,
+            @RequestParam(value = "orden", required = false) String orden,
+            @RequestParam(value = "familia", required = false) String familia,
+            @RequestParam(value = "genero", required = false) String genero,
+            @RequestParam(value = "especie", required = false) String especie,
+            @RequestParam(value = "assetId", required = false) String assetId,
+            HttpSession session) {
+
+        if (session.getAttribute("user") == null) {
+            return "redirect:/acceso?error=unauthorized";
+        }
+
+        Plant nuevaPlanta = new Plant(null, nombre, reino, division, clase, orden, familia, genero, especie, assetId);
+        mapService.addPlant(nuevaPlanta);
+
+        return "redirect:/admin-panel?section=seres-vivos";
+    }
+
     @PostMapping("/admin-panel/edit-edificio")
     public String editEdificio(
             @RequestParam("id") Integer id,
@@ -113,6 +164,55 @@ public class AdminPanelController {
         return "redirect:/admin-panel?section=areas-verdes";
     }
 
+    @PostMapping("/admin-panel/edit-animal")
+    public String editAnimal(
+            @RequestParam("id") Integer id,
+            @RequestParam("nombre") String nombre,
+            @RequestParam(value = "reino", defaultValue = "Animalia") String reino,
+            @RequestParam(value = "clase", required = false) String clase,
+            @RequestParam(value = "subclase", required = false) String subclase,
+            @RequestParam(value = "orden", required = false) String orden,
+            @RequestParam(value = "familia", required = false) String familia,
+            @RequestParam(value = "subfamilia", required = false) String subfamilia,
+            @RequestParam(value = "genero", required = false) String genero,
+            @RequestParam(value = "especie", required = false) String especie,
+            @RequestParam(value = "assetId", required = false) String assetId,
+            HttpSession session) {
+
+        if (session.getAttribute("user") == null) {
+            return "redirect:/acceso?error=unauthorized";
+        }
+
+        Animal updatedAnimal = new Animal(id, nombre, reino, clase, subclase, orden, familia, subfamilia, genero, especie, assetId);
+        mapService.updateAnimal(updatedAnimal);
+
+        return "redirect:/admin-panel?section=seres-vivos";
+    }
+
+    @PostMapping("/admin-panel/edit-plant")
+    public String editPlant(
+            @RequestParam("id") Integer id,
+            @RequestParam("nombre") String nombre,
+            @RequestParam(value = "reino", defaultValue = "Plantae") String reino,
+            @RequestParam(value = "division", required = false) String division,
+            @RequestParam(value = "clase", required = false) String clase,
+            @RequestParam(value = "orden", required = false) String orden,
+            @RequestParam(value = "familia", required = false) String familia,
+            @RequestParam(value = "genero", required = false) String genero,
+            @RequestParam(value = "especie", required = false) String especie,
+            @RequestParam(value = "assetId", required = false) String assetId,
+            HttpSession session) {
+
+        if (session.getAttribute("user") == null) {
+            return "redirect:/acceso?error=unauthorized";
+        }
+
+        Plant updatedPlant = new Plant(id, nombre, reino, division, clase, orden, familia, genero, especie, assetId);
+        mapService.updatePlant(updatedPlant);
+
+        return "redirect:/admin-panel?section=seres-vivos";
+    }
+
     @PostMapping("/admin-panel/delete-edificio")
     public String deleteEdificio(@RequestParam("id") Integer id, HttpSession session) {
         if (session.getAttribute("user") == null) {
@@ -130,4 +230,23 @@ public class AdminPanelController {
         mapService.deleteAreaVerde(id);
         return "redirect:/admin-panel?section=areas-verdes";
     }
+
+    @PostMapping("/admin-panel/delete-animal")
+    public String deleteAnimal(@RequestParam("id") Integer id, HttpSession session) {
+        if (session.getAttribute("user") == null) {
+            return "redirect:/acceso?error=unauthorized";
+        }
+        mapService.deleteAnimal(id);
+        return "redirect:/admin-panel?section=seres-vivos";
+    }
+
+    @PostMapping("/admin-panel/delete-plant")
+    public String deletePlant(@RequestParam("id") Integer id, HttpSession session) {
+        if (session.getAttribute("user") == null) {
+            return "redirect:/acceso?error=unauthorized";
+        }
+        mapService.deletePlant(id);
+        return "redirect:/admin-panel?section=seres-vivos";
+    }
 }
+
