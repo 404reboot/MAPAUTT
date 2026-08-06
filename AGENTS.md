@@ -8,17 +8,17 @@ MAPAUTT is an interactive campus map web application built with **Java 25**, **S
 - **Database Management**: MariaDB is managed **externally** by the developer on `localhost:3306` (database: `mapavutt`, user: `root`). Agents should assume the database server is already running when executing tests or running the application.
 
 ## Directory & Package Structure
-The primary Spring Boot application is located in the `./MAPAUTT` directory.
+The primary Spring Boot application is located in the current workspace directory.
 
 - Root level:
   - `flake.nix`: Development environment definition.
   - `mariadb_cmd.md`: MariaDB startup & shutdown reference commands.
   - `AGENTS.md`: Agent guidelines and instructions.
-- Subdirectory `./MAPAUTT/src/main/java`:
+- Subdirectory `src/main/java`:
   - `app/`: Contains application entry point (`Main.java`).
   - `controller/`: Spring controllers, REST endpoints, and service logic (`AdminPanelController`, `LoginController`, `MapRestController`, `WelcomeController`, `MapService`).
   - `model/`: Entity definitions and Spring Data JPA Repositories (`Administrator`, `AdministratorRepository`, `AreaVerde`, `Edificio`).
-- Subdirectory `./MAPAUTT/src/main/resources`:
+- Subdirectory `src/main/resources`:
   - `application.properties`: Configuration settings.
   - `templates/`: Thymeleaf HTML views (`admin_panel.html`, `login.html`, `mapa.html`, `welcome.html`, and `fragments/`).
   - `static/`: Static assets (CSS, JS, images).
@@ -31,23 +31,23 @@ The primary Spring Boot application is located in the `./MAPAUTT` directory.
 5. **CSS Modularization**: CSS styles must also be modularized and logically structured in `src/main/resources/static/` (e.g. component/page specific stylesheets) rather than written as monolithic or unorganized style blocks.
 
 ## Common Commands
-All Maven commands should be run from inside the `./MAPAUTT` directory.
+All Maven commands should be run directly from the project root directory.
 
 - **Build Project**:
   ```bash
-  cd MAPAUTT && ./mvnw clean compile
+  ./mvnw clean compile
   ```
 - **Package Application**:
   ```bash
-  cd MAPAUTT && ./mvnw clean package
+  ./mvnw clean package
   ```
 - **Run Spring Boot App**:
   ```bash
-  cd MAPAUTT && ./mvnw spring-boot:run
+  ./mvnw spring-boot:run
   ```
 - **Run Tests**:
   ```bash
-  cd MAPAUTT && ./mvnw test
+  ./mvnw test
   ```
 
 ## Database Settings (`application.properties`)
