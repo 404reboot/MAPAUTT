@@ -86,6 +86,9 @@
 }
 
 .sidebar-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     padding-top: 20px;
     border-top: 1px solid var(--outline-variant);
     padding: 20px 12px 0 12px;
@@ -104,6 +107,18 @@
 
 .back-link:hover {
     color: var(--primary);
+}
+
+.back-link-danger {
+    color: var(--danger);
+}
+
+.back-link-danger:hover {
+    color: var(--danger-dark);
+}
+
+.back-link-danger .icon {
+    stroke: var(--danger);
 }
 
 /* Main Workspace & Navbar */
@@ -238,6 +253,14 @@
 .btn-action:hover {
     background: var(--surface-variant);
     transform: scale(1.1);
+}
+
+.btn-delete .icon {
+    stroke: var(--danger);
+}
+
+.btn-delete:hover {
+    background: var(--danger-light);
 }
 
 /* Modals & Dialogs (Centered with Internal Scroll) */

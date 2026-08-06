@@ -222,6 +222,40 @@ body.centered-layout::after {
     transform: translateY(-1px);
 }
 
+.btn-danger {
+    background: var(--danger);
+    color: #ffffff;
+}
+
+.btn-danger:hover {
+    background: var(--danger-dark);
+    transform: translateY(-1px);
+}
+
+.dialog-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dialog-icon-danger {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--danger-light);
+    color: var(--danger);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.dialog-icon-danger .icon {
+    width: 20px;
+    height: 20px;
+    stroke: var(--danger);
+}
+
 /* Badges & Alerts */
 .badge {
     display: inline-flex;

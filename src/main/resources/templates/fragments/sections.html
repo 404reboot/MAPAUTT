@@ -47,12 +47,12 @@
                                     th:data-nombre="${edificio.nombre}"
                                     onclick="deleteItem(this.getAttribute('data-id'), this.getAttribute('data-nombre'))" 
                                     title="Eliminar">
-                                <svg class="icon" style="stroke: var(--danger);"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
+                                <svg class="icon"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
                             </button>
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(edificios)}">
-                        <td colspan="6" class="text-center text-muted py-8">No hay edificios registrados.</td>
+                        <td colspan="5" class="text-center text-muted py-8">No hay edificios registrados.</td>
                     </tr>
                 </tbody>
             </table>
@@ -106,7 +106,7 @@
                                     th:data-nombre="${area.nombre}"
                                     onclick="deleteItem(this.getAttribute('data-id'), this.getAttribute('data-nombre'))" 
                                     title="Eliminar">
-                                <svg class="icon" style="stroke: var(--danger);"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
+                                <svg class="icon"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
                             </button>
                         </td>
                     </tr>

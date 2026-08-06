@@ -54,8 +54,9 @@
         </div>
     </div>
 
-    <!-- Reusable Dynamic Modal Fragment -->
+    <!-- Reusable Dynamic Modal Fragments -->
     <div th:replace="~{fragments/modal :: item-dialog}"></div>
+    <div th:replace="~{fragments/modal :: confirm-delete-dialog}"></div>
 
     <!-- Dialog JS Functionality -->
     <script th:inline="javascript">
@@ -113,26 +114,23 @@
         }
 
         function deleteItem(id, nombre) {
-            const confirmMessage = activeSection === 'edificios' 
-                ? `¿Seguro que deseas eliminar el edificio: ${nombre}?`
-                : `¿Seguro que deseas eliminar el área verde: ${nombre}?`;
+            const dialog = document.getElementById('confirm-delete-dialog');
+            const form = document.getElementById('delete-form');
+            document.getElementById('delete-item-id').value = id;
 
-            if (confirm(confirmMessage)) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = activeSection === 'edificios' 
-                    ? /*[[@{/admin-panel/delete-edificio}]]*/ '/admin-panel/delete-edificio' 
-                    : /*[[@{/admin-panel/delete-area-verde}]]*/ '/admin-panel/delete-area-verde';
-                
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'id';
-                input.value = id;
-                
-                form.appendChild(input);
-                document.body.appendChild(form);
-                form.submit();
-            }
+            const itemType = activeSection === 'edificios' ? 'el edificio' : 'el área verde';
+            document.getElementById('delete-confirm-message').textContent = `¿Seguro que deseas eliminar ${itemType} "${nombre}"?`;
+
+            form.action = activeSection === 'edificios' 
+                ? /*[[@{/admin-panel/delete-edificio}]]*/ '/admin-panel/delete-edificio' 
+                : /*[[@{/admin-panel/delete-area-verde}]]*/ '/admin-panel/delete-area-verde';
+
+            dialog.showModal();
+        }
+
+        function closeConfirmDeleteDialog() {
+            const dialog = document.getElementById('confirm-delete-dialog');
+            dialog.close();
         }
         /*]]>*/
     </script>

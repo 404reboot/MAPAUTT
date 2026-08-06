@@ -41,12 +41,12 @@
             </ul>
         </nav>
 
-        <div class="sidebar-footer" style="display: flex; flex-direction: column; gap: 12px;">
+        <div class="sidebar-footer">
             <a th:href="@{/}" class="back-link">
                 <svg class="icon"><use th:href="@{/images/icons.svg#icon-arrow-left}"></use></svg> Volver al Inicio
             </a>
-            <a th:href="@{/logout}" class="back-link" style="color: #f87171;">
-                <svg class="icon" style="stroke: #f87171;"><use th:href="@{/images/icons.svg#icon-logout}"></use></svg> Cerrar Sesión
+            <a th:href="@{/logout}" class="back-link back-link-danger">
+                <svg class="icon"><use th:href="@{/images/icons.svg#icon-logout}"></use></svg> Cerrar Sesión
             </a>
         </div>
     </aside>
