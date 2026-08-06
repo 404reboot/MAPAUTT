@@ -49,14 +49,14 @@
                                     th:data-estado="${edificio.estado}"
                                     onclick="openEditDialog(this)" 
                                     title="Editar">
-                                ✏️
+                                <svg class="icon"><use th:href="@{/images/icons.svg#icon-edit}"></use></svg>
                             </button>
                             <button class="btn-action btn-delete" 
                                     th:data-id="${edificio.id}"
                                     th:data-nombre="${edificio.nombre}"
                                     onclick="deleteItem(this.getAttribute('data-id'), this.getAttribute('data-nombre'))" 
                                     title="Eliminar">
-                                🗑️
+                                <svg class="icon" style="stroke: var(--danger);"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
                             </button>
                         </td>
                     </tr>
@@ -108,14 +108,14 @@
                                     th:data-descripcion="${area.descripcion}"
                                     onclick="openEditDialog(this)" 
                                     title="Editar">
-                                ✏️
+                                <svg class="icon"><use th:href="@{/images/icons.svg#icon-edit}"></use></svg>
                             </button>
                             <button class="btn-action btn-delete" 
                                     th:data-id="${area.id}"
                                     th:data-nombre="${area.nombre}"
                                     onclick="deleteItem(this.getAttribute('data-id'), this.getAttribute('data-nombre'))" 
                                     title="Eliminar">
-                                🗑️
+                                <svg class="icon" style="stroke: var(--danger);"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
                             </button>
                         </td>
                     </tr>

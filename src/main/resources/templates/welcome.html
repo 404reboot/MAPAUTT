@@ -27,11 +27,15 @@
                     <nav class="welcome-actions" aria-label="Accesos principales">
                         <a th:href="@{/mapa}" class="btn btn-primary">
                             <span>Explorar el mapa</span>
-                            <span class="btn-arrow" aria-hidden="true">→</span>
+                            <span class="btn-arrow" aria-hidden="true">
+                            <svg class="icon"><use th:href="@{/images/icons.svg#icon-arrow-right}"></use></svg>
+                            </span>
                         </a>
                         <a th:href="@{/admin-panel}" class="btn btn-secondary">
                             <span>Panel administrativo</span>
-                            <span class="btn-arrow" aria-hidden="true">→</span>
+                            <span class="btn-arrow" aria-hidden="true">
+                            <svg class="icon"><use th:href="@{/images/icons.svg#icon-arrow-right}"></use></svg>
+                            </span>
                         </a>
                     </nav>
                 </div>

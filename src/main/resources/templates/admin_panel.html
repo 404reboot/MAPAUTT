@@ -12,6 +12,7 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
 <body>
 
@@ -32,7 +33,7 @@
                 
                 <!-- Action Button in upper right -->
                 <button th:if="${activeSection != 'map-editor'}" class="btn btn-primary" onclick="openAddDialog()">
-                    <span>➕</span> Agregar
+                    <svg class="icon"><use th:href="@{/images/icons.svg#icon-plus}"></use></svg> Agregar
                 </button>
             </header>
 
@@ -57,58 +58,60 @@
     <dialog id="add-dialog">
         <div class="dialog-header">
             <h3 th:text="${activeSection == 'edificios' ? 'Agregar Nuevo Edificio' : 'Agregar Nueva Área Verde'}">Agregar Elemento</h3>
-            <button class="btn-close-dialog" onclick="closeAddDialog()">&times;</button>
+            <button class="btn-close-dialog" onclick="closeAddDialog()" aria-label="Cerrar"><svg class="icon"><use th:href="@{/images/icons.svg#icon-x}"></use></svg></button>
         </div>
         
-        <form id="add-form" method="POST" th:action="@{${activeSection == 'edificios' ? '/admin-panel/add-edificio' : '/admin-panel/add-area-verde'}}">
-            <!-- Conditional fields for Edificios -->
-            <div th:if="${activeSection == 'edificios'}">
-                <div class="form-group">
-                    <label for="ed-codigoMesh">Identificador del Mapa 3D</label>
-                    <input type="text" id="ed-codigoMesh" name="codigoMesh" class="form-control" placeholder="Ej: E" required>
+        <form id="add-form" class="dialog-form" method="POST" th:action="@{${activeSection == 'edificios' ? '/admin-panel/add-edificio' : '/admin-panel/add-area-verde'}}">
+            <div class="dialog-body">
+                <!-- Conditional fields for Edificios -->
+                <div th:if="${activeSection == 'edificios'}">
+                    <div class="form-group">
+                        <label for="ed-codigoMesh">Identificador del Mapa 3D</label>
+                        <input type="text" id="ed-codigoMesh" name="codigoMesh" class="form-control" placeholder="Ej: E" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ed-nombre">Nombre Público</label>
+                        <input type="text" id="ed-nombre" name="nombre" class="form-control" placeholder="Ej: Edificio Central" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ed-carrera">Carrera / Uso</label>
+                        <input type="text" id="ed-carrera" name="carreras" class="form-control" placeholder="Ej: Sistemas" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ed-pisos">Número de Pisos</label>
+                        <input type="number" id="ed-pisos" name="pisos" class="form-control" min="1" max="20" placeholder="Ej: 3" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ed-estado">Estado</label>
+                        <select id="ed-estado" name="estado" class="form-control">
+                            <option value="Activo">Activo</option>
+                            <option value="En Mantenimiento">En Mantenimiento</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="ed-nombre">Nombre Público</label>
-                    <input type="text" id="ed-nombre" name="nombre" class="form-control" placeholder="Ej: Edificio Central" required>
-                </div>
-                <div class="form-group">
-                    <label for="ed-carrera">Carrera / Uso</label>
-                    <input type="text" id="ed-carrera" name="carreras" class="form-control" placeholder="Ej: Sistemas" required>
-                </div>
-                <div class="form-group">
-                    <label for="ed-pisos">Número de Pisos</label>
-                    <input type="number" id="ed-pisos" name="pisos" class="form-control" min="1" max="20" placeholder="Ej: 3" required>
-                </div>
-                <div class="form-group">
-                    <label for="ed-estado">Estado</label>
-                    <select id="ed-estado" name="estado" class="form-control">
-                        <option value="Activo">Activo</option>
-                        <option value="En Mantenimiento">En Mantenimiento</option>
-                    </select>
-                </div>
-            </div>
 
-            <!-- Conditional fields for Áreas Verdes -->
-            <div th:if="${activeSection == 'areas-verdes'}">
-                <div class="form-group">
-                    <label for="av-codigoMesh">Identificador del Mapa 3D</label>
-                    <input type="text" id="av-codigoMesh" name="codigoMesh" class="form-control" placeholder="Ej: Jardin_Norte" required>
-                </div>
-                <div class="form-group">
-                    <label for="av-nombre">Nombre del Área</label>
-                    <input type="text" id="av-nombre" name="nombre" class="form-control" placeholder="Ej: Jardín Principal" required>
-                </div>
-                <div class="form-group">
-                    <label for="av-sector">Sector / Ubicación</label>
-                    <input type="text" id="av-sector" name="sector" class="form-control" placeholder="Ej: Zona Este" required>
-                </div>
-                <div class="form-group">
-                    <label for="av-superficie">Superficie (m²)</label>
-                    <input type="number" id="av-superficie" name="superficie" step="0.1" class="form-control" placeholder="Ej: 450.5" required>
-                </div>
-                <div class="form-group">
-                    <label for="av-descripcion">Descripción</label>
-                    <textarea id="av-descripcion" name="descripcion" class="form-control" placeholder="" rows="3"></textarea>
+                <!-- Conditional fields for Áreas Verdes -->
+                <div th:if="${activeSection == 'areas-verdes'}">
+                    <div class="form-group">
+                        <label for="av-codigoMesh">Identificador del Mapa 3D</label>
+                        <input type="text" id="av-codigoMesh" name="codigoMesh" class="form-control" placeholder="Ej: Jardin_Norte" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="av-nombre">Nombre del Área</label>
+                        <input type="text" id="av-nombre" name="nombre" class="form-control" placeholder="Ej: Jardín Principal" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="av-sector">Sector / Ubicación</label>
+                        <input type="text" id="av-sector" name="sector" class="form-control" placeholder="Ej: Zona Este" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="av-superficie">Superficie (m²)</label>
+                        <input type="number" id="av-superficie" name="superficie" step="0.1" class="form-control" placeholder="Ej: 450.5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="av-descripcion">Descripción</label>
+                        <textarea id="av-descripcion" name="descripcion" class="form-control" placeholder="" rows="3"></textarea>
+                    </div>
                 </div>
             </div>
 
@@ -123,61 +126,63 @@
     <dialog id="edit-dialog">
         <div class="dialog-header">
             <h3 th:text="${activeSection == 'edificios' ? 'Editar Edificio' : 'Editar Área Verde'}">Editar Elemento</h3>
-            <button class="btn-close-dialog" onclick="closeEditDialog()">&times;</button>
+            <button class="btn-close-dialog" onclick="closeEditDialog()" aria-label="Cerrar"><svg class="icon"><use th:href="@{/images/icons.svg#icon-x}"></use></svg></button>
         </div>
         
-        <form id="edit-form" method="POST" th:action="@{${activeSection == 'edificios' ? '/admin-panel/edit-edificio' : '/admin-panel/edit-area-verde'}}">
-            <!-- Hidden field for ID -->
-            <input type="hidden" id="edit-id" name="id">
+        <form id="edit-form" class="dialog-form" method="POST" th:action="@{${activeSection == 'edificios' ? '/admin-panel/edit-edificio' : '/admin-panel/edit-area-verde'}}">
+            <div class="dialog-body">
+                <!-- Hidden field for ID -->
+                <input type="hidden" id="edit-id" name="id">
 
-            <!-- Conditional fields for Edificios -->
-            <div th:if="${activeSection == 'edificios'}">
-                <div class="form-group">
-                    <label for="edit-ed-codigoMesh">Identificador del Mapa 3D</label>
-                    <input type="text" id="edit-ed-codigoMesh" name="codigoMesh" class="form-control" placeholder="Ej: E" required>
+                <!-- Conditional fields for Edificios -->
+                <div th:if="${activeSection == 'edificios'}">
+                    <div class="form-group">
+                        <label for="edit-ed-codigoMesh">Identificador del Mapa 3D</label>
+                        <input type="text" id="edit-ed-codigoMesh" name="codigoMesh" class="form-control" placeholder="Ej: E" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-ed-nombre">Nombre Público</label>
+                        <input type="text" id="edit-ed-nombre" name="nombre" class="form-control" placeholder="Ej: Edificio Central" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-ed-carrera">Carrera / Uso</label>
+                        <input type="text" id="edit-ed-carrera" name="carreras" class="form-control" placeholder="Ej: Sistemas" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-ed-pisos">Número de Pisos</label>
+                        <input type="number" id="edit-ed-pisos" name="pisos" class="form-control" min="1" max="20" placeholder="Ej: 3" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-ed-estado">Estado</label>
+                        <select id="edit-ed-estado" name="estado" class="form-control">
+                            <option value="Activo">Activo</option>
+                            <option value="En Mantenimiento">En Mantenimiento</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="edit-ed-nombre">Nombre Público</label>
-                    <input type="text" id="edit-ed-nombre" name="nombre" class="form-control" placeholder="Ej: Edificio Central" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit-ed-carrera">Carrera / Uso</label>
-                    <input type="text" id="edit-ed-carrera" name="carreras" class="form-control" placeholder="Ej: Sistemas" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit-ed-pisos">Número de Pisos</label>
-                    <input type="number" id="edit-ed-pisos" name="pisos" class="form-control" min="1" max="20" placeholder="Ej: 3" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit-ed-estado">Estado</label>
-                    <select id="edit-ed-estado" name="estado" class="form-control">
-                        <option value="Activo">Activo</option>
-                        <option value="En Mantenimiento">En Mantenimiento</option>
-                    </select>
-                </div>
-            </div>
 
-            <!-- Conditional fields for Áreas Verdes -->
-            <div th:if="${activeSection == 'areas-verdes'}">
-                <div class="form-group">
-                    <label for="edit-av-codigoMesh">Identificador del Mapa 3D</label>
-                    <input type="text" id="edit-av-codigoMesh" name="codigoMesh" class="form-control" placeholder="Ej: Jardin_Norte" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit-av-nombre">Nombre del Área</label>
-                    <input type="text" id="edit-av-nombre" name="nombre" class="form-control" placeholder="Ej: Jardín Principal" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit-av-sector">Sector / Ubicación</label>
-                    <input type="text" id="edit-av-sector" name="sector" class="form-control" placeholder="Ej: Zona Este" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit-av-superficie">Superficie (m²)</label>
-                    <input type="number" id="edit-av-superficie" name="superficie" step="0.1" class="form-control" placeholder="Ej: 450.5" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit-av-descripcion">Descripción</label>
-                    <textarea id="edit-av-descripcion" name="descripcion" class="form-control" placeholder="" rows="3"></textarea>
+                <!-- Conditional fields for Áreas Verdes -->
+                <div th:if="${activeSection == 'areas-verdes'}">
+                    <div class="form-group">
+                        <label for="edit-av-codigoMesh">Identificador del Mapa 3D</label>
+                        <input type="text" id="edit-av-codigoMesh" name="codigoMesh" class="form-control" placeholder="Ej: Jardin_Norte" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-av-nombre">Nombre del Área</label>
+                        <input type="text" id="edit-av-nombre" name="nombre" class="form-control" placeholder="Ej: Jardín Principal" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-av-sector">Sector / Ubicación</label>
+                        <input type="text" id="edit-av-sector" name="sector" class="form-control" placeholder="Ej: Zona Este" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-av-superficie">Superficie (m²)</label>
+                        <input type="number" id="edit-av-superficie" name="superficie" step="0.1" class="form-control" placeholder="Ej: 450.5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-av-descripcion">Descripción</label>
+                        <textarea id="edit-av-descripcion" name="descripcion" class="form-control" placeholder="" rows="3"></textarea>
+                    </div>
                 </div>
             </div>
 
