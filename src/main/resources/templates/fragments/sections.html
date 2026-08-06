@@ -20,8 +20,6 @@
                         <th>Identificador (3D)</th>
                         <th>Nombre del Edificio</th>
                         <th>Carreras</th>
-                        <th>Nro. Pisos</th>
-                        <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -34,34 +32,27 @@
                             <span class="badge badge-code"
                                 th:text="${edificio.carreras}">Ninguna</span>
                         </td>
-                        <td th:text="${edificio.pisos}">0</td>
-                        <td>
-                            <span th:class="${edificio.estado == 'Activo'} ? 'badge badge-success' : 'badge badge-warning'" 
-                                  th:text="${edificio.estado}">Activo</span>
-                        </td>
                         <td class="table-actions">
                             <button class="btn-action btn-edit" 
                                     th:data-id="${edificio.id}"
                                     th:data-codigomesh="${edificio.codigoMesh}"
                                     th:data-nombre="${edificio.nombre}"
                                     th:data-carreras="${edificio.carreras}"
-                                    th:data-pisos="${edificio.pisos}"
-                                    th:data-estado="${edificio.estado}"
                                     onclick="openEditDialog(this)" 
                                     title="Editar">
-                                ✏️
+                                <svg class="icon"><use th:href="@{/images/icons.svg#icon-edit}"></use></svg>
                             </button>
                             <button class="btn-action btn-delete" 
                                     th:data-id="${edificio.id}"
                                     th:data-nombre="${edificio.nombre}"
                                     onclick="deleteItem(this.getAttribute('data-id'), this.getAttribute('data-nombre'))" 
                                     title="Eliminar">
-                                🗑️
+                                <svg class="icon"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
                             </button>
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(edificios)}">
-                        <td colspan="6" class="text-center text-muted py-8">No hay edificios registrados.</td>
+                        <td colspan="5" class="text-center text-muted py-8">No hay edificios registrados.</td>
                     </tr>
                 </tbody>
             </table>
@@ -108,14 +99,14 @@
                                     th:data-descripcion="${area.descripcion}"
                                     onclick="openEditDialog(this)" 
                                     title="Editar">
-                                ✏️
+                                <svg class="icon"><use th:href="@{/images/icons.svg#icon-edit}"></use></svg>
                             </button>
                             <button class="btn-action btn-delete" 
                                     th:data-id="${area.id}"
                                     th:data-nombre="${area.nombre}"
                                     onclick="deleteItem(this.getAttribute('data-id'), this.getAttribute('data-nombre'))" 
                                     title="Eliminar">
-                                🗑️
+                                <svg class="icon"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
                             </button>
                         </td>
                     </tr>

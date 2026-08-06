@@ -12,6 +12,7 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
 <body>
 
@@ -32,7 +33,7 @@
                 
                 <!-- Action Button in upper right -->
                 <button th:if="${activeSection != 'map-editor'}" class="btn btn-primary" onclick="openAddDialog()">
-                    <span>➕</span> Agregar
+                    <svg class="icon"><use th:href="@{/images/icons.svg#icon-plus}"></use></svg> Agregar
                 </button>
             </header>
 
@@ -53,203 +54,83 @@
         </div>
     </div>
 
-    <!-- Interactive HTML5 Dialog for "Agregar" -->
-    <dialog id="add-dialog">
-        <div class="dialog-header">
-            <h3 th:text="${activeSection == 'edificios' ? 'Agregar Nuevo Edificio' : 'Agregar Nueva Área Verde'}">Agregar Elemento</h3>
-            <button class="btn-close-dialog" onclick="closeAddDialog()">&times;</button>
-        </div>
-        
-        <form id="add-form" method="POST" th:action="@{${activeSection == 'edificios' ? '/admin-panel/add-edificio' : '/admin-panel/add-area-verde'}}">
-            <!-- Conditional fields for Edificios -->
-            <div th:if="${activeSection == 'edificios'}">
-                <div class="form-group">
-                    <label for="ed-codigoMesh">Identificador del Mapa 3D</label>
-                    <input type="text" id="ed-codigoMesh" name="codigoMesh" class="form-control" placeholder="Ej: E" required>
-                </div>
-                <div class="form-group">
-                    <label for="ed-nombre">Nombre Público</label>
-                    <input type="text" id="ed-nombre" name="nombre" class="form-control" placeholder="Ej: Edificio Central" required>
-                </div>
-                <div class="form-group">
-                    <label for="ed-carrera">Carrera / Uso</label>
-                    <input type="text" id="ed-carrera" name="carreras" class="form-control" placeholder="Ej: Sistemas" required>
-                </div>
-                <div class="form-group">
-                    <label for="ed-pisos">Número de Pisos</label>
-                    <input type="number" id="ed-pisos" name="pisos" class="form-control" min="1" max="20" placeholder="Ej: 3" required>
-                </div>
-                <div class="form-group">
-                    <label for="ed-estado">Estado</label>
-                    <select id="ed-estado" name="estado" class="form-control">
-                        <option value="Activo">Activo</option>
-                        <option value="En Mantenimiento">En Mantenimiento</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Conditional fields for Áreas Verdes -->
-            <div th:if="${activeSection == 'areas-verdes'}">
-                <div class="form-group">
-                    <label for="av-codigoMesh">Identificador del Mapa 3D</label>
-                    <input type="text" id="av-codigoMesh" name="codigoMesh" class="form-control" placeholder="Ej: Jardin_Norte" required>
-                </div>
-                <div class="form-group">
-                    <label for="av-nombre">Nombre del Área</label>
-                    <input type="text" id="av-nombre" name="nombre" class="form-control" placeholder="Ej: Jardín Principal" required>
-                </div>
-                <div class="form-group">
-                    <label for="av-sector">Sector / Ubicación</label>
-                    <input type="text" id="av-sector" name="sector" class="form-control" placeholder="Ej: Zona Este" required>
-                </div>
-                <div class="form-group">
-                    <label for="av-superficie">Superficie (m²)</label>
-                    <input type="number" id="av-superficie" name="superficie" step="0.1" class="form-control" placeholder="Ej: 450.5" required>
-                </div>
-                <div class="form-group">
-                    <label for="av-descripcion">Descripción</label>
-                    <input type="text" id="av-descripcion" name="descripcion" class="form-control" placeholder="">
-                </div>
-            </div>
-
-            <div class="dialog-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeAddDialog()">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Guardar</button>
-            </div>
-        </form>
-    </dialog>
-
-    <!-- Interactive HTML5 Dialog for "Editar" -->
-    <dialog id="edit-dialog">
-        <div class="dialog-header">
-            <h3 th:text="${activeSection == 'edificios' ? 'Editar Edificio' : 'Editar Área Verde'}">Editar Elemento</h3>
-            <button class="btn-close-dialog" onclick="closeEditDialog()">&times;</button>
-        </div>
-        
-        <form id="edit-form" method="POST" th:action="@{${activeSection == 'edificios' ? '/admin-panel/edit-edificio' : '/admin-panel/edit-area-verde'}}">
-            <!-- Hidden field for ID -->
-            <input type="hidden" id="edit-id" name="id">
-
-            <!-- Conditional fields for Edificios -->
-            <div th:if="${activeSection == 'edificios'}">
-                <div class="form-group">
-                    <label for="edit-ed-codigoMesh">Identificador del Mapa 3D</label>
-                    <input type="text" id="edit-ed-codigoMesh" name="codigoMesh" class="form-control" placeholder="Ej: E" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit-ed-nombre">Nombre Público</label>
-                    <input type="text" id="edit-ed-nombre" name="nombre" class="form-control" placeholder="Ej: Edificio Central" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit-ed-carrera">Carrera / Uso</label>
-                    <input type="text" id="edit-ed-carrera" name="carreras" class="form-control" placeholder="Ej: Sistemas" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit-ed-pisos">Número de Pisos</label>
-                    <input type="number" id="edit-ed-pisos" name="pisos" class="form-control" min="1" max="20" placeholder="Ej: 3" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit-ed-estado">Estado</label>
-                    <select id="edit-ed-estado" name="estado" class="form-control">
-                        <option value="Activo">Activo</option>
-                        <option value="En Mantenimiento">En Mantenimiento</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Conditional fields for Áreas Verdes -->
-            <div th:if="${activeSection == 'areas-verdes'}">
-                <div class="form-group">
-                    <label for="edit-av-codigoMesh">Identificador del Mapa 3D</label>
-                    <input type="text" id="edit-av-codigoMesh" name="codigoMesh" class="form-control" placeholder="Ej: Jardin_Norte" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit-av-nombre">Nombre del Área</label>
-                    <input type="text" id="edit-av-nombre" name="nombre" class="form-control" placeholder="Ej: Jardín Principal" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit-av-sector">Sector / Ubicación</label>
-                    <input type="text" id="edit-av-sector" name="sector" class="form-control" placeholder="Ej: Zona Este" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit-av-superficie">Superficie (m²)</label>
-                    <input type="number" id="edit-av-superficie" name="superficie" step="0.1" class="form-control" placeholder="Ej: 450.5" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit-av-descripcion">Descripción</label>
-                    <input type="text" id="edit-av-descripcion" name="descripcion" class="form-control" placeholder="">
-                </div>
-            </div>
-
-            <div class="dialog-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeEditDialog()">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-            </div>
-        </form>
-    </dialog>
+    <!-- Reusable Dynamic Modal Fragments -->
+    <div th:replace="~{fragments/modal :: item-dialog}"></div>
+    <div th:replace="~{fragments/modal :: confirm-delete-dialog}"></div>
 
     <!-- Dialog JS Functionality -->
     <script th:inline="javascript">
         /*<![CDATA[*/
         const activeSection = /*[[${activeSection}]]*/ 'edificios';
-        const dialog = document.getElementById('add-dialog');
-        const editDialog = document.getElementById('edit-dialog');
 
         function openAddDialog() {
+            const dialog = document.getElementById('item-dialog');
+            const form = document.getElementById('item-form');
+            form.reset();
+            document.getElementById('item-id').value = '';
+
+            if (activeSection === 'edificios') {
+                document.getElementById('dialog-title').textContent = 'Agregar Nuevo Edificio';
+                form.action = /*[[@{/admin-panel/add-edificio}]]*/ '/admin-panel/add-edificio';
+            } else {
+                document.getElementById('dialog-title').textContent = 'Agregar Nueva Área Verde';
+                form.action = /*[[@{/admin-panel/add-area-verde}]]*/ '/admin-panel/add-area-verde';
+            }
+            document.getElementById('dialog-submit-btn').textContent = 'Guardar';
             dialog.showModal();
         }
 
-        function closeAddDialog() {
-            dialog.close();
-            document.getElementById('add-form').reset();
-        }
-
         function openEditDialog(button) {
+            const dialog = document.getElementById('item-dialog');
+            const form = document.getElementById('item-form');
+            form.reset();
+
             const id = button.getAttribute('data-id');
-            document.getElementById('edit-id').value = id;
+            document.getElementById('item-id').value = id;
 
             if (activeSection === 'edificios') {
-                document.getElementById('edit-ed-codigoMesh').value = button.getAttribute('data-codigomesh');
-                document.getElementById('edit-ed-nombre').value = button.getAttribute('data-nombre');
-                document.getElementById('edit-ed-carrera').value = button.getAttribute('data-carreras');
-                document.getElementById('edit-ed-pisos').value = button.getAttribute('data-pisos');
-                document.getElementById('edit-ed-estado').value = button.getAttribute('data-estado');
+                document.getElementById('dialog-title').textContent = 'Editar Edificio';
+                form.action = /*[[@{/admin-panel/edit-edificio}]]*/ '/admin-panel/edit-edificio';
+                document.getElementById('ed-codigoMesh').value = button.getAttribute('data-codigomesh') || '';
+                document.getElementById('ed-nombre').value = button.getAttribute('data-nombre') || '';
+                document.getElementById('ed-carrera').value = button.getAttribute('data-carreras') || '';
             } else {
-                document.getElementById('edit-av-codigoMesh').value = button.getAttribute('data-codigomesh');
-                document.getElementById('edit-av-nombre').value = button.getAttribute('data-nombre');
-                document.getElementById('edit-av-sector').value = button.getAttribute('data-sector');
-                document.getElementById('edit-av-superficie').value = button.getAttribute('data-superficie');
-                document.getElementById('edit-av-descripcion').value = button.getAttribute('data-descripcion');
+                document.getElementById('dialog-title').textContent = 'Editar Área Verde';
+                form.action = /*[[@{/admin-panel/edit-area-verde}]]*/ '/admin-panel/edit-area-verde';
+                document.getElementById('av-codigoMesh').value = button.getAttribute('data-codigomesh') || '';
+                document.getElementById('av-nombre').value = button.getAttribute('data-nombre') || '';
+                document.getElementById('av-sector').value = button.getAttribute('data-sector') || '';
+                document.getElementById('av-superficie').value = button.getAttribute('data-superficie') || '';
+                document.getElementById('av-descripcion').value = button.getAttribute('data-descripcion') || '';
             }
-            editDialog.showModal();
+            document.getElementById('dialog-submit-btn').textContent = 'Guardar Cambios';
+            dialog.showModal();
         }
 
-        function closeEditDialog() {
-            editDialog.close();
-            document.getElementById('edit-form').reset();
+        function closeItemDialog() {
+            const dialog = document.getElementById('item-dialog');
+            dialog.close();
+            document.getElementById('item-form').reset();
         }
 
         function deleteItem(id, nombre) {
-            const confirmMessage = activeSection === 'edificios' 
-                ? `¿Seguro que deseas eliminar el edificio: ${nombre}?`
-                : `¿Seguro que deseas eliminar el área verde: ${nombre}?`;
+            const dialog = document.getElementById('confirm-delete-dialog');
+            const form = document.getElementById('delete-form');
+            document.getElementById('delete-item-id').value = id;
 
-            if (confirm(confirmMessage)) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = activeSection === 'edificios' 
-                    ? '/admin-panel/delete-edificio' 
-                    : '/admin-panel/delete-area-verde';
-                
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'id';
-                input.value = id;
-                
-                form.appendChild(input);
-                document.body.appendChild(form);
-                form.submit();
-            }
+            const itemType = activeSection === 'edificios' ? 'el edificio' : 'el área verde';
+            document.getElementById('delete-confirm-message').textContent = `¿Seguro que deseas eliminar ${itemType} "${nombre}"?`;
+
+            form.action = activeSection === 'edificios' 
+                ? /*[[@{/admin-panel/delete-edificio}]]*/ '/admin-panel/delete-edificio' 
+                : /*[[@{/admin-panel/delete-area-verde}]]*/ '/admin-panel/delete-area-verde';
+
+            dialog.showModal();
+        }
+
+        function closeConfirmDeleteDialog() {
+            const dialog = document.getElementById('confirm-delete-dialog');
+            dialog.close();
         }
         /*]]>*/
     </script>

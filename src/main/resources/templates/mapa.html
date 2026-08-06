@@ -19,6 +19,7 @@
           rel="stylesheet">
 
     <!-- Estilos propios -->
+    <link rel="stylesheet" th:href="@{/css/main.css}">
     <link rel="stylesheet" th:href="@{/css/stylesmapa.css}">
     <link rel="stylesheet" th:href="@{/css/stylesmascota.css}">
 
@@ -62,13 +63,8 @@
     <div class="back-button-overlay">
 
         <a th:href="@{/}" class="btn-secondary">
-
-            <span>
-                ←
-            </span>
-
+            <svg class="icon"><use th:href="@{/images/icons.svg#icon-arrow-left}"></use></svg>
             Volver
-
         </a>
 
     </div>

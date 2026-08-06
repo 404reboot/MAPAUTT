@@ -25,26 +25,26 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     private void seedEdificios() {
         if (edificioRepository.count() == 0) {
-            edificioRepository.save(new Edificio(null, "Almacen y Salon de Taekwondo", "General", 1, "Activo", "Almacen_y_Salon_de_Taekwondo"));
-            edificioRepository.save(new Edificio(null, "Cafeteria", "General", 1, "Activo", "Cafeteria"));
-            edificioRepository.save(new Edificio(null, "Caseta Vigilancia Entrada 1", "General", 1, "Activo", "Caseta_Vigilancia_Entrada_1"));
-            edificioRepository.save(new Edificio(null, "Caseta Vigilancia Entrada 2", "General", 1, "Activo", "Caseta_Vigilancia_Entrada_2"));
-            edificioRepository.save(new Edificio(null, "Caseta de Informacion", "General", 1, "Activo", "Caseta_de_Informacion"));
-            edificioRepository.save(new Edificio(null, "Caseta de Vigilancia de Entrada 1", "General", 1, "Activo", "Caseta_de_Vigilancia_de_Entrada_1"));
-            edificioRepository.save(new Edificio(null, "Caseta de Vigilancia de Entrada 2", "General", 1, "Activo", "Caseta_de_Vigilancia_de_Entrada_2"));
-            edificioRepository.save(new Edificio(null, "Caseta de Vigilancia de Entrada 3", "General", 1, "Activo", "Caseta_de_Vigilancia_de_Entrada_3"));
-            edificioRepository.save(new Edificio(null, "Edificio D y Biblioteca", "General", 1, "Activo", "Edificio_D_y_Biblioteca"));
-            edificioRepository.save(new Edificio(null, "Edificio E", "General", 1, "Activo", "Edificio_E"));
-            edificioRepository.save(new Edificio(null, "Edificio F", "General", 1, "Activo", "Edificio_F"));
-            edificioRepository.save(new Edificio(null, "Edificio G", "General", 1, "Activo", "Edificio_G"));
-            edificioRepository.save(new Edificio(null, "Edificio H", "General", 1, "Activo", "Edificio_H"));
-            edificioRepository.save(new Edificio(null, "Edificio K", "General", 1, "Activo", "Edificio_K"));
-            edificioRepository.save(new Edificio(null, "Edificio L", "General", 1, "Activo", "Edificio_L"));
-            edificioRepository.save(new Edificio(null, "Edificio M", "General", 1, "Activo", "Edificio_M"));
-            edificioRepository.save(new Edificio(null, "Edificio R", "General", 1, "Activo", "Edificio_R"));
-            edificioRepository.save(new Edificio(null, "Edificio T", "General", 1, "Activo", "Edificio_T"));
-            edificioRepository.save(new Edificio(null, "Laboratorio de Serigrafia", "General", 1, "Activo", "Laboratorio_de_Serigrafia"));
-            edificioRepository.save(new Edificio(null, "Terreno Irregular del Campus", "General", 1, "Activo", "Terreno_Irregular_del_Campus"));
+            edificioRepository.save(new Edificio(null, "Almacen y Salon de Taekwondo", "General", "Almacen_y_Salon_de_Taekwondo"));
+            edificioRepository.save(new Edificio(null, "Cafeteria", "General", "Cafeteria"));
+            edificioRepository.save(new Edificio(null, "Caseta Vigilancia Entrada 1", "General", "Caseta_Vigilancia_Entrada_1"));
+            edificioRepository.save(new Edificio(null, "Caseta Vigilancia Entrada 2", "General", "Caseta_Vigilancia_Entrada_2"));
+            edificioRepository.save(new Edificio(null, "Caseta de Informacion", "General", "Caseta_de_Informacion"));
+            edificioRepository.save(new Edificio(null, "Caseta de Vigilancia de Entrada 1", "General", "Caseta_de_Vigilancia_de_Entrada_1"));
+            edificioRepository.save(new Edificio(null, "Caseta de Vigilancia de Entrada 2", "General", "Caseta_de_Vigilancia_de_Entrada_2"));
+            edificioRepository.save(new Edificio(null, "Caseta de Vigilancia de Entrada 3", "General", "Caseta_de_Vigilancia_de_Entrada_3"));
+            edificioRepository.save(new Edificio(null, "Edificio D y Biblioteca", "General", "Edificio_D_y_Biblioteca"));
+            edificioRepository.save(new Edificio(null, "Edificio E", "General", "Edificio_E"));
+            edificioRepository.save(new Edificio(null, "Edificio F", "General", "Edificio_F"));
+            edificioRepository.save(new Edificio(null, "Edificio G", "General", "Edificio_G"));
+            edificioRepository.save(new Edificio(null, "Edificio H", "General", "Edificio_H"));
+            edificioRepository.save(new Edificio(null, "Edificio K", "General", "Edificio_K"));
+            edificioRepository.save(new Edificio(null, "Edificio L", "General", "Edificio_L"));
+            edificioRepository.save(new Edificio(null, "Edificio M", "General", "Edificio_M"));
+            edificioRepository.save(new Edificio(null, "Edificio R", "General", "Edificio_R"));
+            edificioRepository.save(new Edificio(null, "Edificio T", "General", "Edificio_T"));
+            edificioRepository.save(new Edificio(null, "Laboratorio de Serigrafia", "General", "Laboratorio_de_Serigrafia"));
+            edificioRepository.save(new Edificio(null, "Terreno Irregular del Campus", "General", "Terreno_Irregular_del_Campus"));
         }
     }
 

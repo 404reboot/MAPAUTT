@@ -14,7 +14,7 @@ public class WelcomeController {
 
     @GetMapping("/")
     public String welcome(Model model) {
-        model.addAttribute("title", "¡Bienvenido a MAPAUTT!");
+        model.addAttribute("title", "¡Bienvenidos y Bienvenidas a MAPA UTTECAM!");
         model.addAttribute("message", "Explora la Universidad Tecnológica de Tecamachalco de forma interactiva.");
         
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");

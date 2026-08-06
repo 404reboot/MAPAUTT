@@ -43,8 +43,6 @@ public class AdminPanelController {
     public String addEdificio(
             @RequestParam("nombre") String nombre,
             @RequestParam("carreras") String carreras,
-            @RequestParam("pisos") Integer pisos,
-            @RequestParam("estado") String estado,
             @RequestParam(value = "codigoMesh", required = false) String codigoMesh,
             HttpSession session) {
 
@@ -52,7 +50,7 @@ public class AdminPanelController {
             return "redirect:/acceso?error=unauthorized";
         }
 
-        Edificio nuevoEdificio = new Edificio(null, nombre, carreras, pisos, estado, codigoMesh);
+        Edificio nuevoEdificio = new Edificio(null, nombre, carreras, codigoMesh);
         mapService.addEdificio(nuevoEdificio);
 
         return "redirect:/admin-panel?section=edificios";
@@ -82,8 +80,6 @@ public class AdminPanelController {
             @RequestParam("id") Integer id,
             @RequestParam("nombre") String nombre,
             @RequestParam("carreras") String carreras,
-            @RequestParam("pisos") Integer pisos,
-            @RequestParam("estado") String estado,
             @RequestParam(value = "codigoMesh", required = false) String codigoMesh,
             HttpSession session) {
 
@@ -91,7 +87,7 @@ public class AdminPanelController {
             return "redirect:/acceso?error=unauthorized";
         }
 
-        Edificio updatedEdificio = new Edificio(id, nombre, carreras, pisos, estado, codigoMesh);
+        Edificio updatedEdificio = new Edificio(id, nombre, carreras, codigoMesh);
         mapService.updateEdificio(updatedEdificio);
 
         return "redirect:/admin-panel?section=edificios";

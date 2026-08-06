@@ -9,7 +9,7 @@
     <aside th:fragment="sidebar" class="sidebar">
         <div class="sidebar-header">
             <div class="sidebar-logo">
-                <span class="logo-icon">🗺️</span>
+                <svg class="icon icon-lg"><use th:href="@{/images/icons.svg#icon-map}"></use></svg>
                 <span class="logo-text">MAPAUTT</span>
             </div>
             <div class="sidebar-subtitle">Panel de Control</div>
@@ -20,33 +20,33 @@
                 <li>
                     <a th:href="@{/admin-panel(section='edificios')}"
                         th:class="${activeSection == 'edificios'} ? 'nav-item active' : 'nav-item'">
-                        <span class="nav-icon">🏢</span>
+                        <svg class="icon"><use th:href="@{/images/icons.svg#icon-building}"></use></svg>
                         <span class="nav-text">Gestionar Edificios</span>
                     </a>
                 </li>
                 <li>
                     <a th:href="@{/admin-panel(section='areas-verdes')}"
                         th:class="${activeSection == 'areas-verdes'} ? 'nav-item active' : 'nav-item'">
-                        <span class="nav-icon">🌳</span>
+                        <svg class="icon"><use th:href="@{/images/icons.svg#icon-tree}"></use></svg>
                         <span class="nav-text">Gestionar áreas verdes</span>
                     </a>
                 </li>
                 <li>
                     <a th:href="@{/admin-panel(section='map-editor')}"
                         th:class="${activeSection == 'map-editor'} ? 'nav-item active' : 'nav-item'">
-                        <span class="nav-icon">🗺️</span>
+                        <svg class="icon"><use th:href="@{/images/icons.svg#icon-map}"></use></svg>
                         <span class="nav-text">Editor del mapa</span>
                     </a>
                 </li>
             </ul>
         </nav>
 
-        <div class="sidebar-footer" style="display: flex; flex-direction: column; gap: 12px;">
+        <div class="sidebar-footer">
             <a th:href="@{/}" class="back-link">
-                <span class="back-icon"></span> Volver al Inicio
+                <svg class="icon"><use th:href="@{/images/icons.svg#icon-arrow-left}"></use></svg> Volver al Inicio
             </a>
-            <a th:href="@{/logout}" class="back-link" style="color: #f87171;">
-                <span class="back-icon">🚪</span> Cerrar Sesión
+            <a th:href="@{/logout}" class="back-link back-link-danger">
+                <svg class="icon"><use th:href="@{/images/icons.svg#icon-logout}"></use></svg> Cerrar Sesión
             </a>
         </div>
     </aside>

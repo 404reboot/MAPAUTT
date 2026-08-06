@@ -1,111 +1,50 @@
-/* Root variables for consistent styling and easy configuration */
-:root {
-    --primary: #43D645;
-    --primary-hover: #ff7734;
-    --primary-light: #ff7734;
-    
-    --success: #f5c638;
-    --success-light: #d1fae5;
-    --success-dark: #ff7734;
-    
-    --warning: #fff5c6;
-    --warning-light: #fef3c7;
-    --warning-dark: #92400e;
+/*   Requires: main.css (for :root design tokens)  */
 
-    --info: #0ea5e9;
-    --info-light: #e0f2fe;
-    --info-dark: #075985;
-    
-    --danger: #ef4444;
-    --danger-light: #fee2e2;
-    --danger-dark: #991b1b;
-    
-    --sidebar-bg: #FFDAB9;
-    --sidebar-text: #080e15;
-    --sidebar-text-active: #1a0202;
-    --sidebar-hover: #e57318;
-    
-    --bg-main: #f8fafc;
-    --bg-card: #ffffff;
-    --text-main: #0f172a;
-    --text-muted: #0b1018;
-    --border-color: #e2e8f0;
-    
-    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 16px;
-}
-
-/* Reset & Base Styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: var(--font-sans);
-    background-color: var(--bg-main);
-    color: var(--text-main);
-    min-height: 100vh;
-    display: flex;
-    overflow-x: hidden;
-}
-
-/* Layout Structure */
+/* Admin Layout Structure */
 .admin-layout {
     display: flex;
     width: 100%;
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
 }
 
-/* Sidebar Styling */
+/* Sidebar Component */
 .sidebar {
     width: 280px;
-    background-color: var(--sidebar-bg);
+    background: var(--sidebar-bg);
     color: var(--sidebar-text);
     display: flex;
     flex-direction: column;
-    padding: 24px;
+    padding: 28px 16px;
     flex-shrink: 0;
-    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    border-right: 1px solid var(--outline-variant);
 }
 
 .sidebar-header {
-    margin-bottom: 40px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 30px;
+    padding: 0 12px 20px 12px;
+    border-bottom: 1px solid var(--outline-variant);
 }
 
 .sidebar-logo {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
 
-.logo-icon {
-    font-size: 24px;
-}
-
-.logo-text {
-    font-size: 20px;
+.sidebar-logo .logo-text {
+    font-size: 22px;
     font-weight: 800;
-    color: #ffffff;
-    letter-spacing: 0.5px;
+    color: var(--primary);
 }
 
 .sidebar-subtitle {
-    font-size: 12px;
+    font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 1.5px;
     color: var(--text-muted);
-    font-weight: 600;
+    font-weight: 700;
     padding-left: 36px;
 }
 
@@ -118,153 +57,137 @@ body {
 }
 
 .sidebar-nav li {
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .nav-item {
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 12px 16px;
+    padding: 14px 20px;
     color: var(--sidebar-text);
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 14px;
-    border-radius: var(--radius-sm);
-    transition: all 0.2s ease;
+    border-radius: 100px;
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .nav-item:hover {
     background-color: var(--sidebar-hover);
-    color: var(--sidebar-text-active);
+    color: var(--primary);
 }
 
 .nav-item.active {
-    background-color: var(--primary);
+    background: var(--primary-container);
     color: var(--sidebar-text-active);
-    font-weight: 600;
+    font-weight: 700;
+    box-shadow: var(--shadow-sm);
 }
 
 .sidebar-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--outline-variant);
+    padding: 20px 12px 0 12px;
 }
 
 .back-link {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     color: var(--sidebar-text);
     text-decoration: none;
     font-size: 14px;
+    font-weight: 600;
     transition: color 0.2s ease;
 }
 
 .back-link:hover {
-    color: #ffffff;
+    color: var(--primary);
 }
 
-/* Main Content Area */
+.back-link-danger {
+    color: var(--danger);
+}
+
+.back-link-danger:hover {
+    color: var(--danger-dark);
+}
+
+.back-link-danger .icon {
+    stroke: var(--danger);
+}
+
+/* Main Workspace & Navbar */
 .main-wrapper {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    min-width: 0; /* Prevents flex items from expanding beyond parent */
+    min-width: 0;
 }
 
-/* Top Navbar */
 .top-navbar {
-    height: 70px;
-    background-color: var(--bg-card);
-    border-bottom: 1px solid var(--border-color);
+    height: 72px;
+    background: var(--surface-color);
+    border-bottom: 1px solid var(--outline-variant);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 40px;
+    padding: 10px 40px;
 }
 
 .breadcrumb {
     font-size: 14px;
     color: var(--text-muted);
+    font-weight: 500;
 }
 
 .breadcrumb-separator {
     margin: 0 8px;
+    color: var(--outline-variant);
 }
 
 .breadcrumb-active {
-    color: var(--text-main);
-    font-weight: 600;
+    color: var(--primary);
+    font-weight: 700;
 }
 
-/* Content Container */
 .content-body {
     padding: 40px;
     flex-grow: 1;
     overflow-y: auto;
 }
 
-/* Section Components */
+/* Section Containers & Cards */
 .section-container {
-    background-color: var(--bg-card);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border-color);
+    background: var(--surface-color);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--outline-variant);
     box-shadow: var(--shadow-sm);
-    padding: 24px;
+    padding: 32px;
 }
 
 .section-header-info {
-    margin-bottom: 24px;
+    margin-bottom: 28px;
 }
 
 .section-header-info h2 {
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 24px;
+    font-weight: 800;
     margin-bottom: 6px;
-    color: var(--text-main);
+    color: var(--text-primary);
 }
 
 .section-header-info p {
-    color: var(--text-muted);
+    color: var(--text-secondary);
     font-size: 14px;
+    font-weight: 500;
 }
 
-/* Buttons */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: var(--radius-sm);
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-primary {
-    background-color: var(--primary);
-    color: #ffffff;
-    box-shadow: var(--shadow-sm);
-}
-
-.btn-primary:hover {
-    background-color: var(--primary-hover);
-    transform: translateY(-1px);
-}
-
-.btn-secondary {
-    background-color: #f1f5f9;
-    color: #334155;
-    border: 1px solid var(--border-color);
-}
-
-.btn-secondary:hover {
-    background-color: #e2e8f0;
-}
-
-/* Data Table Styling */
+/* Data Tables */
 .table-responsive {
     width: 100%;
     overflow-x: auto;
@@ -278,56 +201,36 @@ body {
 }
 
 .data-table th {
-    padding: 16px;
-    font-weight: 600;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--border-color);
-    background-color: #f8fafc;
+    padding: 16px 20px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    border-bottom: 2px solid var(--outline-variant);
+    background: var(--surface-variant);
+}
+
+.data-table th:first-child {
+    border-radius: var(--radius-sm) 0 0 0;
+}
+
+.data-table th:last-child {
+    border-radius: 0 var(--radius-sm) 0 0;
 }
 
 .data-table td {
-    padding: 16px;
-    border-bottom: 1px solid var(--border-color);
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--outline-variant);
     vertical-align: middle;
+    color: var(--text-primary);
+}
+
+.data-table tbody tr {
+    transition: background-color 0.2s ease;
 }
 
 .data-table tbody tr:hover {
-    background-color: #f8fafc;
+    background-color: rgba(24, 153, 132, 0.04);
 }
 
-/* Badges */
-.badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 4px 10px;
-    font-size: 12px;
-    font-weight: 600;
-    border-radius: 50px;
-}
-
-.badge-success {
-    background-color: var(--success-light);
-    color: var(--success-dark);
-}
-
-.badge-warning {
-    background-color: var(--warning-light);
-    color: var(--warning-dark);
-}
-
-.badge-info {
-    background-color: var(--info-light);
-    color: var(--info-dark);
-}
-
-.badge-code {
-    background-color: #f1f5f9;
-    color: #475569;
-    font-family: monospace;
-    border-radius: var(--radius-sm);
-}
-
-/* Actions in Table */
 .table-actions {
     display: flex;
     gap: 8px;
@@ -337,101 +240,143 @@ body {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 16px;
-    width: 32px;
-    height: 32px;
+    font-size: 14px;
+    width: 34px;
+    height: 34px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--radius-sm);
-    transition: background-color 0.2s;
+    border-radius: 50%;
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .btn-action:hover {
-    background-color: #f1f5f9;
+    background: var(--surface-variant);
+    transform: scale(1.1);
 }
 
-/* Dialog (Modal) Styles */
+.btn-delete .icon {
+    stroke: var(--danger);
+}
+
+.btn-delete:hover {
+    background: var(--danger-light);
+}
+
+/* Modals & Dialogs (Centered with Internal Scroll) */
 dialog {
     border: none;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-xl);
     box-shadow: var(--shadow-lg);
     width: 90%;
-    max-width: 500px;
-    padding: 24px;
+    max-width: 520px;
+    padding: 0;
     margin: auto;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    background: var(--surface-color);
+    overflow: hidden;
+}
+
+dialog[open] {
+    display: flex;
+    flex-direction: column;
+    max-height: 85vh;
+    max-height: 85dvh;
+    animation: dialogFadeIn 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
 dialog::backdrop {
-    background-color: rgba(15, 23, 42, 0.5);
-    backdrop-filter: blur(4px);
+    background: rgba(25, 28, 27, 0.45);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.dialog-form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
 }
 
 .dialog-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--outline-variant);
+    flex-shrink: 0;
 }
 
 .dialog-header h3 {
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text-primary);
 }
 
 .btn-close-dialog {
-    background: none;
+    background: var(--surface-variant);
     border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
     font-size: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     color: var(--text-muted);
+    transition: all 0.2s;
 }
 
-.form-group {
-    margin-bottom: 16px;
+.btn-close-dialog:hover {
+    background-color: var(--outline-variant);
+    color: var(--text-primary);
 }
 
-.form-group label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: #475569;
+.dialog-body {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
 }
 
-.form-control {
-    width: 100%;
-    padding: 10px 12px;
-    font-size: 14px;
-    font-family: inherit;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    outline: none;
-    transition: border-color 0.2s;
+/* Customized clean scrollbar for dialog body */
+.dialog-body::-webkit-scrollbar {
+    width: 6px;
 }
 
-.form-control:focus {
-    border-color: var(--primary);
+.dialog-body::-webkit-scrollbar-track {
+    background: var(--surface-variant);
+    border-radius: 4px;
+}
+
+.dialog-body::-webkit-scrollbar-thumb {
+    background: var(--outline-variant);
+    border-radius: 4px;
+}
+
+.dialog-body::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
 }
 
 .dialog-footer {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
-    margin-top: 24px;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid var(--outline-variant);
+    flex-shrink: 0;
+    margin-top: 0;
+    background: var(--surface-color);
 }
 
-/* Utilities */
+/* Utility Classes, Footer & Animations */
 .font-mono {
     font-family: monospace;
 }
 
 .font-semibold {
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .text-muted {
@@ -447,11 +392,50 @@ dialog::backdrop {
     padding-bottom: 32px;
 }
 
-/* Simple entry animation */
+footer {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(8px);
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes dialogFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.96) translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes contentFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
     }
     to {
         opacity: 1;
@@ -460,26 +444,33 @@ dialog::backdrop {
 }
 
 .animate-fade-in {
-    animation: fadeIn 0.3s ease-out forwards;
+    animation: contentFadeIn 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
-/* Responsive adjustment */
+/* Responsive Breakpoints */
 @media (max-width: 768px) {
-    body {
-        flex-direction: column;
-    }
+    body,
     .admin-layout {
         flex-direction: column;
     }
+
     .sidebar {
         width: 100%;
         height: auto;
         border-right: none;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid var(--outline-variant);
+        padding: 20px;
     }
+
+    .sidebar-header {
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+    }
+
     .top-navbar {
         padding: 0 20px;
     }
+
     .content-body {
         padding: 20px;
     }
