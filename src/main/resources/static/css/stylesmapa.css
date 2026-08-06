@@ -107,6 +107,19 @@ html {
 
 }
 
+/* Mascota asomándose mirando abajo en la tarjeta de detalles (Solo visible en móviles) */
+.mascota-viewing {
+    display: none;
+    position: absolute;
+    top: -80px;
+    right: 20px;
+    width: 150px;
+    height: auto;
+    pointer-events: none;
+    z-index: 10;
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+}
+
 .floating-details-card.visible {
 
     right: 200px;
@@ -393,4 +406,91 @@ button:active {
 
     font-size: 14px;
 
+}
+
+/* Drag handle para Bottom Sheet en móviles */
+.card-drag-handle {
+    display: none;
+}
+
+/* Media Query para Dispositivos Móviles (Diseño Responsivo) */
+@media (max-width: 768px) {
+    #webgl-container {
+        touch-action: none;
+    }
+
+    .card-drag-handle {
+        display: block;
+        width: 42px;
+        height: 5px;
+        background: #cbd5e1;
+        border-radius: 3px;
+        margin: -4px auto 14px auto;
+        cursor: grab;
+        touch-action: pan-y;
+    }
+
+    .card-drag-handle:active {
+        cursor: grabbing;
+        background: #94a3b8;
+    }
+
+    /* Transformar la tarjeta flotante en Bottom Sheet modal */
+    .floating-details-card {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: auto;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 24px 24px 0 0;
+        padding: 20px;
+        padding-bottom: 220px;
+        margin-bottom: -200px;
+        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.35);
+        transform: translateY(100%);
+        opacity: 0;
+        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease;
+        z-index: 200;
+        touch-action: pan-y;
+        user-select: none;
+    }
+
+    .floating-details-card.visible {
+        right: 0;
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    .floating-details-card::after {
+        display: none;
+    }
+
+    /* Ajustes de superposición de controles para pantallas pequeñas */
+    .back-button-overlay {
+        top: 16px;
+        left: 16px;
+    }
+
+    .map-controls-overlay {
+        bottom: 20px;
+        left: 16px;
+        gap: 8px;
+    }
+
+    button {
+        width: 46px;
+        height: 46px;
+        font-size: 20px;
+    }
+
+    .btn-secondary {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+
+    .mascota-viewing {
+        display: block;
+    }
 }

@@ -7,11 +7,31 @@ let scene, camera, renderer, controls;
 let raycaster, mouse;
 let interactiveObjects = [];
 let hoveredObject = null;
+let selectedObject = null;
 let composer, outlinePass;
+
+let touchStartX = 0;
+let touchStartY = 0;
+let touchStartTime = 0;
+let isPointerDownOnCanvas = false;
+const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
 const container = document.getElementById('webgl-container');
 const tooltip = document.getElementById('map-tooltip');
 const detailsCard = document.getElementById('details-card');
+
+// Actualiza los objetos iluminados con el contorno de selección (manteniendo el objeto activo y el hovered)
+function updateOutlines() {
+    if (!outlinePass) return;
+    const list = [];
+    if (selectedObject) {
+        list.push(selectedObject);
+    }
+    if (hoveredObject && hoveredObject !== selectedObject) {
+        list.push(hoveredObject);
+    }
+    outlinePass.selectedObjects = list;
+}
 
 init();
 animate();
@@ -207,9 +227,30 @@ function init() {
         onPointerMove
     );
 
-    window.addEventListener(
+    renderer.domElement.addEventListener(
+        'pointerdown',
+        onPointerDown
+    );
+
+    renderer.domElement.addEventListener(
+        'touchstart',
+        onPointerDown,
+        { passive: true }
+    );
+
+    renderer.domElement.addEventListener(
+        'pointerup',
+        onPointerUp
+    );
+
+    renderer.domElement.addEventListener(
+        'touchend',
+        onPointerUp
+    );
+
+    renderer.domElement.addEventListener(
         'click',
-        onClick
+        onPointerUp
     );
 
     window.addEventListener(
@@ -220,13 +261,62 @@ function init() {
         }
     );
 
+    setupBottomSheetGestures();
+
+}
+
+// Obtiene y normaliza las coordenadas (NDC -1 a 1) para ratón o toque táctil
+function updateMouseCoordinates(event) {
+    let clientX = event.clientX;
+    let clientY = event.clientY;
+
+    if (event.touches && event.touches.length > 0) {
+        clientX = event.touches[0].clientX;
+        clientY = event.touches[0].clientY;
+    } else if (event.changedTouches && event.changedTouches.length > 0) {
+        clientX = event.changedTouches[0].clientX;
+        clientY = event.changedTouches[0].clientY;
+    }
+
+    if (clientX !== undefined && clientY !== undefined) {
+        mouse.x = (clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(clientY / window.innerHeight) * 2 + 1;
+    }
+}
+
+// Registra la posición inicial y hora al presionar únicamente sobre el canvas 3D
+function onPointerDown(event) {
+    const isCanvasTarget = (renderer && renderer.domElement && (event.target === renderer.domElement || event.target.tagName === 'CANVAS'));
+    if (!isCanvasTarget) {
+        isPointerDownOnCanvas = false;
+        return;
+    }
+    isPointerDownOnCanvas = true;
+
+    let clientX = event.clientX;
+    let clientY = event.clientY;
+    if (event.touches && event.touches.length > 0) {
+        clientX = event.touches[0].clientX;
+        clientY = event.touches[0].clientY;
+    }
+    touchStartX = clientX || 0;
+    touchStartY = clientY || 0;
+    touchStartTime = Date.now();
 }
 
 //Maneja el evento de movimiento del mouse para mostrar el tooltip y resaltar el objeto intersectado
 function onPointerMove(event) {
 
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    if (event.pointerType === 'touch' || isTouchDevice) {
+        if (hoveredObject) {
+            hoveredObject = null;
+            updateOutlines();
+        }
+        tooltip.classList.remove('visible');
+        return;
+    }
+
+    updateMouseCoordinates(event);
 
     raycaster.setFromCamera(mouse, camera);
 
@@ -246,9 +336,7 @@ function onPointerMove(event) {
 
             hoveredObject = object;
 
-            outlinePass.selectedObjects = [
-                hoveredObject
-            ];
+            updateOutlines();
 
         }
 
@@ -283,7 +371,7 @@ function onPointerMove(event) {
 
             hoveredObject = null;
 
-            outlinePass.selectedObjects = [];
+            updateOutlines();
 
         }
 
@@ -373,8 +461,47 @@ function getGroupObject(object) {
 }
 
 
-//Maneja el evento de clic en la escena para mostrar los detalles del objeto seleccionado
-function onClick(event) {
+//Maneja el evento de soltar la pantalla o clic (pointerup / touchend) en el canvas 3D
+function onPointerUp(event) {
+
+    if (!isPointerDownOnCanvas) {
+        return;
+    }
+    isPointerDownOnCanvas = false;
+
+    let clientX = event.clientX;
+    let clientY = event.clientY;
+
+    if (event.changedTouches && event.changedTouches.length > 0) {
+        clientX = event.changedTouches[0].clientX;
+        clientY = event.changedTouches[0].clientY;
+    } else if (event.touches && event.touches.length > 0) {
+        clientX = event.touches[0].clientX;
+        clientY = event.touches[0].clientY;
+    }
+
+    if (clientX === undefined || clientY === undefined) {
+        return;
+    }
+
+    // Tolera hasta 25px de movimiento del dedo en móviles y 12px en PC, y hasta 600ms de duración
+    if (touchStartTime > 0) {
+        const deltaX = Math.abs(clientX - touchStartX);
+        const deltaY = Math.abs(clientY - touchStartY);
+        const deltaTime = Date.now() - touchStartTime;
+
+        const maxDistance = isTouchDevice ? 25 : 12;
+        const maxTime = 600;
+
+        if (deltaX > maxDistance || deltaY > maxDistance || deltaTime > maxTime) {
+            return;
+        }
+    }
+
+    touchStartTime = 0;
+
+    // Actualiza explícitamente el vector mouse con la posición actual del toque/clic
+    updateMouseCoordinates(event);
 
     raycaster.setFromCamera(
         mouse,
@@ -395,6 +522,10 @@ function onClick(event) {
             getGroupObject(
                 intersects[0].object
             );
+
+
+        selectedObject = object;
+        updateOutlines();
 
 
         const rawName =
@@ -515,12 +646,26 @@ function fetchDetails(type,id,rawName) {
         `;
 
 
-        detailsCard.classList.add(
-            'visible'
-        );
+        openDetailsCard();
 
     });
 
+}
+
+// Abre la tarjeta de detalles limpiando transformaciones táctiles anteriores
+function openDetailsCard() {
+    detailsCard.style.transform = '';
+    detailsCard.style.transition = '';
+    detailsCard.classList.add('visible');
+}
+
+// Cierra la tarjeta de detalles limpiando transformaciones táctiles e iluminación
+function closeDetailsCard() {
+    detailsCard.classList.remove('visible');
+    detailsCard.style.transform = '';
+    detailsCard.style.transition = '';
+    selectedObject = null;
+    updateOutlines();
 }
 
 
@@ -607,20 +752,89 @@ function showDetails(type,data) {
     }
 
 
-    detailsCard.classList.add(
-        'visible'
-    );
+    openDetailsCard();
 
 }
 
 
-//Cierra la tarjeta de detalles
-function closeDetailsCard() {
+// Configura los gestos táctiles para deslizar (jalar/arrastrar) el Bottom Sheet en móviles
+function setupBottomSheetGestures() {
+    if (!detailsCard) return;
 
-    detailsCard.classList.remove(
-        'visible'
-    );
+    let startY = 0;
+    let currentDeltaY = 0;
+    let isDragging = false;
 
+    function onDragStart(clientY) {
+        if (window.innerWidth > 768 || !detailsCard.classList.contains('visible')) return;
+        startY = clientY;
+        currentDeltaY = 0;
+        isDragging = true;
+        detailsCard.style.transition = 'none';
+    }
+
+    function onDragMove(clientY) {
+        if (!isDragging || window.innerWidth > 768) return;
+        const diffY = clientY - startY;
+
+        if (diffY > 0) {
+            // Deslizar hacia abajo (hacia cerrar)
+            currentDeltaY = diffY;
+            detailsCard.style.transform = `translateY(${currentDeltaY}px)`;
+        } else {
+            // Permite alargar/deslizar suavemente hacia arriba (hasta -150px) con resistencia progresiva
+            const maxPullUp = 150;
+            currentDeltaY = Math.max(-maxPullUp, diffY * 0.45);
+            detailsCard.style.transform = `translateY(${currentDeltaY}px)`;
+        }
+    }
+
+    function onDragEnd() {
+        if (!isDragging || window.innerWidth > 768) return;
+        isDragging = false;
+        detailsCard.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease';
+
+        if (currentDeltaY > 80) {
+            closeDetailsCard();
+        } else {
+            detailsCard.style.transform = 'translateY(0)';
+        }
+    }
+
+    // Eventos táctiles (Smartphones)
+    detailsCard.addEventListener('touchstart', function(e) {
+        if (e.touches && e.touches.length === 1) {
+            onDragStart(e.touches[0].clientY);
+        }
+    }, { passive: true });
+
+    detailsCard.addEventListener('touchmove', function(e) {
+        if (e.touches && e.touches.length === 1) {
+            onDragMove(e.touches[0].clientY);
+        }
+    }, { passive: true });
+
+    detailsCard.addEventListener('touchend', function() {
+        onDragEnd();
+    });
+
+    // Eventos de puntero para simular arrastre en navegador/PC DevTools
+    detailsCard.addEventListener('pointerdown', function(e) {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        onDragStart(e.clientY);
+    });
+
+    window.addEventListener('pointermove', function(e) {
+        if (isDragging) {
+            onDragMove(e.clientY);
+        }
+    });
+
+    window.addEventListener('pointerup', function() {
+        if (isDragging) {
+            onDragEnd();
+        }
+    });
 }
 
 //Ajusta la cámara y el renderizador al cambiar el tamaño de la ventana
@@ -728,11 +942,12 @@ function resetCameraView() {
 
 
 
-    if(hoveredObject) {
+    if(hoveredObject || selectedObject) {
 
         hoveredObject = null;
+        selectedObject = null;
 
-        outlinePass.selectedObjects = [];
+        updateOutlines();
 
     }
 
