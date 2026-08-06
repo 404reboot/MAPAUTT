@@ -20,8 +20,6 @@
                         <th>Identificador (3D)</th>
                         <th>Nombre del Edificio</th>
                         <th>Carreras</th>
-                        <th>Nro. Pisos</th>
-                        <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -34,19 +32,12 @@
                             <span class="badge badge-code"
                                 th:text="${edificio.carreras}">Ninguna</span>
                         </td>
-                        <td th:text="${edificio.pisos}">0</td>
-                        <td>
-                            <span th:class="${edificio.estado == 'Activo'} ? 'badge badge-success' : 'badge badge-warning'" 
-                                  th:text="${edificio.estado}">Activo</span>
-                        </td>
                         <td class="table-actions">
                             <button class="btn-action btn-edit" 
                                     th:data-id="${edificio.id}"
                                     th:data-codigomesh="${edificio.codigoMesh}"
                                     th:data-nombre="${edificio.nombre}"
                                     th:data-carreras="${edificio.carreras}"
-                                    th:data-pisos="${edificio.pisos}"
-                                    th:data-estado="${edificio.estado}"
                                     onclick="openEditDialog(this)" 
                                     title="Editar">
                                 <svg class="icon"><use th:href="@{/images/icons.svg#icon-edit}"></use></svg>

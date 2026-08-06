@@ -542,52 +542,16 @@ function showDetails(type,data) {
 
 
     if(type === 'edificio') {
-
-
-        cardTitle.textContent =
-            data.nombre;
-
-
+        cardTitle.textContent = data.nombre;
         cardBody.innerHTML = `
-
             <div class="info-row">
-
-                <div class="label">
-                    Estado
-                </div>
-
-                <div class="value">
-                    ${data.estado || 'Operativo'}
-                </div>
-
-            </div>
-
-
-            <div class="info-row">
-
                 <div class="label">
                     Carreras / Uso
                 </div>
-
                 <div class="value">
                     ${data.carreras || 'General'}
                 </div>
-
             </div>
-
-
-            <div class="info-row">
-
-                <div class="label">
-                    Pisos
-                </div>
-
-                <div class="value">
-                    ${data.pisos || 2}
-                </div>
-
-            </div>
-
         `;
 
 

@@ -14,19 +14,15 @@ public class Edificio {
     private Integer id;
     private String nombre;
     private String carreras;
-    private Integer pisos; // TODO: eliminar
-    private String estado; // TODO: eliminar
     private String codigoMesh;
 
     public Edificio() {
     }
 
-    public Edificio(Integer id, String nombre, String carreras, Integer pisos, String estado, String codigoMesh) {
+    public Edificio(Integer id, String nombre, String carreras, String codigoMesh) {
         this.id = id;
         this.nombre = nombre;
         this.carreras = carreras;
-        this.pisos = pisos;
-        this.estado = estado;
         this.codigoMesh = codigoMesh;
     }
 
@@ -50,24 +46,8 @@ public class Edificio {
         return carreras;
     }
 
-    public void setCarreras(String codigo) {
-        this.carreras = codigo;
-    }
-
-    public Integer getPisos() {
-        return pisos;
-    }
-
-    public void setPisos(Integer pisos) {
-        this.pisos = pisos;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
+    public void setCarreras(String carreras) {
+        this.carreras = carreras;
     }
 
     public String getCodigoMesh() {

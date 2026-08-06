@@ -93,8 +93,6 @@
                 document.getElementById('ed-codigoMesh').value = button.getAttribute('data-codigomesh') || '';
                 document.getElementById('ed-nombre').value = button.getAttribute('data-nombre') || '';
                 document.getElementById('ed-carrera').value = button.getAttribute('data-carreras') || '';
-                document.getElementById('ed-pisos').value = button.getAttribute('data-pisos') || '';
-                document.getElementById('ed-estado').value = button.getAttribute('data-estado') || 'Activo';
             } else {
                 document.getElementById('dialog-title').textContent = 'Editar Área Verde';
                 form.action = /*[[@{/admin-panel/edit-area-verde}]]*/ '/admin-panel/edit-area-verde';
