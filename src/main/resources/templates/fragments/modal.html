@@ -14,7 +14,7 @@
             </button>
         </div>
         
-        <form id="item-form" class="dialog-form" method="POST" action="">
+        <form id="item-form" class="dialog-form" method="POST" action="" enctype="multipart/form-data">
             <div class="dialog-body">
                 <!-- Hidden field for ID (empty on Add, populated on Edit) -->
                 <input type="hidden" id="item-id" name="id">
@@ -56,6 +56,113 @@
                     <div class="form-group">
                         <label for="av-descripcion">Descripción</label>
                         <textarea id="av-descripcion" name="descripcion" class="form-control" placeholder="" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <!-- Conditional fields for Seres Vivos -->
+                <div th:if="${activeSection == 'seres-vivos'}">
+                    <!-- Fields for Animal -->
+                    <div id="fields-animal" class="entity-fields">
+                        <div class="form-group">
+                            <label for="an-nombre">Nombre Común *</label>
+                            <input type="text" id="an-nombre" name="nombre" class="form-control an-input" placeholder="Ej: Gato del Campus" required>
+                        </div>
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label for="an-clase">Clase</label>
+                                <input type="text" id="an-clase" name="clase" class="form-control an-input" placeholder="Ej: Mammalia">
+                            </div>
+                            <div>
+                                <label for="an-orden">Orden</label>
+                                <input type="text" id="an-orden" name="orden" class="form-control an-input" placeholder="Ej: Carnivora">
+                            </div>
+                        </div>
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label for="an-familia">Familia</label>
+                                <input type="text" id="an-familia" name="familia" class="form-control an-input" placeholder="Ej: Felidae">
+                            </div>
+                            <div>
+                                <label for="an-genero">Género</label>
+                                <input type="text" id="an-genero" name="genero" class="form-control an-input" placeholder="Ej: Felis">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="an-especie">Especie *</label>
+                            <input type="text" id="an-especie" name="especie" class="form-control an-input" placeholder="Ej: catus" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Imagen del Espécimen</label>
+                            <input type="hidden" id="an-assetId" name="existingAssetId" class="an-input">
+                            <input type="hidden" id="an-removeImage" name="removeImage" value="false" class="an-input">
+                            <input type="file" id="an-imagen" name="imagen" class="an-input" accept="image/*" style="display: none;" onchange="previewImage(this, 'an')">
+                            
+                            <div id="an-drop-zone" class="image-drop-zone">
+                                <div id="an-drop-content" class="drop-zone-content">
+                                    <svg class="icon drop-zone-icon"><use th:href="@{/images/icons.svg#icon-upload}"></use></svg>
+                                    <p class="drop-zone-text"><strong>Arrastra y suelta una imagen aquí</strong> o <span class="drop-zone-link">explora tus archivos</span></p>
+                                    <span class="drop-zone-hint">Formatos soportados: JPG, PNG, WEBP, GIF (Máx. 5MB)</span>
+                                </div>
+                                <div id="an-preview-container" class="drop-zone-preview" style="display: none;">
+                                    <img id="an-image-preview" src="" alt="Vista previa de imagen">
+                                    <button type="button" class="btn-drop-zone-delete" onclick="removeSelectedImage(event, 'an')" title="Eliminar imagen" aria-label="Eliminar imagen">
+                                        <svg class="icon"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fields for Plant -->
+                    <div id="fields-plant" class="entity-fields" style="display: none;">
+                        <div class="form-group">
+                            <label for="pl-nombre">Nombre Común *</label>
+                            <input type="text" id="pl-nombre" name="nombre" class="form-control pl-input" placeholder="Ej: Jacaranda" required>
+                        </div>
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label for="pl-division">División</label>
+                                <input type="text" id="pl-division" name="division" class="form-control pl-input" placeholder="Ej: Magnoliophyta">
+                            </div>
+                            <div>
+                                <label for="pl-clase">Clase</label>
+                                <input type="text" id="pl-clase" name="clase" class="form-control pl-input" placeholder="Ej: Magnoliopsida">
+                            </div>
+                        </div>
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label for="pl-familia">Familia</label>
+                                <input type="text" id="pl-familia" name="familia" class="form-control pl-input" placeholder="Ej: Bignoniaceae">
+                            </div>
+                            <div>
+                                <label for="pl-genero">Género</label>
+                                <input type="text" id="pl-genero" name="genero" class="form-control pl-input" placeholder="Ej: Jacaranda">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="pl-especie">Especie *</label>
+                            <input type="text" id="pl-especie" name="especie" class="form-control pl-input" placeholder="Ej: mimosifolia" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Imagen del Espécimen</label>
+                            <input type="hidden" id="pl-assetId" name="existingAssetId" class="pl-input">
+                            <input type="hidden" id="pl-removeImage" name="removeImage" value="false" class="pl-input">
+                            <input type="file" id="pl-imagen" name="imagen" class="pl-input" accept="image/*" style="display: none;" onchange="previewImage(this, 'pl')">
+                            
+                            <div id="pl-drop-zone" class="image-drop-zone">
+                                <div id="pl-drop-content" class="drop-zone-content">
+                                    <svg class="icon drop-zone-icon"><use th:href="@{/images/icons.svg#icon-upload}"></use></svg>
+                                    <p class="drop-zone-text"><strong>Arrastra y suelta una imagen aquí</strong> o <span class="drop-zone-link">explora tus archivos</span></p>
+                                    <span class="drop-zone-hint">Formatos soportados: JPG, PNG, WEBP, GIF (Máx. 5MB)</span>
+                                </div>
+                                <div id="pl-preview-container" class="drop-zone-preview" style="display: none;">
+                                    <img id="pl-image-preview" src="" alt="Vista previa de imagen">
+                                    <button type="button" class="btn-drop-zone-delete" onclick="removeSelectedImage(event, 'pl')" title="Eliminar imagen" aria-label="Eliminar imagen">
+                                        <svg class="icon"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

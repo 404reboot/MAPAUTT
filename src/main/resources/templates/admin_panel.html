@@ -28,13 +28,27 @@
                 <div class="breadcrumb">
                     <span>Admin</span>
                     <span class="breadcrumb-separator">/</span>
-                    <span class="breadcrumb-active" th:text="${activeSection == 'edificios' ? 'Edificios' : (activeSection == 'areas-verdes' ? 'Áreas Verdes' : 'Editor 3D')}">Sección</span>
+                    <span class="breadcrumb-active" th:text="${activeSection == 'edificios' ? 'Edificios' : (activeSection == 'areas-verdes' ? 'Áreas Verdes' : (activeSection == 'seres-vivos' ? 'Seres Vivos' : 'Editor 3D'))}">Sección</span>
                 </div>
                 
-                <!-- Action Button in upper right -->
-                <button th:if="${activeSection != 'map-editor'}" class="btn btn-primary" onclick="openAddDialog()">
+                <!-- Central Search Input -->
+                <div th:if="${activeSection != 'map-editor'}" class="navbar-search">
+                    <svg class="search-icon"><use th:href="@{/images/icons.svg#icon-search}"></use></svg>
+                    <input type="text" id="table-search-input" class="search-input" placeholder="Buscar en esta sección..." onkeyup="filterTableItems(this.value)">
+                </div>
+
+                <!-- Action Buttons in upper right -->
+                <button th:if="${activeSection == 'edificios' || activeSection == 'areas-verdes'}" class="btn btn-primary" onclick="openAddDialog()">
                     <svg class="icon"><use th:href="@{/images/icons.svg#icon-plus}"></use></svg> Agregar
                 </button>
+                <div th:if="${activeSection == 'seres-vivos'}" style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" onclick="openAddDialogFor('animal')">
+                        <svg class="icon"><use th:href="@{/images/icons.svg#icon-plus}"></use></svg> Agregar Animal
+                    </button>
+                    <button class="btn btn-primary" onclick="openAddDialogFor('plant')">
+                        <svg class="icon"><use th:href="@{/images/icons.svg#icon-plus}"></use></svg> Agregar Planta
+                    </button>
+                </div>
             </header>
 
             <!-- Main Scrollable Body Content -->
@@ -45,6 +59,9 @@
                 </th:block>
                 <th:block th:if="${activeSection == 'areas-verdes'}">
                     <div th:replace="~{fragments/sections :: areas-verdes}"></div>
+                </th:block>
+                <th:block th:if="${activeSection == 'seres-vivos'}">
+                    <div th:replace="~{fragments/sections :: seres-vivos}"></div>
                 </th:block>
                 <th:block th:if="${activeSection == 'map-editor'}">
                     <div th:replace="~{fragments/sections :: map-editor}"></div>
@@ -63,24 +80,192 @@
         /*<![CDATA[*/
         const activeSection = /*[[${activeSection}]]*/ 'edificios';
 
-        function openAddDialog() {
+        const sectionConfig = {
+            'edificios': {
+                addTitle: 'Agregar Nuevo Edificio',
+                editTitle: 'Editar Edificio',
+                addAction: /*[[@{/admin-panel/add-edificio}]]*/ '/admin-panel/add-edificio',
+                editAction: /*[[@{/admin-panel/edit-edificio}]]*/ '/admin-panel/edit-edificio',
+                deleteAction: /*[[@{/admin-panel/delete-edificio}]]*/ '/admin-panel/delete-edificio',
+                label: 'el edificio',
+                populateEdit: (button) => {
+                    document.getElementById('ed-codigoMesh').value = button.getAttribute('data-codigomesh') || '';
+                    document.getElementById('ed-nombre').value = button.getAttribute('data-nombre') || '';
+                    document.getElementById('ed-carrera').value = button.getAttribute('data-carreras') || '';
+                }
+            },
+            'areas-verdes': {
+                addTitle: 'Agregar Nueva Área Verde',
+                editTitle: 'Editar Área Verde',
+                addAction: /*[[@{/admin-panel/add-area-verde}]]*/ '/admin-panel/add-area-verde',
+                editAction: /*[[@{/admin-panel/edit-area-verde}]]*/ '/admin-panel/edit-area-verde',
+                deleteAction: /*[[@{/admin-panel/delete-area-verde}]]*/ '/admin-panel/delete-area-verde',
+                label: 'el área verde',
+                populateEdit: (button) => {
+                    document.getElementById('av-codigoMesh').value = button.getAttribute('data-codigomesh') || '';
+                    document.getElementById('av-nombre').value = button.getAttribute('data-nombre') || '';
+                    document.getElementById('av-sector').value = button.getAttribute('data-sector') || '';
+                    document.getElementById('av-superficie').value = button.getAttribute('data-superficie') || '';
+                    document.getElementById('av-descripcion').value = button.getAttribute('data-descripcion') || '';
+                }
+            },
+            'animal': {
+                addTitle: 'Agregar Nuevo Animal',
+                editTitle: 'Editar Animal',
+                addAction: /*[[@{/admin-panel/add-animal}]]*/ '/admin-panel/add-animal',
+                editAction: /*[[@{/admin-panel/edit-animal}]]*/ '/admin-panel/edit-animal',
+                deleteAction: /*[[@{/admin-panel/delete-animal}]]*/ '/admin-panel/delete-animal',
+                label: 'el animal',
+                populateEdit: (button) => {
+                    document.getElementById('an-nombre').value = button.getAttribute('data-nombre') || '';
+                    document.getElementById('an-clase').value = button.getAttribute('data-clase') || '';
+                    document.getElementById('an-orden').value = button.getAttribute('data-orden') || '';
+                    document.getElementById('an-familia').value = button.getAttribute('data-familia') || '';
+                    document.getElementById('an-genero').value = button.getAttribute('data-genero') || '';
+                    document.getElementById('an-especie').value = button.getAttribute('data-especie') || '';
+                    const assetId = button.getAttribute('data-assetid') || '';
+                    document.getElementById('an-assetId').value = assetId;
+                    const removeFlag = document.getElementById('an-removeImage');
+                    if (removeFlag) removeFlag.value = 'false';
+                    
+                    if (assetId) {
+                        showImagePreview('an', '/images/custom/' + assetId);
+                    } else {
+                        hideImagePreview('an');
+                    }
+                }
+            },
+            'plant': {
+                addTitle: 'Agregar Nueva Planta',
+                editTitle: 'Editar Planta',
+                addAction: /*[[@{/admin-panel/add-plant}]]*/ '/admin-panel/add-plant',
+                editAction: /*[[@{/admin-panel/edit-plant}]]*/ '/admin-panel/edit-plant',
+                deleteAction: /*[[@{/admin-panel/delete-plant}]]*/ '/admin-panel/delete-plant',
+                label: 'la planta',
+                populateEdit: (button) => {
+                    document.getElementById('pl-nombre').value = button.getAttribute('data-nombre') || '';
+                    document.getElementById('pl-division').value = button.getAttribute('data-division') || '';
+                    document.getElementById('pl-clase').value = button.getAttribute('data-clase') || '';
+                    document.getElementById('pl-familia').value = button.getAttribute('data-familia') || '';
+                    document.getElementById('pl-genero').value = button.getAttribute('data-genero') || '';
+                    document.getElementById('pl-especie').value = button.getAttribute('data-especie') || '';
+                    const assetId = button.getAttribute('data-assetid') || '';
+                    document.getElementById('pl-assetId').value = assetId;
+                    const removeFlag = document.getElementById('pl-removeImage');
+                    if (removeFlag) removeFlag.value = 'false';
+
+                    if (assetId) {
+                        showImagePreview('pl', '/images/custom/' + assetId);
+                    } else {
+                        hideImagePreview('pl');
+                    }
+                }
+            }
+        };
+
+        function showImagePreview(prefix, imageSrc) {
+            const dropZone = document.getElementById(prefix + '-drop-zone');
+            const dropContent = document.getElementById(prefix + '-drop-content');
+            const previewContainer = document.getElementById(prefix + '-preview-container');
+            const img = document.getElementById(prefix + '-image-preview');
+
+            if (img) img.src = imageSrc;
+            if (previewContainer) previewContainer.style.display = 'flex';
+            if (dropContent) dropContent.style.display = 'none';
+            if (dropZone) dropZone.classList.add('has-image');
+        }
+
+        function hideImagePreview(prefix) {
+            const dropZone = document.getElementById(prefix + '-drop-zone');
+            const dropContent = document.getElementById(prefix + '-drop-content');
+            const previewContainer = document.getElementById(prefix + '-preview-container');
+            const img = document.getElementById(prefix + '-image-preview');
+
+            if (img) img.src = '';
+            if (previewContainer) previewContainer.style.display = 'none';
+            if (dropContent) dropContent.style.display = 'flex';
+            if (dropZone) dropZone.classList.remove('has-image');
+        }
+
+        function previewImage(input, prefix) {
+            const removeFlag = document.getElementById(prefix + '-removeImage');
+            if (removeFlag) removeFlag.value = 'false';
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    showImagePreview(prefix, e.target.result);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function removeSelectedImage(e, prefix) {
+            if (e) {
+                if (typeof e.stopPropagation === 'function') e.stopPropagation();
+                if (typeof e.preventDefault === 'function') e.preventDefault();
+            }
+            const fileInput = document.getElementById(prefix + '-imagen');
+            const existingInput = document.getElementById(prefix + '-assetId');
+            const removeFlag = document.getElementById(prefix + '-removeImage');
+
+            if (fileInput) fileInput.value = '';
+            if (existingInput) existingInput.value = '';
+            if (removeFlag) removeFlag.value = 'true';
+            hideImagePreview(prefix);
+        }
+
+        function toggleSeresVivosFields(entityKey) {
+            if (activeSection !== 'seres-vivos') return;
+            const animalFields = document.getElementById('fields-animal');
+            const plantFields = document.getElementById('fields-plant');
+            const anInputs = animalFields ? animalFields.querySelectorAll('input') : [];
+            const plInputs = plantFields ? plantFields.querySelectorAll('input') : [];
+
+            if (entityKey === 'plant') {
+                if (animalFields) animalFields.style.display = 'none';
+                if (plantFields) plantFields.style.display = 'block';
+                anInputs.forEach(i => i.disabled = true);
+                plInputs.forEach(i => i.disabled = false);
+            } else {
+                if (animalFields) animalFields.style.display = 'block';
+                if (plantFields) plantFields.style.display = 'none';
+                anInputs.forEach(i => i.disabled = false);
+                plInputs.forEach(i => i.disabled = true);
+            }
+        }
+
+        function openAddDialogFor(entityKey) {
+            const key = entityKey || activeSection;
+            const config = sectionConfig[key] || sectionConfig['edificios'];
             const dialog = document.getElementById('item-dialog');
             const form = document.getElementById('item-form');
             form.reset();
             document.getElementById('item-id').value = '';
 
-            if (activeSection === 'edificios') {
-                document.getElementById('dialog-title').textContent = 'Agregar Nuevo Edificio';
-                form.action = /*[[@{/admin-panel/add-edificio}]]*/ '/admin-panel/add-edificio';
-            } else {
-                document.getElementById('dialog-title').textContent = 'Agregar Nueva Área Verde';
-                form.action = /*[[@{/admin-panel/add-area-verde}]]*/ '/admin-panel/add-area-verde';
-            }
+            const anRemove = document.getElementById('an-removeImage');
+            const plRemove = document.getElementById('pl-removeImage');
+            if (anRemove) anRemove.value = 'false';
+            if (plRemove) plRemove.value = 'false';
+
+            hideImagePreview('an');
+            hideImagePreview('pl');
+
+            toggleSeresVivosFields(key);
+
+            document.getElementById('dialog-title').textContent = config.addTitle;
+            form.action = config.addAction;
             document.getElementById('dialog-submit-btn').textContent = 'Guardar';
             dialog.showModal();
         }
 
+        function openAddDialog() {
+            openAddDialogFor(activeSection === 'seres-vivos' ? 'animal' : activeSection);
+        }
+
         function openEditDialog(button) {
+            const entityKey = button.getAttribute('data-entity') || activeSection;
+            const config = sectionConfig[entityKey] || sectionConfig['edificios'];
             const dialog = document.getElementById('item-dialog');
             const form = document.getElementById('item-form');
             form.reset();
@@ -88,21 +273,15 @@
             const id = button.getAttribute('data-id');
             document.getElementById('item-id').value = id;
 
-            if (activeSection === 'edificios') {
-                document.getElementById('dialog-title').textContent = 'Editar Edificio';
-                form.action = /*[[@{/admin-panel/edit-edificio}]]*/ '/admin-panel/edit-edificio';
-                document.getElementById('ed-codigoMesh').value = button.getAttribute('data-codigomesh') || '';
-                document.getElementById('ed-nombre').value = button.getAttribute('data-nombre') || '';
-                document.getElementById('ed-carrera').value = button.getAttribute('data-carreras') || '';
-            } else {
-                document.getElementById('dialog-title').textContent = 'Editar Área Verde';
-                form.action = /*[[@{/admin-panel/edit-area-verde}]]*/ '/admin-panel/edit-area-verde';
-                document.getElementById('av-codigoMesh').value = button.getAttribute('data-codigomesh') || '';
-                document.getElementById('av-nombre').value = button.getAttribute('data-nombre') || '';
-                document.getElementById('av-sector').value = button.getAttribute('data-sector') || '';
-                document.getElementById('av-superficie').value = button.getAttribute('data-superficie') || '';
-                document.getElementById('av-descripcion').value = button.getAttribute('data-descripcion') || '';
+            toggleSeresVivosFields(entityKey);
+
+            document.getElementById('dialog-title').textContent = config.editTitle;
+            form.action = config.editAction;
+
+            if (config.populateEdit) {
+                config.populateEdit(button);
             }
+
             document.getElementById('dialog-submit-btn').textContent = 'Guardar Cambios';
             dialog.showModal();
         }
@@ -113,17 +292,22 @@
             document.getElementById('item-form').reset();
         }
 
-        function deleteItem(id, nombre) {
+        function deleteItemEntity(button) {
+            const entityKey = button.getAttribute('data-entity') || activeSection;
+            const id = button.getAttribute('data-id');
+            const nombre = button.getAttribute('data-nombre');
+            deleteItem(id, nombre, entityKey);
+        }
+
+        function deleteItem(id, nombre, entityKey) {
+            const key = entityKey || activeSection;
+            const config = sectionConfig[key] || sectionConfig['edificios'];
             const dialog = document.getElementById('confirm-delete-dialog');
             const form = document.getElementById('delete-form');
             document.getElementById('delete-item-id').value = id;
 
-            const itemType = activeSection === 'edificios' ? 'el edificio' : 'el área verde';
-            document.getElementById('delete-confirm-message').textContent = `¿Seguro que deseas eliminar ${itemType} "${nombre}"?`;
-
-            form.action = activeSection === 'edificios' 
-                ? /*[[@{/admin-panel/delete-edificio}]]*/ '/admin-panel/delete-edificio' 
-                : /*[[@{/admin-panel/delete-area-verde}]]*/ '/admin-panel/delete-area-verde';
+            document.getElementById('delete-confirm-message').textContent = `¿Seguro que deseas eliminar ${config.label} "${nombre}"?`;
+            form.action = config.deleteAction;
 
             dialog.showModal();
         }
@@ -132,7 +316,71 @@
             const dialog = document.getElementById('confirm-delete-dialog');
             dialog.close();
         }
+
+        function filterTableItems(query) {
+            const filter = (query || '').toLowerCase().trim();
+            const rows = document.querySelectorAll('.content-body .data-table tbody tr');
+            
+            rows.forEach(row => {
+                // Ignore empty state rows
+                if (row.cells.length === 1 && row.cells[0].classList.contains('text-center')) {
+                    return;
+                }
+                const text = row.textContent.toLowerCase();
+                if (text.includes(filter)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function setupDragAndDrop(prefix) {
+            const dropZone = document.getElementById(prefix + '-drop-zone');
+            const fileInput = document.getElementById(prefix + '-imagen');
+            if (!dropZone || !fileInput) return;
+
+            dropZone.addEventListener('click', (e) => {
+                if (dropZone.classList.contains('has-image')) return;
+                fileInput.click();
+            });
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!dropZone.classList.contains('has-image')) {
+                        dropZone.classList.add('drag-over');
+                    }
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.remove('drag-over');
+                }, false);
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                if (dropZone.classList.contains('has-image')) return;
+                const files = e.dataTransfer.files;
+                if (files && files.length > 0) {
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(files[0]);
+                    fileInput.files = dataTransfer.files;
+                    previewImage(fileInput, prefix);
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupDragAndDrop('an');
+            setupDragAndDrop('pl');
+        });
         /*]]>*/
     </script>
 </body>
 </html>
+

@@ -155,6 +155,43 @@
     font-weight: 700;
 }
 
+/* Search Bar in Top Navbar */
+.navbar-search {
+    position: relative;
+    max-width: 380px;
+    width: 100%;
+    margin: 0 20px;
+}
+
+.navbar-search .search-input {
+    width: 100%;
+    padding: 10px 16px 10px 42px;
+    font-size: 14px;
+    border-radius: 100px;
+    border: 1px solid var(--outline-variant);
+    background: var(--surface-variant);
+    color: var(--text-primary);
+    outline: none;
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.navbar-search .search-input:focus {
+    border-color: var(--primary);
+    background: var(--surface-color);
+    box-shadow: 0 0 0 3px rgba(24, 153, 132, 0.15);
+}
+
+.navbar-search .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
 .content-body {
     padding: 40px;
     flex-grow: 1;
@@ -232,7 +269,8 @@
 }
 
 .table-actions {
-    display: flex;
+    display: inline-flex;
+    align-items: center;
     gap: 8px;
 }
 
@@ -368,6 +406,176 @@ dialog::backdrop {
     flex-shrink: 0;
     margin-top: 0;
     background: var(--surface-color);
+}
+
+/* File Upload Button Styling */
+input[type="file"].form-control {
+    padding: 8px 12px;
+    background: var(--surface-variant);
+    border: 1px dashed var(--outline-variant);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+input[type="file"].form-control:hover {
+    border-color: var(--primary);
+    background: rgba(24, 153, 132, 0.06);
+}
+
+input[type="file"]::file-selector-button {
+    background: var(--primary);
+    color: #ffffff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-family: var(--font-main);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-right: 12px;
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: var(--shadow-sm);
+}
+
+input[type="file"]::file-selector-button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+input[type="file"]::-webkit-file-upload-button {
+    background: var(--primary);
+    color: #ffffff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-family: var(--font-main);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-right: 12px;
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: var(--shadow-sm);
+}
+
+input[type="file"]::-webkit-file-upload-button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Drag and Drop Zone Styling */
+.image-drop-zone {
+    border: 2px dashed var(--outline-variant);
+    border-radius: var(--radius-md);
+    background: var(--surface-variant);
+    padding: 20px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    position: relative;
+    user-select: none;
+    min-height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.image-drop-zone:not(.has-image):hover,
+.image-drop-zone:not(.has-image).drag-over {
+    border-color: var(--primary);
+    background: rgba(24, 153, 132, 0.08);
+    transform: translateY(-1px);
+}
+
+.image-drop-zone.has-image {
+    border-style: solid;
+    border-color: var(--outline-variant);
+    background: var(--surface-color);
+    padding: 12px;
+    cursor: default;
+}
+
+.drop-zone-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.drop-zone-icon {
+    width: 36px;
+    height: 36px;
+    color: var(--primary);
+    margin-bottom: 2px;
+}
+
+.drop-zone-text {
+    font-size: 13.5px;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.drop-zone-link {
+    color: var(--primary);
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.drop-zone-hint {
+    font-size: 11.5px;
+    color: var(--text-muted);
+}
+
+/* Integrated Drop Zone Preview & Floating Delete Button */
+.drop-zone-preview {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.drop-zone-preview img {
+    max-width: 100%;
+    max-height: 180px;
+    border-radius: var(--radius-sm);
+    object-fit: contain;
+}
+
+.btn-drop-zone-delete {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--danger-light);
+    color: var(--danger);
+    border: 1px solid rgba(186, 26, 26, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: var(--shadow-sm);
+    z-index: 10;
+}
+
+.btn-drop-zone-delete:hover {
+    background: var(--danger);
+    color: #ffffff;
+    transform: scale(1.08);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-drop-zone-delete .icon {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
 }
 
 /* Utility Classes, Footer & Animations */

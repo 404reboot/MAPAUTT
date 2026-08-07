@@ -21,12 +21,13 @@ public class Animal {
     private String subfamilia;
     private String genero;
     private String especie;
+    private String assetId; // Imagen 
 
     public Animal(){
     }
 
     public Animal(Integer id,String nombre, String reino, String clase, String subclase, String orden, String familia,
-            String subfamilia, String genero, String especie) {
+            String subfamilia, String genero, String especie, String assetId) {
         this.id = id;
         this.nombre=nombre;
         this.reino = reino;
@@ -37,6 +38,7 @@ public class Animal {
         this.subfamilia = subfamilia;
         this.genero = genero;
         this.especie = especie;
+        this.assetId = assetId; // Imagen
     }
 
     public Integer getId() {
@@ -119,6 +121,14 @@ public class Animal {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
     }
 
 
