@@ -87,26 +87,28 @@
                                 <input type="text" id="an-genero" name="genero" class="form-control an-input" placeholder="Ej: Felis">
                             </div>
                         </div>
-                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                            <div>
-                                <label for="an-especie">Especie *</label>
-                                <input type="text" id="an-especie" name="especie" class="form-control an-input" placeholder="Ej: catus" required>
-                            </div>
-                            <div>
-                                <label for="an-imagen">Imagen (Subir / Actualizar)</label>
-                                <input type="hidden" id="an-assetId" name="existingAssetId" class="an-input">
-                                <input type="hidden" id="an-removeImage" name="removeImage" value="false" class="an-input">
-                                <input type="file" id="an-imagen" name="imagen" class="form-control an-input" accept="image/*" onchange="previewImage(this, 'an-image-preview', 'an-preview-container')">
-                            </div>
+                        <div class="form-group">
+                            <label for="an-especie">Especie *</label>
+                            <input type="text" id="an-especie" name="especie" class="form-control an-input" placeholder="Ej: catus" required>
                         </div>
-                        <div id="an-preview-container" class="form-group" style="display: none; text-align: center; margin-top: 16px;">
-                            <label style="display: block; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--text-secondary);">Previsualización de Imagen</label>
-                            <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-                                <img id="an-image-preview" src="" alt="Vista previa" style="max-width: 100%; max-height: 160px; border-radius: var(--radius-md); border: 1px solid var(--outline-variant); object-fit: contain;">
-                                <button type="button" class="btn btn-secondary" onclick="removeSelectedImage('an')" style="padding: 6px 14px; font-size: 12px; color: var(--danger); border-color: var(--danger); background: var(--danger-light);" title="Eliminar imagen">
-                                    <svg class="icon icon-sm" style="stroke: var(--danger);"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
-                                    Eliminar Imagen
-                                </button>
+                        <div class="form-group">
+                            <label>Imagen del Espécimen</label>
+                            <input type="hidden" id="an-assetId" name="existingAssetId" class="an-input">
+                            <input type="hidden" id="an-removeImage" name="removeImage" value="false" class="an-input">
+                            <input type="file" id="an-imagen" name="imagen" class="an-input" accept="image/*" style="display: none;" onchange="previewImage(this, 'an')">
+                            
+                            <div id="an-drop-zone" class="image-drop-zone">
+                                <div id="an-drop-content" class="drop-zone-content">
+                                    <svg class="icon drop-zone-icon"><use th:href="@{/images/icons.svg#icon-upload}"></use></svg>
+                                    <p class="drop-zone-text"><strong>Arrastra y suelta una imagen aquí</strong> o <span class="drop-zone-link">explora tus archivos</span></p>
+                                    <span class="drop-zone-hint">Formatos soportados: JPG, PNG, WEBP, GIF (Máx. 5MB)</span>
+                                </div>
+                                <div id="an-preview-container" class="drop-zone-preview" style="display: none;">
+                                    <img id="an-image-preview" src="" alt="Vista previa de imagen">
+                                    <button type="button" class="btn-drop-zone-delete" onclick="removeSelectedImage(event, 'an')" title="Eliminar imagen" aria-label="Eliminar imagen">
+                                        <svg class="icon"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -137,26 +139,28 @@
                                 <input type="text" id="pl-genero" name="genero" class="form-control pl-input" placeholder="Ej: Jacaranda">
                             </div>
                         </div>
-                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                            <div>
-                                <label for="pl-especie">Especie *</label>
-                                <input type="text" id="pl-especie" name="especie" class="form-control pl-input" placeholder="Ej: mimosifolia" required>
-                            </div>
-                            <div>
-                                <label for="pl-imagen">Imagen (Subir / Actualizar)</label>
-                                <input type="hidden" id="pl-assetId" name="existingAssetId" class="pl-input">
-                                <input type="hidden" id="pl-removeImage" name="removeImage" value="false" class="pl-input">
-                                <input type="file" id="pl-imagen" name="imagen" class="form-control pl-input" accept="image/*" onchange="previewImage(this, 'pl-image-preview', 'pl-preview-container')">
-                            </div>
+                        <div class="form-group">
+                            <label for="pl-especie">Especie *</label>
+                            <input type="text" id="pl-especie" name="especie" class="form-control pl-input" placeholder="Ej: mimosifolia" required>
                         </div>
-                        <div id="pl-preview-container" class="form-group" style="display: none; text-align: center; margin-top: 16px;">
-                            <label style="display: block; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--text-secondary);">Previsualización de Imagen</label>
-                            <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-                                <img id="pl-image-preview" src="" alt="Vista previa" style="max-width: 100%; max-height: 160px; border-radius: var(--radius-md); border: 1px solid var(--outline-variant); object-fit: contain;">
-                                <button type="button" class="btn btn-secondary" onclick="removeSelectedImage('pl')" style="padding: 6px 14px; font-size: 12px; color: var(--danger); border-color: var(--danger); background: var(--danger-light);" title="Eliminar imagen">
-                                    <svg class="icon icon-sm" style="stroke: var(--danger);"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
-                                    Eliminar Imagen
-                                </button>
+                        <div class="form-group">
+                            <label>Imagen del Espécimen</label>
+                            <input type="hidden" id="pl-assetId" name="existingAssetId" class="pl-input">
+                            <input type="hidden" id="pl-removeImage" name="removeImage" value="false" class="pl-input">
+                            <input type="file" id="pl-imagen" name="imagen" class="pl-input" accept="image/*" style="display: none;" onchange="previewImage(this, 'pl')">
+                            
+                            <div id="pl-drop-zone" class="image-drop-zone">
+                                <div id="pl-drop-content" class="drop-zone-content">
+                                    <svg class="icon drop-zone-icon"><use th:href="@{/images/icons.svg#icon-upload}"></use></svg>
+                                    <p class="drop-zone-text"><strong>Arrastra y suelta una imagen aquí</strong> o <span class="drop-zone-link">explora tus archivos</span></p>
+                                    <span class="drop-zone-hint">Formatos soportados: JPG, PNG, WEBP, GIF (Máx. 5MB)</span>
+                                </div>
+                                <div id="pl-preview-container" class="drop-zone-preview" style="display: none;">
+                                    <img id="pl-image-preview" src="" alt="Vista previa de imagen">
+                                    <button type="button" class="btn-drop-zone-delete" onclick="removeSelectedImage(event, 'pl')" title="Eliminar imagen" aria-label="Eliminar imagen">
+                                        <svg class="icon"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
