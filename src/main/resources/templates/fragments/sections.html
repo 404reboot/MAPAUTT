@@ -7,10 +7,6 @@
 
     <!-- Fragment: Gestionar Edificios -->
     <div th:fragment="edificios" class="section-container animate-fade-in">
-        <div class="section-header-info">
-            <h2>Gestionar Edificios</h2>
-            <p>Visualiza y administra todos los módulos y edificios del campus universitario.</p>
-        </div>
         
         <div class="table-responsive">
             <table class="data-table">
@@ -61,10 +57,6 @@
 
     <!-- Fragment: Gestionar Areas Verdes -->
     <div th:fragment="areas-verdes" class="section-container animate-fade-in">
-        <div class="section-header-info">
-            <h2>Gestionar Áreas Verdes</h2>
-            <p>Supervisa, planifica y administra los jardines, bosques y áreas de esparcimiento ecológico.</p>
-        </div>
         
         <div class="table-responsive">
             <table class="data-table">
@@ -75,6 +67,7 @@
                         <th>Sector / Ubicación</th>
                         <th>Superficie (m²)</th>
                         <th>Descripción</th>
+                        <th>Especies</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -86,6 +79,33 @@
                         <td th:text="${area.superficie} + ' m²'">120 m²</td>
                         <td>
                             <span th:text="${area.descripcion}">Sin descripción</span>
+                        </td>
+                        <td>
+                            <div class="species-tags-container">
+                                <div th:each="esp : ${area.especies}" 
+                                     class="species-tag"
+                                     th:classappend="${esp.reino != null ? 'reino-' + #strings.toLowerCase(esp.reino) : ''}">
+                                    <div class="species-tag-indicator">
+                                        <span class="species-tag-dot"></span>
+                                        <button type="button" 
+                                                class="species-tag-remove" 
+                                                th:data-area-id="${area.id}" 
+                                                th:data-especie-id="${esp.id}" 
+                                                th:data-especie-nombre="${esp.nombre}"
+                                                onclick="confirmRemoveSpeciesFromArea(this)" 
+                                                title="Quitar especie">✕</button>
+                                    </div>
+                                    <span class="species-tag-name" th:text="${esp.nombre}">Nombre</span>
+                                </div>
+                                <button type="button" 
+                                        class="btn-add-species-tag" 
+                                        th:data-area-id="${area.id}" 
+                                        th:data-area-nombre="${area.nombre}"
+                                        onclick="openAddSpeciesToAreaDialog(this)" 
+                                        title="Agregar Especie">
+                                    <svg class="icon"><use th:href="@{/images/icons.svg#icon-plus}"></use></svg>
+                                </button>
+                            </div>
                         </td>
                         <td>
                             <div class="table-actions">
@@ -111,7 +131,7 @@
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(areasVerdes)}">
-                        <td colspan="6" class="text-center text-muted py-8">No hay áreas verdes registradas.</td>
+                        <td colspan="7" class="text-center text-muted py-8">No hay áreas verdes registradas.</td>
                     </tr>
                 </tbody>
             </table>
@@ -120,87 +140,11 @@
 
     <!-- Fragment: Gestionar Seres Vivos -->
     <div th:fragment="seres-vivos" class="section-container animate-fade-in">
-        <div class="section-header-info">
-            <h2>Gestionar Seres Vivos</h2>
-            <p>Catalogación y administración de la fauna y flora de la comunidad universitaria.</p>
-        </div>
 
-        <!-- Sub-Sección Fauna / Animales -->
-        <div class="card-section" style="margin-bottom: 32px;">
-            <h3 style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-                <svg class="icon"><use th:href="@{/images/icons.svg#icon-paw}"></use></svg>
-                Fauna (Animales)
-            </h3>
-            <div class="table-responsive">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre Común</th>
-                            <th>Taxonomía (Familia / Género / Especie)</th>
-                            <th>Clase / Orden</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="animal : ${animales}">
-                            <td class="font-mono text-muted" th:text="'#' + ${animal.id}">#1</td>
-                            <td class="font-semibold">
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <img th:if="${animal.assetId != null and !animal.assetId.empty}" 
-                                         th:src="@{'/images/custom/' + ${animal.assetId}}" 
-                                         alt="Foto" 
-                                         style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid var(--outline-variant); flex-shrink: 0;">
-                                    <span th:text="${animal.nombre}">Gato Campus</span>
-                                </div>
-                            </td>
-                            <td>
-                                <span th:text="${(animal.familia != null ? animal.familia : '-') + ' / ' + (animal.genero != null ? animal.genero : '-') + ' ' + (animal.especie != null ? animal.especie : '')}">Felis catus</span>
-                            </td>
-                            <td th:text="${(animal.clase != null ? animal.clase : '-') + ' / ' + (animal.orden != null ? animal.orden : '-')}">Mammalia / Carnivora</td>
-                            <td>
-                                <div class="table-actions">
-                                    <button class="btn-action btn-edit" 
-                                            data-entity="animal"
-                                            th:data-id="${animal.id}"
-                                            th:data-nombre="${animal.nombre}"
-                                            th:data-reino="${animal.reino}"
-                                            th:data-clase="${animal.clase}"
-                                            th:data-subclase="${animal.subclase}"
-                                            th:data-orden="${animal.orden}"
-                                            th:data-familia="${animal.familia}"
-                                            th:data-subfamilia="${animal.subfamilia}"
-                                            th:data-genero="${animal.genero}"
-                                            th:data-especie="${animal.especie}"
-                                            th:data-assetid="${animal.assetId}"
-                                            onclick="openEditDialog(this)" 
-                                            title="Editar Animal">
-                                        <svg class="icon"><use th:href="@{/images/icons.svg#icon-edit}"></use></svg>
-                                    </button>
-                                    <button class="btn-action btn-delete" 
-                                            data-entity="animal"
-                                            th:data-id="${animal.id}"
-                                            th:data-nombre="${animal.nombre}"
-                                            onclick="deleteItemEntity(this)" 
-                                            title="Eliminar Animal">
-                                        <svg class="icon"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr th:if="${#lists.isEmpty(animales)}">
-                            <td colspan="5" class="text-center text-muted py-8">No hay registros de fauna.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Sub-Sección Flora / Plantas -->
         <div class="card-section">
             <h3 style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
                 <svg class="icon"><use th:href="@{/images/icons.svg#icon-leaf}"></use></svg>
-                Flora (Plantas)
+                Catálogo de Especies
             </h3>
             <div class="table-responsive">
                 <table class="data-table">
@@ -208,58 +152,66 @@
                         <tr>
                             <th>ID</th>
                             <th>Nombre Común</th>
-                            <th>División / Clase</th>
-                            <th>Familia / Género / Especie</th>
+                            <th>Reino</th>
+                            <th>División / Phylum</th>
+                            <th>Clase / Orden</th>
+                            <th>Taxonomía (Familia / Género / Especie)</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="plant : ${plantas}">
-                            <td class="font-mono text-muted" th:text="'#' + ${plant.id}">#1</td>
+                        <tr th:each="especie : ${especies}">
+                            <td class="font-mono text-muted" th:text="'#' + ${especie.id}">#1</td>
                             <td class="font-semibold">
                                 <div style="display: flex; align-items: center; gap: 12px;">
-                                    <img th:if="${plant.assetId != null and !plant.assetId.empty}" 
-                                         th:src="@{'/images/custom/' + ${plant.assetId}}" 
+                                    <img th:if="${especie.assetId != null and !especie.assetId.empty}" 
+                                         th:src="@{'/images/custom/' + ${especie.assetId}}" 
                                          alt="Foto" 
                                          style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid var(--outline-variant); flex-shrink: 0;">
-                                    <span th:text="${plant.nombre}">Pino Silvestre</span>
+                                    <span th:text="${especie.nombre}">Jacaranda</span>
                                 </div>
                             </td>
-                            <td th:text="${(plant.division != null ? plant.division : '-') + ' / ' + (plant.clase != null ? plant.clase : '-')}">Pinophyta</td>
+                            <td th:text="${especie.reino}">Plantae</td>
+                            <td th:text="${especie.divisionPhylum != null and !especie.divisionPhylum.empty ? especie.divisionPhylum : '-'}">Magnoliophyta</td>
+                            <td th:text="${(especie.clase != null ? especie.clase : '-') + ' / ' + (especie.orden != null ? especie.orden : '-')}">Magnoliopsida</td>
                             <td>
-                                <span th:text="${(plant.familia != null ? plant.familia : '-') + ' / ' + (plant.genero != null ? plant.genero : '-') + ' ' + (plant.especie != null ? plant.especie : '')}">Pinaceae / Pinus</span>
+                                <span th:text="${(especie.familia != null ? especie.familia : '-') + ' / ' + (especie.genero != null ? especie.genero : '-') + ' ' + (especie.especie != null ? especie.especie : '')}">Bignoniaceae / Jacaranda mimosifolia</span>
                             </td>
                             <td>
                                 <div class="table-actions">
                                     <button class="btn-action btn-edit" 
-                                            data-entity="plant"
-                                            th:data-id="${plant.id}"
-                                            th:data-nombre="${plant.nombre}"
-                                            th:data-reino="${plant.reino}"
-                                            th:data-division="${plant.division}"
-                                            th:data-clase="${plant.clase}"
-                                            th:data-orden="${plant.orden}"
-                                            th:data-familia="${plant.familia}"
-                                            th:data-genero="${plant.genero}"
-                                            th:data-especie="${plant.especie}"
-                                            th:data-assetid="${plant.assetId}"
+                                            data-entity="especie"
+                                            th:data-id="${especie.id}"
+                                            th:data-nombre="${especie.nombre}"
+                                            th:data-reino="${especie.reino}"
+                                            th:data-divisionphylum="${especie.divisionPhylum}"
+                                            th:data-clase="${especie.clase}"
+                                            th:data-subclase="${especie.subclase}"
+                                            th:data-orden="${especie.orden}"
+                                            th:data-familia="${especie.familia}"
+                                            th:data-subfamilia="${especie.subfamilia}"
+                                            th:data-genero="${especie.genero}"
+                                            th:data-especie="${especie.especie}"
+                                            th:data-variedad="${especie.variedad}"
+                                            th:data-observaciones="${especie.observaciones}"
+                                            th:data-assetid="${especie.assetId}"
                                             onclick="openEditDialog(this)" 
-                                            title="Editar Planta">
+                                            title="Editar Especie">
                                         <svg class="icon"><use th:href="@{/images/icons.svg#icon-edit}"></use></svg>
                                     </button>
                                     <button class="btn-action btn-delete" 
-                                            data-entity="plant"
-                                            th:data-id="${plant.id}"
-                                            th:data-nombre="${plant.nombre}"
+                                            data-entity="especie"
+                                            th:data-id="${especie.id}"
+                                            th:data-nombre="${especie.nombre}"
                                             onclick="deleteItemEntity(this)" 
-                                            title="Eliminar Planta">
+                                            title="Eliminar Especie">
                                         <svg class="icon"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
                                     </button>
                                 </div>
                             </td>
                         </tr>
-                        <tr th:if="${#lists.isEmpty(plantas)}">
-                            <td colspan="5" class="text-center text-muted py-8">No hay registros de flora.</td>
+                        <tr th:if="${#lists.isEmpty(especies)}">
+                            <td colspan="7" class="text-center text-muted py-8">No hay registros de especies.</td>
                         </tr>
                     </tbody>
                 </table>

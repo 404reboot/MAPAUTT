@@ -1,13 +1,11 @@
 package controller;
 
-import model.Animal;
-import model.AnimalRepository;
 import model.AreaVerde;
 import model.AreaVerdeRepository;
 import model.Edificio;
 import model.EdificioRepository;
-import model.Plant;
-import model.PlantRepository;
+import model.Especie;
+import model.EspecieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,18 +16,15 @@ public class MapService {
 
     private final EdificioRepository edificioRepository;
     private final AreaVerdeRepository areaVerdeRepository;
-    private final AnimalRepository animalRepository;
-    private final PlantRepository plantRepository;
+    private final EspecieRepository especieRepository;
 
     @Autowired
     public MapService(EdificioRepository edificioRepository,
                       AreaVerdeRepository areaVerdeRepository,
-                      AnimalRepository animalRepository,
-                      PlantRepository plantRepository) {
+                      EspecieRepository especieRepository) {
         this.edificioRepository = edificioRepository;
         this.areaVerdeRepository = areaVerdeRepository;
-        this.animalRepository = animalRepository;
-        this.plantRepository = plantRepository;
+        this.especieRepository = especieRepository;
     }
 
     public List<Edificio> getEdificios() {
@@ -40,12 +35,12 @@ public class MapService {
         return areaVerdeRepository.findAll();
     }
 
-    public List<Animal> getAnimales() {
-        return animalRepository.findAll();
+    public List<Especie> getEspecies() {
+        return especieRepository.findAll();
     }
 
-    public List<Plant> getPlantas() {
-        return plantRepository.findAll();
+    public List<Especie> getEspeciesByReino(String reino) {
+        return especieRepository.findByReinoIgnoreCase(reino);
     }
 
     public Edificio getEdificioByCodigoMesh(String codigoMesh) {
@@ -98,12 +93,25 @@ public class MapService {
         areaVerdeRepository.save(areaVerde);
     }
 
-    public void addAnimal(Animal animal) {
-        animalRepository.save(animal);
+    public void addEspecie(Especie especie) {
+        especieRepository.save(especie);
     }
 
-    public void addPlant(Plant plant) {
-        plantRepository.save(plant);
+    public void addEspecieToAreaVerde(int areaVerdeId, int especieId) {
+        AreaVerde area = areaVerdeRepository.findById(areaVerdeId).orElse(null);
+        Especie especie = especieRepository.findById(especieId).orElse(null);
+        if (area != null && especie != null) {
+            area.getEspecies().add(especie);
+            areaVerdeRepository.save(area);
+        }
+    }
+
+    public void removeEspecieFromAreaVerde(int areaVerdeId, int especieId) {
+        AreaVerde area = areaVerdeRepository.findById(areaVerdeId).orElse(null);
+        if (area != null) {
+            area.getEspecies().removeIf(e -> e.getId().equals(especieId));
+            areaVerdeRepository.save(area);
+        }
     }
 
     public void updateEdificio(Edificio updated) {
@@ -114,12 +122,8 @@ public class MapService {
         areaVerdeRepository.save(updated);
     }
 
-    public void updateAnimal(Animal updated) {
-        animalRepository.save(updated);
-    }
-
-    public void updatePlant(Plant updated) {
-        plantRepository.save(updated);
+    public void updateEspecie(Especie updated) {
+        especieRepository.save(updated);
     }
 
     public void deleteEdificio(Integer id) {
@@ -132,16 +136,9 @@ public class MapService {
         areaVerdeRepository.deleteById(id);
     }
 
-    public void deleteAnimal(Integer id) {
+    public void deleteEspecie(Integer id) {
         if (id != null) {
-            animalRepository.deleteById(id);
-        }
-    }
-
-    public void deletePlant(Integer id) {
-        if (id != null) {
-            plantRepository.deleteById(id);
+            especieRepository.deleteById(id);
         }
     }
 }
-

@@ -38,17 +38,9 @@
                 </div>
 
                 <!-- Action Buttons in upper right -->
-                <button th:if="${activeSection == 'edificios' || activeSection == 'areas-verdes'}" class="btn btn-primary" onclick="openAddDialog()">
-                    <svg class="icon"><use th:href="@{/images/icons.svg#icon-plus}"></use></svg> Agregar
+                <button th:if="${activeSection == 'edificios' || activeSection == 'areas-verdes' || activeSection == 'seres-vivos'}" class="btn btn-primary" onclick="openAddDialog()">
+                    <svg class="icon"><use th:href="@{/images/icons.svg#icon-plus}"></use></svg> <span th:text="${activeSection == 'seres-vivos' ? 'Agregar Especie' : 'Agregar'}">Agregar</span>
                 </button>
-                <div th:if="${activeSection == 'seres-vivos'}" style="display: flex; gap: 10px;">
-                    <button class="btn btn-primary" onclick="openAddDialogFor('animal')">
-                        <svg class="icon"><use th:href="@{/images/icons.svg#icon-plus}"></use></svg> Agregar Animal
-                    </button>
-                    <button class="btn btn-primary" onclick="openAddDialogFor('plant')">
-                        <svg class="icon"><use th:href="@{/images/icons.svg#icon-plus}"></use></svg> Agregar Planta
-                    </button>
-                </div>
             </header>
 
             <!-- Main Scrollable Body Content -->
@@ -74,6 +66,7 @@
     <!-- Reusable Dynamic Modal Fragments -->
     <div th:replace="~{fragments/modal :: item-dialog}"></div>
     <div th:replace="~{fragments/modal :: confirm-delete-dialog}"></div>
+    <div th:replace="~{fragments/modal :: add-species-to-area-dialog}"></div>
 
     <!-- Dialog JS Functionality -->
     <script th:inline="javascript">
@@ -109,59 +102,122 @@
                     document.getElementById('av-descripcion').value = button.getAttribute('data-descripcion') || '';
                 }
             },
-            'animal': {
-                addTitle: 'Agregar Nuevo Animal',
-                editTitle: 'Editar Animal',
-                addAction: /*[[@{/admin-panel/add-animal}]]*/ '/admin-panel/add-animal',
-                editAction: /*[[@{/admin-panel/edit-animal}]]*/ '/admin-panel/edit-animal',
-                deleteAction: /*[[@{/admin-panel/delete-animal}]]*/ '/admin-panel/delete-animal',
-                label: 'el animal',
+            'especie': {
+                addTitle: 'Agregar Nueva Especie',
+                editTitle: 'Editar Especie',
+                addAction: /*[[@{/admin-panel/add-especie}]]*/ '/admin-panel/add-especie',
+                editAction: /*[[@{/admin-panel/edit-especie}]]*/ '/admin-panel/edit-especie',
+                deleteAction: /*[[@{/admin-panel/delete-especie}]]*/ '/admin-panel/delete-especie',
+                label: 'la especie',
                 populateEdit: (button) => {
-                    document.getElementById('an-nombre').value = button.getAttribute('data-nombre') || '';
-                    document.getElementById('an-clase').value = button.getAttribute('data-clase') || '';
-                    document.getElementById('an-orden').value = button.getAttribute('data-orden') || '';
-                    document.getElementById('an-familia').value = button.getAttribute('data-familia') || '';
-                    document.getElementById('an-genero').value = button.getAttribute('data-genero') || '';
-                    document.getElementById('an-especie').value = button.getAttribute('data-especie') || '';
+                    document.getElementById('esp-nombre').value = button.getAttribute('data-nombre') || '';
+                    document.getElementById('esp-reino').value = button.getAttribute('data-reino') || 'Plantae';
+                    document.getElementById('esp-divisionPhylum').value = button.getAttribute('data-divisionphylum') || '';
+                    document.getElementById('esp-clase').value = button.getAttribute('data-clase') || '';
+                    document.getElementById('esp-subclase').value = button.getAttribute('data-subclase') || '';
+                    document.getElementById('esp-orden').value = button.getAttribute('data-orden') || '';
+                    document.getElementById('esp-familia').value = button.getAttribute('data-familia') || '';
+                    document.getElementById('esp-subfamilia').value = button.getAttribute('data-subfamilia') || '';
+                    document.getElementById('esp-genero').value = button.getAttribute('data-genero') || '';
+                    document.getElementById('esp-especie').value = button.getAttribute('data-especie') || '';
+                    document.getElementById('esp-variedad').value = button.getAttribute('data-variedad') || '';
+                    document.getElementById('esp-observaciones').value = button.getAttribute('data-observaciones') || '';
+
                     const assetId = button.getAttribute('data-assetid') || '';
-                    document.getElementById('an-assetId').value = assetId;
-                    const removeFlag = document.getElementById('an-removeImage');
-                    if (removeFlag) removeFlag.value = 'false';
-                    
-                    if (assetId) {
-                        showImagePreview('an', '/images/custom/' + assetId);
-                    } else {
-                        hideImagePreview('an');
-                    }
-                }
-            },
-            'plant': {
-                addTitle: 'Agregar Nueva Planta',
-                editTitle: 'Editar Planta',
-                addAction: /*[[@{/admin-panel/add-plant}]]*/ '/admin-panel/add-plant',
-                editAction: /*[[@{/admin-panel/edit-plant}]]*/ '/admin-panel/edit-plant',
-                deleteAction: /*[[@{/admin-panel/delete-plant}]]*/ '/admin-panel/delete-plant',
-                label: 'la planta',
-                populateEdit: (button) => {
-                    document.getElementById('pl-nombre').value = button.getAttribute('data-nombre') || '';
-                    document.getElementById('pl-division').value = button.getAttribute('data-division') || '';
-                    document.getElementById('pl-clase').value = button.getAttribute('data-clase') || '';
-                    document.getElementById('pl-familia').value = button.getAttribute('data-familia') || '';
-                    document.getElementById('pl-genero').value = button.getAttribute('data-genero') || '';
-                    document.getElementById('pl-especie').value = button.getAttribute('data-especie') || '';
-                    const assetId = button.getAttribute('data-assetid') || '';
-                    document.getElementById('pl-assetId').value = assetId;
-                    const removeFlag = document.getElementById('pl-removeImage');
+                    document.getElementById('esp-assetId').value = assetId;
+                    const removeFlag = document.getElementById('esp-removeImage');
                     if (removeFlag) removeFlag.value = 'false';
 
                     if (assetId) {
-                        showImagePreview('pl', '/images/custom/' + assetId);
+                        showImagePreview('esp', '/images/custom/' + assetId);
                     } else {
-                        hideImagePreview('pl');
+                        hideImagePreview('esp');
                     }
                 }
             }
         };
+
+        function handleSpeciesInput(input) {
+            input.setCustomValidity('');
+            const val = (input.value || '').trim();
+            const hiddenId = document.getElementById('as-especieId');
+            const datalist = document.getElementById('especies-datalist');
+            if (!hiddenId || !datalist) return;
+
+            let matchedId = '';
+            const options = datalist.querySelectorAll('option');
+            options.forEach(opt => {
+                if (opt.value.toLowerCase() === val.toLowerCase()) {
+                    matchedId = opt.getAttribute('data-id');
+                }
+            });
+
+            hiddenId.value = matchedId;
+        }
+
+        function validateSpeciesAreaSubmit() {
+            const input = document.getElementById('as-especieInput');
+            const hiddenId = document.getElementById('as-especieId');
+            handleSpeciesInput(input);
+            if (!hiddenId || !hiddenId.value) {
+                input.setCustomValidity('Por favor selecciona una especie válida de la lista desplegable.');
+                input.reportValidity();
+                return false;
+            }
+            input.setCustomValidity('');
+            return true;
+        }
+
+        function openAddSpeciesToAreaDialog(button) {
+            const areaId = button.getAttribute('data-area-id');
+            const areaNombre = button.getAttribute('data-area-nombre');
+            document.getElementById('as-areaVerdeId').value = areaId;
+            document.getElementById('as-especieId').value = '';
+            const input = document.getElementById('as-especieInput');
+            if (input) {
+                input.value = '';
+                input.setCustomValidity('');
+            }
+            document.getElementById('add-species-dialog-title').textContent = `Asignar Especie a "${areaNombre}"`;
+            const dialog = document.getElementById('add-species-to-area-dialog');
+            dialog.showModal();
+        }
+
+        function closeAddSpeciesToAreaDialog() {
+            const dialog = document.getElementById('add-species-to-area-dialog');
+            dialog.close();
+            document.getElementById('add-species-to-area-form').reset();
+            const input = document.getElementById('as-especieInput');
+            if (input) input.setCustomValidity('');
+            document.getElementById('as-especieId').value = '';
+        }
+
+        function confirmRemoveSpeciesFromArea(button) {
+            const areaId = button.getAttribute('data-area-id');
+            const especieId = button.getAttribute('data-especie-id');
+            const especieNombre = button.getAttribute('data-especie-nombre');
+
+            const dialog = document.getElementById('confirm-delete-dialog');
+            const form = document.getElementById('delete-form');
+
+            const idInput = document.getElementById('delete-item-id');
+            if (idInput) idInput.disabled = true;
+
+            const extra1 = document.getElementById('delete-extra-id1');
+            const extra2 = document.getElementById('delete-extra-id2');
+            if (extra1) { extra1.disabled = false; extra1.value = areaId; }
+            if (extra2) { extra2.disabled = false; extra2.value = especieId; }
+
+            document.getElementById('delete-confirm-message').textContent = `¿Deseas quitar la especie "${especieNombre}" de esta área verde?`;
+            const subtext = document.getElementById('delete-confirm-subtext');
+            if (subtext) subtext.textContent = 'La especie seguirá existiendo en el catálogo general.';
+
+            const submitBtn = document.getElementById('delete-confirm-submit-btn');
+            if (submitBtn) submitBtn.textContent = 'Quitar Especie';
+
+            form.action = /*[[@{/admin-panel/area-verde/remove-especie}]]*/ '/admin-panel/area-verde/remove-especie';
+            dialog.showModal();
+        }
 
         function showImagePreview(prefix, imageSrc) {
             const dropZone = document.getElementById(prefix + '-drop-zone');
@@ -215,26 +271,6 @@
             hideImagePreview(prefix);
         }
 
-        function toggleSeresVivosFields(entityKey) {
-            if (activeSection !== 'seres-vivos') return;
-            const animalFields = document.getElementById('fields-animal');
-            const plantFields = document.getElementById('fields-plant');
-            const anInputs = animalFields ? animalFields.querySelectorAll('input') : [];
-            const plInputs = plantFields ? plantFields.querySelectorAll('input') : [];
-
-            if (entityKey === 'plant') {
-                if (animalFields) animalFields.style.display = 'none';
-                if (plantFields) plantFields.style.display = 'block';
-                anInputs.forEach(i => i.disabled = true);
-                plInputs.forEach(i => i.disabled = false);
-            } else {
-                if (animalFields) animalFields.style.display = 'block';
-                if (plantFields) plantFields.style.display = 'none';
-                anInputs.forEach(i => i.disabled = false);
-                plInputs.forEach(i => i.disabled = true);
-            }
-        }
-
         function openAddDialogFor(entityKey) {
             const key = entityKey || activeSection;
             const config = sectionConfig[key] || sectionConfig['edificios'];
@@ -243,15 +279,10 @@
             form.reset();
             document.getElementById('item-id').value = '';
 
-            const anRemove = document.getElementById('an-removeImage');
-            const plRemove = document.getElementById('pl-removeImage');
-            if (anRemove) anRemove.value = 'false';
-            if (plRemove) plRemove.value = 'false';
+            const espRemove = document.getElementById('esp-removeImage');
+            if (espRemove) espRemove.value = 'false';
 
-            hideImagePreview('an');
-            hideImagePreview('pl');
-
-            toggleSeresVivosFields(key);
+            hideImagePreview('esp');
 
             document.getElementById('dialog-title').textContent = config.addTitle;
             form.action = config.addAction;
@@ -260,7 +291,7 @@
         }
 
         function openAddDialog() {
-            openAddDialogFor(activeSection === 'seres-vivos' ? 'animal' : activeSection);
+            openAddDialogFor(activeSection === 'seres-vivos' ? 'especie' : activeSection);
         }
 
         function openEditDialog(button) {
@@ -272,8 +303,6 @@
 
             const id = button.getAttribute('data-id');
             document.getElementById('item-id').value = id;
-
-            toggleSeresVivosFields(entityKey);
 
             document.getElementById('dialog-title').textContent = config.editTitle;
             form.action = config.editAction;
@@ -304,9 +333,22 @@
             const config = sectionConfig[key] || sectionConfig['edificios'];
             const dialog = document.getElementById('confirm-delete-dialog');
             const form = document.getElementById('delete-form');
-            document.getElementById('delete-item-id').value = id;
+            
+            const idInput = document.getElementById('delete-item-id');
+            if (idInput) { idInput.disabled = false; idInput.value = id; }
+
+            const extra1 = document.getElementById('delete-extra-id1');
+            const extra2 = document.getElementById('delete-extra-id2');
+            if (extra1) extra1.disabled = true;
+            if (extra2) extra2.disabled = true;
 
             document.getElementById('delete-confirm-message').textContent = `¿Seguro que deseas eliminar ${config.label} "${nombre}"?`;
+            const subtext = document.getElementById('delete-confirm-subtext');
+            if (subtext) subtext.textContent = 'Esta acción no se puede deshacer.';
+
+            const submitBtn = document.getElementById('delete-confirm-submit-btn');
+            if (submitBtn) submitBtn.textContent = 'Eliminar';
+
             form.action = config.deleteAction;
 
             dialog.showModal();
@@ -376,8 +418,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            setupDragAndDrop('an');
-            setupDragAndDrop('pl');
+            setupDragAndDrop('esp');
         });
         /*]]>*/
     </script>
