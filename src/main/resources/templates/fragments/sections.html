@@ -145,7 +145,15 @@
                     <tbody>
                         <tr th:each="animal : ${animales}">
                             <td class="font-mono text-muted" th:text="'#' + ${animal.id}">#1</td>
-                            <td class="font-semibold" th:text="${animal.nombre}">Gato Campus</td>
+                            <td class="font-semibold">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <img th:if="${animal.assetId != null and !animal.assetId.empty}" 
+                                         th:src="@{'/images/custom/' + ${animal.assetId}}" 
+                                         alt="Foto" 
+                                         style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid var(--outline-variant); flex-shrink: 0;">
+                                    <span th:text="${animal.nombre}">Gato Campus</span>
+                                </div>
+                            </td>
                             <td>
                                 <span th:text="${(animal.familia != null ? animal.familia : '-') + ' / ' + (animal.genero != null ? animal.genero : '-') + ' ' + (animal.especie != null ? animal.especie : '')}">Felis catus</span>
                             </td>
@@ -208,7 +216,15 @@
                     <tbody>
                         <tr th:each="plant : ${plantas}">
                             <td class="font-mono text-muted" th:text="'#' + ${plant.id}">#1</td>
-                            <td class="font-semibold" th:text="${plant.nombre}">Pino Silvestre</td>
+                            <td class="font-semibold">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <img th:if="${plant.assetId != null and !plant.assetId.empty}" 
+                                         th:src="@{'/images/custom/' + ${plant.assetId}}" 
+                                         alt="Foto" 
+                                         style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid var(--outline-variant); flex-shrink: 0;">
+                                    <span th:text="${plant.nombre}">Pino Silvestre</span>
+                                </div>
+                            </td>
                             <td th:text="${(plant.division != null ? plant.division : '-') + ' / ' + (plant.clase != null ? plant.clase : '-')}">Pinophyta</td>
                             <td>
                                 <span th:text="${(plant.familia != null ? plant.familia : '-') + ' / ' + (plant.genero != null ? plant.genero : '-') + ' ' + (plant.especie != null ? plant.especie : '')}">Pinaceae / Pinus</span>

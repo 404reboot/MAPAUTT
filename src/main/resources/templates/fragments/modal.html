@@ -14,7 +14,7 @@
             </button>
         </div>
         
-        <form id="item-form" class="dialog-form" method="POST" action="">
+        <form id="item-form" class="dialog-form" method="POST" action="" enctype="multipart/form-data">
             <div class="dialog-body">
                 <!-- Hidden field for ID (empty on Add, populated on Edit) -->
                 <input type="hidden" id="item-id" name="id">
@@ -93,8 +93,20 @@
                                 <input type="text" id="an-especie" name="especie" class="form-control an-input" placeholder="Ej: catus" required>
                             </div>
                             <div>
-                                <label for="an-assetId">Identificador de Imagen (Asset ID)</label>
-                                <input type="text" id="an-assetId" name="assetId" class="form-control an-input" placeholder="Ej: gato.png">
+                                <label for="an-imagen">Imagen (Subir / Actualizar)</label>
+                                <input type="hidden" id="an-assetId" name="existingAssetId" class="an-input">
+                                <input type="hidden" id="an-removeImage" name="removeImage" value="false" class="an-input">
+                                <input type="file" id="an-imagen" name="imagen" class="form-control an-input" accept="image/*" onchange="previewImage(this, 'an-image-preview', 'an-preview-container')">
+                            </div>
+                        </div>
+                        <div id="an-preview-container" class="form-group" style="display: none; text-align: center; margin-top: 16px;">
+                            <label style="display: block; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--text-secondary);">Previsualización de Imagen</label>
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                                <img id="an-image-preview" src="" alt="Vista previa" style="max-width: 100%; max-height: 160px; border-radius: var(--radius-md); border: 1px solid var(--outline-variant); object-fit: contain;">
+                                <button type="button" class="btn btn-secondary" onclick="removeSelectedImage('an')" style="padding: 6px 14px; font-size: 12px; color: var(--danger); border-color: var(--danger); background: var(--danger-light);" title="Eliminar imagen">
+                                    <svg class="icon icon-sm" style="stroke: var(--danger);"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
+                                    Eliminar Imagen
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -131,8 +143,20 @@
                                 <input type="text" id="pl-especie" name="especie" class="form-control pl-input" placeholder="Ej: mimosifolia" required>
                             </div>
                             <div>
-                                <label for="pl-assetId">Identificador de Imagen (Asset ID)</label>
-                                <input type="text" id="pl-assetId" name="assetId" class="form-control pl-input" placeholder="Ej: jacaranda.png">
+                                <label for="pl-imagen">Imagen (Subir / Actualizar)</label>
+                                <input type="hidden" id="pl-assetId" name="existingAssetId" class="pl-input">
+                                <input type="hidden" id="pl-removeImage" name="removeImage" value="false" class="pl-input">
+                                <input type="file" id="pl-imagen" name="imagen" class="form-control pl-input" accept="image/*" onchange="previewImage(this, 'pl-image-preview', 'pl-preview-container')">
+                            </div>
+                        </div>
+                        <div id="pl-preview-container" class="form-group" style="display: none; text-align: center; margin-top: 16px;">
+                            <label style="display: block; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--text-secondary);">Previsualización de Imagen</label>
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                                <img id="pl-image-preview" src="" alt="Vista previa" style="max-width: 100%; max-height: 160px; border-radius: var(--radius-md); border: 1px solid var(--outline-variant); object-fit: contain;">
+                                <button type="button" class="btn btn-secondary" onclick="removeSelectedImage('pl')" style="padding: 6px 14px; font-size: 12px; color: var(--danger); border-color: var(--danger); background: var(--danger-light);" title="Eliminar imagen">
+                                    <svg class="icon icon-sm" style="stroke: var(--danger);"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
+                                    Eliminar Imagen
+                                </button>
                             </div>
                         </div>
                     </div>

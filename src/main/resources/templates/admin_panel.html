@@ -123,7 +123,19 @@
                     document.getElementById('an-familia').value = button.getAttribute('data-familia') || '';
                     document.getElementById('an-genero').value = button.getAttribute('data-genero') || '';
                     document.getElementById('an-especie').value = button.getAttribute('data-especie') || '';
-                    document.getElementById('an-assetId').value = button.getAttribute('data-assetid') || '';
+                    const assetId = button.getAttribute('data-assetid') || '';
+                    document.getElementById('an-assetId').value = assetId;
+                    const removeFlag = document.getElementById('an-removeImage');
+                    if (removeFlag) removeFlag.value = 'false';
+                    
+                    const container = document.getElementById('an-preview-container');
+                    const img = document.getElementById('an-image-preview');
+                    if (assetId) {
+                        img.src = '/images/custom/' + assetId;
+                        container.style.display = 'block';
+                    } else {
+                        container.style.display = 'none';
+                    }
                 }
             },
             'plant': {
@@ -140,10 +152,53 @@
                     document.getElementById('pl-familia').value = button.getAttribute('data-familia') || '';
                     document.getElementById('pl-genero').value = button.getAttribute('data-genero') || '';
                     document.getElementById('pl-especie').value = button.getAttribute('data-especie') || '';
-                    document.getElementById('pl-assetId').value = button.getAttribute('data-assetid') || '';
+                    const assetId = button.getAttribute('data-assetid') || '';
+                    document.getElementById('pl-assetId').value = assetId;
+                    const removeFlag = document.getElementById('pl-removeImage');
+                    if (removeFlag) removeFlag.value = 'false';
+
+                    const container = document.getElementById('pl-preview-container');
+                    const img = document.getElementById('pl-image-preview');
+                    if (assetId) {
+                        img.src = '/images/custom/' + assetId;
+                        container.style.display = 'block';
+                    } else {
+                        container.style.display = 'none';
+                    }
                 }
             }
         };
+
+        function previewImage(input, imgId, containerId) {
+            const prefix = imgId.split('-')[0];
+            const removeFlag = document.getElementById(prefix + '-removeImage');
+            if (removeFlag) removeFlag.value = 'false';
+
+            const container = document.getElementById(containerId);
+            const img = document.getElementById(imgId);
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                    if (container) container.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function removeSelectedImage(prefix) {
+            const fileInput = document.getElementById(prefix + '-imagen');
+            const existingInput = document.getElementById(prefix + '-assetId');
+            const removeFlag = document.getElementById(prefix + '-removeImage');
+            const container = document.getElementById(prefix + '-preview-container');
+            const img = document.getElementById(prefix + '-image-preview');
+
+            if (fileInput) fileInput.value = '';
+            if (existingInput) existingInput.value = '';
+            if (removeFlag) removeFlag.value = 'true';
+            if (img) img.src = '';
+            if (container) container.style.display = 'none';
+        }
 
         function toggleSeresVivosFields(entityKey) {
             if (activeSection !== 'seres-vivos') return;
@@ -172,6 +227,16 @@
             const form = document.getElementById('item-form');
             form.reset();
             document.getElementById('item-id').value = '';
+
+            const anRemove = document.getElementById('an-removeImage');
+            const plRemove = document.getElementById('pl-removeImage');
+            if (anRemove) anRemove.value = 'false';
+            if (plRemove) plRemove.value = 'false';
+
+            const anPreview = document.getElementById('an-preview-container');
+            const plPreview = document.getElementById('pl-preview-container');
+            if (anPreview) anPreview.style.display = 'none';
+            if (plPreview) plPreview.style.display = 'none';
 
             toggleSeresVivosFields(key);
 
