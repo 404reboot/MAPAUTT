@@ -137,47 +137,100 @@
             }
         };
 
-        function handleSpeciesInput(input) {
-            input.setCustomValidity('');
-            const val = (input.value || '').trim();
-            const hiddenId = document.getElementById('as-especieId');
-            const datalist = document.getElementById('especies-datalist');
-            if (!hiddenId || !datalist) return;
+        function openComboboxDropdown() {
+            const wrapper = document.getElementById('as-combobox-wrapper');
+            if (wrapper) wrapper.classList.add('open');
+        }
 
-            let matchedId = '';
-            const options = datalist.querySelectorAll('option');
+        function closeComboboxDropdown() {
+            const wrapper = document.getElementById('as-combobox-wrapper');
+            if (wrapper) wrapper.classList.remove('open');
+        }
+
+        function toggleComboboxDropdown(e) {
+            if (e) e.stopPropagation();
+            const wrapper = document.getElementById('as-combobox-wrapper');
+            if (!wrapper) return;
+            if (wrapper.classList.contains('open')) {
+                closeComboboxDropdown();
+            } else {
+                openComboboxDropdown();
+                const input = document.getElementById('as-species-combobox-input');
+                if (input) input.focus();
+            }
+        }
+
+        function handleComboboxInput(value) {
+            openComboboxDropdown();
+            const filter = (value || '').toLowerCase().trim();
+            const options = document.querySelectorAll('#as-combobox-options-list .custom-combobox-option');
+            let visibleCount = 0;
+            let exactMatchId = '';
+
             options.forEach(opt => {
-                if (opt.value.toLowerCase() === val.toLowerCase()) {
-                    matchedId = opt.getAttribute('data-id');
+                const searchData = opt.getAttribute('data-search') || '';
+                const label = (opt.getAttribute('data-label') || '').toLowerCase();
+                
+                if (searchData.includes(filter) || label.includes(filter)) {
+                    opt.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    opt.style.display = 'none';
+                }
+
+                if (label === filter) {
+                    exactMatchId = opt.getAttribute('data-id');
                 }
             });
 
-            hiddenId.value = matchedId;
+            document.getElementById('as-especieId').value = exactMatchId;
+
+            const noResults = document.getElementById('as-combobox-no-results');
+            if (noResults) {
+                noResults.style.display = (visibleCount === 0 && options.length > 0) ? 'block' : 'none';
+            }
         }
 
-        function validateSpeciesAreaSubmit() {
-            const input = document.getElementById('as-especieInput');
-            const hiddenId = document.getElementById('as-especieId');
-            handleSpeciesInput(input);
-            if (!hiddenId || !hiddenId.value) {
-                input.setCustomValidity('Por favor selecciona una especie válida de la lista desplegable.');
-                input.reportValidity();
+        function selectComboboxOption(element) {
+            const id = element.getAttribute('data-id');
+            const label = element.getAttribute('data-label');
+            
+            document.getElementById('as-especieId').value = id;
+            const input = document.getElementById('as-species-combobox-input');
+            if (input) input.value = label;
+
+            document.querySelectorAll('#as-combobox-options-list .custom-combobox-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+
+            closeComboboxDropdown();
+        }
+
+        function validateComboboxSpeciesSubmit() {
+            const hiddenInput = document.getElementById('as-especieId');
+            if (!hiddenInput || !hiddenInput.value) {
+                alert('Por favor selecciona una especie válida de la lista desplegable.');
                 return false;
             }
-            input.setCustomValidity('');
             return true;
+        }
+
+        function resetComboboxSpecies() {
+            document.getElementById('as-especieId').value = '';
+            const input = document.getElementById('as-species-combobox-input');
+            if (input) input.value = '';
+            handleComboboxInput('');
+            closeComboboxDropdown();
         }
 
         function openAddSpeciesToAreaDialog(button) {
             const areaId = button.getAttribute('data-area-id');
             const areaNombre = button.getAttribute('data-area-nombre');
             document.getElementById('as-areaVerdeId').value = areaId;
-            document.getElementById('as-especieId').value = '';
-            const input = document.getElementById('as-especieInput');
-            if (input) {
-                input.value = '';
-                input.setCustomValidity('');
-            }
+
+            resetComboboxSpecies();
+
             document.getElementById('add-species-dialog-title').textContent = `Asignar Especie a "${areaNombre}"`;
             const dialog = document.getElementById('add-species-to-area-dialog');
             dialog.showModal();
@@ -186,10 +239,8 @@
         function closeAddSpeciesToAreaDialog() {
             const dialog = document.getElementById('add-species-to-area-dialog');
             dialog.close();
+            resetComboboxSpecies();
             document.getElementById('add-species-to-area-form').reset();
-            const input = document.getElementById('as-especieInput');
-            if (input) input.setCustomValidity('');
-            document.getElementById('as-especieId').value = '';
         }
 
         function confirmRemoveSpeciesFromArea(button) {
@@ -419,6 +470,12 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             setupDragAndDrop('esp');
+            document.addEventListener('click', (e) => {
+                const wrapper = document.getElementById('as-combobox-wrapper');
+                if (wrapper && !wrapper.contains(e.target)) {
+                    closeComboboxDropdown();
+                }
+            });
         });
         /*]]>*/
     </script>

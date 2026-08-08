@@ -140,14 +140,8 @@
 
     <!-- Fragment: Gestionar Seres Vivos -->
     <div th:fragment="seres-vivos" class="section-container animate-fade-in">
-
-        <div class="card-section">
-            <h3 style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-                <svg class="icon"><use th:href="@{/images/icons.svg#icon-leaf}"></use></svg>
-                Catálogo de Especies
-            </h3>
-            <div class="table-responsive">
-                <table class="data-table">
+        <div class="table-responsive">
+            <table class="data-table">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -217,7 +211,6 @@
                 </table>
             </div>
         </div>
-    </div>
 
     <!-- Fragment: Editor del Mapa -->
     <div th:fragment="map-editor" class="section-container animate-fade-in" style="text-align: center; padding: 60px 20px;">

@@ -1,5 +1,6 @@
 package model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,6 +26,7 @@ public class Especie {
     private String especie;
     private String variedad;
     private String assetId;
+    @Column(columnDefinition = "TEXT")
     private String observaciones;
 
     public Especie() {

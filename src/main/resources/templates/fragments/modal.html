@@ -201,31 +201,55 @@
             </button>
         </div>
         
-        <form id="add-species-to-area-form" class="dialog-form" method="POST" th:action="@{/admin-panel/area-verde/add-especie}" onsubmit="return validateSpeciesAreaSubmit()">
-            <div class="dialog-body">
+        <form id="add-species-to-area-form" class="dialog-form" method="POST" th:action="@{/admin-panel/area-verde/add-especie}" onsubmit="return validateComboboxSpeciesSubmit()">
+            <div class="dialog-body" style="min-height: 260px; overflow: visible;">
                 <input type="hidden" id="as-areaVerdeId" name="areaVerdeId">
-                <input type="hidden" id="as-especieId" name="especieId">
+                <input type="hidden" id="as-especieId" name="especieId" required>
+                
                 <div class="form-group">
-                    <label for="as-especieInput">Especie *</label>
-                    <input type="text" 
-                           id="as-especieInput" 
-                           class="form-control" 
-                           list="especies-datalist" 
-                           placeholder="Escribe o selecciona una especie..." 
-                           oninput="handleSpeciesInput(this)"
-                           autocomplete="off"
-                           required>
-                    <datalist id="especies-datalist">
-                        <option th:each="esp : ${especies}" 
-                                th:data-id="${esp.id}" 
-                                th:value="${esp.nombre + ' (' + esp.reino + (esp.genero != null and !esp.genero.isEmpty() ? ' - ' + esp.genero : '') + ')'}"></option>
-                    </datalist>
+                    <label for="as-species-combobox-input">Especie a Asignar *</label>
+
+                    <!-- Unified Searchable Combobox Component -->
+                    <div id="as-combobox-wrapper" class="custom-combobox-wrapper">
+                        <div class="custom-combobox-input-container">
+                            <input type="text" 
+                                   id="as-species-combobox-input" 
+                                   class="form-control custom-combobox-input" 
+                                   placeholder="🔍 Escribe para buscar o haz clic para ver todas..." 
+                                   onfocus="openComboboxDropdown()"
+                                   oninput="handleComboboxInput(this.value)"
+                                   onclick="toggleComboboxDropdown(event)"
+                                   autocomplete="off"
+                                   required>
+                            <svg class="custom-combobox-arrow icon" onclick="toggleComboboxDropdown(event)"><use th:href="@{/images/icons.svg#icon-chevron-down}"></use></svg>
+                        </div>
+
+                        <div class="custom-combobox-menu" id="as-combobox-menu" onclick="event.stopPropagation()">
+                            <div class="custom-combobox-options" id="as-combobox-options-list">
+                                <div th:each="esp : ${especies}" 
+                                     class="custom-combobox-option" 
+                                     th:data-id="${esp.id}" 
+                                     th:data-search="${#strings.toLowerCase(esp.nombre + ' ' + esp.reino + ' ' + (esp.genero != null ? esp.genero : ''))}"
+                                     th:data-label="${esp.nombre + ' (' + esp.reino + (esp.genero != null and !esp.genero.isEmpty() ? ' - ' + esp.genero : '') + ')'}"
+                                     onclick="selectComboboxOption(this)">
+                                     <span th:text="${esp.nombre + ' (' + esp.reino + (esp.genero != null and !esp.genero.isEmpty() ? ' - ' + esp.genero : '') + ')'}">Especie</span>
+                                </div>
+                                <div id="as-combobox-no-results" class="custom-combobox-no-results" style="display: none;">
+                                    No se encontraron especies coincidentes.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <small th:if="${#lists.isEmpty(especies)}" class="form-text text-muted" style="color: var(--text-tertiary); display: block; margin-top: 6px;">
+                        ⚠️ No hay especies registradas. Agrega especies primero en la sección <strong>Seres Vivos</strong>.
+                    </small>
                 </div>
             </div>
 
             <div class="dialog-footer">
                 <button type="button" class="btn btn-secondary" onclick="closeAddSpeciesToAreaDialog()">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Asignar Especie</button>
+                <button type="submit" id="as-submit-btn" class="btn btn-primary" th:disabled="${#lists.isEmpty(especies)}">Asignar Especie</button>
             </div>
         </form>
     </dialog>

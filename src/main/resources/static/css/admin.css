@@ -792,3 +792,93 @@ footer {
     height: 14px;
 }
 
+/* Unified Searchable Combobox Component */
+.custom-combobox-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.custom-combobox-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.custom-combobox-input {
+    width: 100%;
+    padding-right: 40px;
+}
+
+.custom-combobox-arrow {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.custom-combobox-wrapper.open .custom-combobox-arrow {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.custom-combobox-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: var(--surface-color);
+    border: 1px solid var(--outline-variant);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideDown 0.15s ease forwards;
+}
+
+.custom-combobox-wrapper.open .custom-combobox-menu {
+    display: flex;
+}
+
+.custom-combobox-options {
+    max-height: 220px;
+    overflow-y: auto;
+    padding: 4px 0;
+}
+
+.custom-combobox-options::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-combobox-options::-webkit-scrollbar-thumb {
+    background: var(--outline-variant);
+    border-radius: 4px;
+}
+
+.custom-combobox-option {
+    padding: 10px 16px;
+    font-size: 13.5px;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.custom-combobox-option:hover,
+.custom-combobox-option.selected {
+    background: var(--primary-container);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.custom-combobox-no-results {
+    padding: 16px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
