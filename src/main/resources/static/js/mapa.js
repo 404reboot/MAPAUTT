@@ -693,91 +693,155 @@ function closeDetailsCard() {
 }
 
 
+let currentAreaVerdeData = null;
+
 //Muestra los detalles del edificio o área verde en la tarjeta de detalles
-function showDetails(type,data) {
+function showDetails(type, data) {
+    const cardTitle = document.getElementById('card-title');
+    const cardBody = document.getElementById('card-body');
+    const backBtn = document.getElementById('card-back-btn');
 
+    if (backBtn) backBtn.style.display = 'none';
 
-    const cardTitle =
-        document.getElementById(
-            'card-title'
-        );
-
-
-    const cardBody =
-        document.getElementById(
-            'card-body'
-        );
-
-
-
-    if(type === 'edificio') {
+    if (type === 'edificio') {
+        currentAreaVerdeData = null;
         cardTitle.textContent = data.nombre;
         cardBody.innerHTML = `
             <div class="info-row">
-                <div class="label">
-                    Carreras / Uso
-                </div>
-                <div class="value">
-                    ${data.carreras || 'General'}
-                </div>
+                <div class="label">Carreras / Uso</div>
+                <div class="value">${data.carreras || 'General'}</div>
             </div>
         `;
-
-
     } else {
+        currentAreaVerdeData = data;
+        cardTitle.textContent = data.nombre || 'Área Verde';
 
+        let speciesHtml = '';
+        const speciesList = data.especies ? (Array.isArray(data.especies) ? data.especies : Object.values(data.especies)) : [];
 
-        cardTitle.textContent =
-            data.nombre || 'Área Verde';
-
+        if (speciesList.length > 0) {
+            speciesHtml = '<div class="map-species-container">';
+            speciesList.forEach(esp => {
+                const reinoClass = esp.reino ? 'reino-' + esp.reino.toLowerCase() : '';
+                speciesHtml += `
+                    <div class="map-species-tag ${reinoClass}" onclick="showSpeciesDetails(${esp.id})" title="Ver ficha técnica de ${esp.nombre}">
+                        <span class="map-species-dot"></span>
+                        <span>${esp.nombre}</span>
+                    </div>
+                `;
+            });
+            speciesHtml += '</div>';
+        } else {
+            speciesHtml = '<div class="value" style="color: #718096; font-size: 13px; font-style: italic;">Sin especies registradas en esta área.</div>';
+        }
 
         cardBody.innerHTML = `
-
             <div class="info-row">
-
-                <div class="label">
-                    Ubicación / Sector
-                </div>
-
-                <div class="value">
-                    ${data.sector || 'Campus General'}
-                </div>
-
+                <div class="label">Ubicación / Sector</div>
+                <div class="value">${data.sector || 'Campus General'}</div>
             </div>
 
-
             <div class="info-row">
-
-                <div class="label">
-                    Superficie
-                </div>
-
-                <div class="value">
-                    ${data.superficie ? data.superficie + ' m²' : 'No especificada'}
-                </div>
-
+                <div class="label">Superficie</div>
+                <div class="value">${data.superficie ? data.superficie + ' m²' : 'No especificada'}</div>
             </div>
 
-
             <div class="info-row">
-
-                <div class="label">
-                    Descripción
-                </div>
-
-                <div class="value">
-                    ${data.descripcion || 'Área verde del campus'}
-                </div>
-
+                <div class="label">Descripción</div>
+                <div class="value">${data.descripcion || 'Área verde del campus'}</div>
             </div>
 
+            <div class="info-row" style="margin-top: 16px;">
+                <div class="label">Especies Residentes (${speciesList.length})</div>
+                ${speciesHtml}
+            </div>
         `;
-
     }
 
-
     openDetailsCard();
+}
 
+function showSpeciesDetails(especieId) {
+    if (!currentAreaVerdeData || !currentAreaVerdeData.especies) return;
+
+    const speciesList = Array.isArray(currentAreaVerdeData.especies) 
+        ? currentAreaVerdeData.especies 
+        : Object.values(currentAreaVerdeData.especies);
+
+    const especie = speciesList.find(e => e.id == especieId);
+    if (!especie) return;
+
+    const cardTitle = document.getElementById('card-title');
+    const cardBody = document.getElementById('card-body');
+    const backBtn = document.getElementById('card-back-btn');
+
+    if (backBtn) backBtn.style.display = 'inline-flex';
+    cardTitle.textContent = especie.nombre;
+
+    let imgHtml = '';
+    if (especie.assetId) {
+        imgHtml = `<img src="/images/custom/${especie.assetId}" class="species-detail-img" alt="${especie.nombre}">`;
+    }
+
+    const reinoClass = especie.reino ? 'reino-' + especie.reino.toLowerCase() : '';
+
+    cardBody.innerHTML = `
+        ${imgHtml}
+        
+        <div class="info-row" style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+                <div class="label">Nombre Común</div>
+                <div class="value" style="font-size: 16px; color: #1a202c;">${especie.nombre}</div>
+            </div>
+            <span class="map-species-tag ${reinoClass}" style="cursor: default;">
+                <span class="map-species-dot"></span>
+                <span>${especie.reino || 'Plantae'}</span>
+            </span>
+        </div>
+
+        <div class="info-row" style="margin-top: 12px;">
+            <div class="label">Taxonomía</div>
+            <div class="taxonomy-grid">
+                <div class="taxonomy-item">
+                    <span class="tax-label">Phylum / Div.</span>
+                    <span class="tax-val">${especie.divisionPhylum || '-'}</span>
+                </div>
+                <div class="taxonomy-item">
+                    <span class="tax-label">Clase</span>
+                    <span class="tax-val">${especie.clase || '-'}</span>
+                </div>
+                <div class="taxonomy-item">
+                    <span class="tax-label">Orden</span>
+                    <span class="tax-val">${especie.orden || '-'}</span>
+                </div>
+                <div class="taxonomy-item">
+                    <span class="tax-label">Familia</span>
+                    <span class="tax-val">${especie.familia || '-'}</span>
+                </div>
+                <div class="taxonomy-item">
+                    <span class="tax-label">Género</span>
+                    <span class="tax-val">${especie.genero || '-'}</span>
+                </div>
+                <div class="taxonomy-item">
+                    <span class="tax-label">Especie</span>
+                    <span class="tax-val">${especie.especie || '-'}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-row" style="margin-top: 12px;">
+            <div class="label">Observaciones / Notas</div>
+            <div class="value" style="font-size: 13px; font-weight: 500; color: #4a5568; line-height: 1.5;">
+                ${especie.observaciones || 'Sin observaciones registradas.'}
+            </div>
+        </div>
+    `;
+}
+
+function goBackToAreaCard() {
+    if (currentAreaVerdeData) {
+        showDetails('area-verde', currentAreaVerdeData);
+    }
 }
 
 
@@ -1052,4 +1116,10 @@ window.zoomOut =
 
 window.closeDetailsCard =
     closeDetailsCard;
+
+window.showSpeciesDetails =
+    showSpeciesDetails;
+
+window.goBackToAreaCard =
+    goBackToAreaCard;
 

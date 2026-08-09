@@ -80,17 +80,13 @@
         <div class="card-drag-handle"></div>
 
         <div class="card-header-overlay">
-
-            <h3 id="card-title">
-                Detalle
-            </h3>
-
-            <button class="close-btn" onclick="closeDetailsCard()">
-
-                &times;
-
-            </button>
-
+            <div class="card-header-left">
+                <button id="card-back-btn" class="btn-card-back" style="display: none;" onclick="goBackToAreaCard()" title="Volver al área verde" aria-label="Volver al área verde">
+                    <svg class="icon" style="width: 16px; height: 16px;"><use th:href="@{/images/icons.svg#icon-arrow-left}"></use></svg>
+                </button>
+                <h3 id="card-title">Detalle</h3>
+            </div>
+            <button class="close-btn" onclick="closeDetailsCard()">&times;</button>
         </div>
 
         <div id="card-body"></div>
