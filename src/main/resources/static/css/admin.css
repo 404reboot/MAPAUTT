@@ -207,23 +207,6 @@
     padding: 32px;
 }
 
-.section-header-info {
-    margin-bottom: 28px;
-}
-
-.section-header-info h2 {
-    font-size: 24px;
-    font-weight: 800;
-    margin-bottom: 6px;
-    color: var(--text-primary);
-}
-
-.section-header-info p {
-    color: var(--text-secondary);
-    font-size: 14px;
-    font-weight: 500;
-}
-
 /* Data Tables */
 .table-responsive {
     width: 100%;
@@ -683,3 +666,219 @@ footer {
         padding: 20px;
     }
 }
+
+/* Species Tags (Discord Role Style) */
+.species-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    max-width: 340px;
+}
+
+.species-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    background: rgba(46, 204, 113, 0.15);
+    color: #27ae60;
+    border: 1px solid rgba(46, 204, 113, 0.3);
+    position: relative;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.species-tag.reino-animalia {
+    background: rgba(52, 152, 219, 0.15);
+    color: #2980b9;
+    border-color: rgba(52, 152, 219, 0.3);
+}
+
+.species-tag.reino-fungi {
+    background: rgba(155, 89, 182, 0.15);
+    color: #8e44ad;
+    border-color: rgba(155, 89, 182, 0.3);
+}
+
+.species-tag-indicator {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+}
+
+.species-tag-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: currentColor;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.species-tag-name {
+    line-height: 1.2;
+}
+
+.species-tag-remove {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: rgba(231, 76, 60, 0.25);
+    color: #c0392b;
+    border: none;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease, visibility 0.15s ease, background 0.15s ease;
+}
+
+.species-tag:hover .species-tag-dot {
+    opacity: 0;
+    transform: scale(0.5);
+}
+
+.species-tag:hover .species-tag-remove {
+    opacity: 1;
+    visibility: visible;
+}
+
+.species-tag-remove:hover {
+    background: #e74c3c;
+    color: #ffffff;
+}
+
+.btn-add-species-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--surface-variant);
+    border: 1px dashed var(--outline-variant);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.btn-add-species-tag:hover {
+    background: var(--primary-container);
+    color: var(--primary);
+    border-style: solid;
+    border-color: var(--primary);
+    transform: scale(1.08);
+}
+
+
+.btn-add-species-tag .icon {
+    width: 14px;
+    height: 14px;
+}
+
+/* Unified Searchable Combobox Component */
+.custom-combobox-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.custom-combobox-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.custom-combobox-input {
+    width: 100%;
+    padding-right: 40px;
+}
+
+.custom-combobox-arrow {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.custom-combobox-wrapper.open .custom-combobox-arrow {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.custom-combobox-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: var(--surface-color);
+    border: 1px solid var(--outline-variant);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideDown 0.15s ease forwards;
+}
+
+.custom-combobox-wrapper.open .custom-combobox-menu {
+    display: flex;
+}
+
+.custom-combobox-options {
+    max-height: 220px;
+    overflow-y: auto;
+    padding: 4px 0;
+}
+
+.custom-combobox-options::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-combobox-options::-webkit-scrollbar-thumb {
+    background: var(--outline-variant);
+    border-radius: 4px;
+}
+
+.custom-combobox-option {
+    padding: 10px 16px;
+    font-size: 13.5px;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.custom-combobox-option:hover,
+.custom-combobox-option.selected {
+    background: var(--primary-container);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.custom-combobox-no-results {
+    padding: 16px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+

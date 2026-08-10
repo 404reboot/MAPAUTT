@@ -1,14 +1,22 @@
 package model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "area_verde")
 public class AreaVerde {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -17,6 +25,14 @@ public class AreaVerde {
     private Double superficie;
     private String descripcion;
     private String codigoMesh;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "area_verde_especie",
+        joinColumns = @JoinColumn(name = "area_verde_id"),
+        inverseJoinColumns = @JoinColumn(name = "especie_id")
+    )
+    private Set<Especie> especies = new HashSet<>();
 
     public AreaVerde() {
     }
@@ -76,5 +92,13 @@ public class AreaVerde {
 
     public void setCodigoMesh(String codigoMesh) {
         this.codigoMesh = codigoMesh;
+    }
+
+    public Set<Especie> getEspecies() {
+        return especies;
+    }
+
+    public void setEspecies(Set<Especie> especies) {
+        this.especies = especies;
     }
 }
