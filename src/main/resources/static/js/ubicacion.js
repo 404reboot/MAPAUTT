@@ -1,216 +1,1059 @@
 /**
  * =========================================================
- * SISTEMA DE UBICACIÓN DEL USUARIO
+ * SISTEMA DE UBICACION GPS
  * =========================================================
  *
  * Proyecto: Mapa interactivo de la UTTECAM
  * Autor: Cristobal Torres Ramos
  * Año: 2026
  *
- * Obtiene la ubicación GPS del dispositivo y la convierte
- * a coordenadas del modelo 3D de Three.js.
+ * Descripcion:
+ * Convierte coordenadas GPS reales a coordenadas X/Z
+ * correspondientes al modelo 3D de la UTTECAM.
+ *
+ * El sistema utiliza multiples puntos de calibracion
+ * para obtener una transformacion geografica ajustada
+ * al modelo 3D.
  */
 
+
 /* =========================================================
- * VARIABLES DEL SISTEMA
+ * VARIABLES GLOBALES
  * ========================================================= */
 
 /**
- * Identificador utilizado para detener el seguimiento GPS.
+ * Marcador 3D del usuario.
+ *
+ * @type {THREE.Group|null}
  */
-let watchID = null;
+let marcadorUsuario = null;
+
 
 /**
- * Marcador que representa al usuario.
+ * Identificador del seguimiento GPS.
+ *
+ * @type {number|null}
  */
-let userLocationMarker = null;
+let watchIdGPS = null;
+
 
 /**
- * Indica si el sistema GPS está activo.
+ * Ultima posicion GPS recibida.
+ *
+ * @type {GeolocationPosition|null}
+ */
+let ultimaPosicionGPS = null;
+
+
+/**
+ * Indica si el GPS esta activo.
+ *
+ * @type {boolean}
  */
 let gpsActivo = false;
 
 
+/**
+ * Indica si la camara debe centrarse
+ * cuando llegue una posicion GPS.
+ *
+ * @type {boolean}
+ */
+let centrarCamaraPendiente = false;
+
+
+/**
+ * Coeficientes de la transformacion GPS -> modelo.
+ *
+ * X = a * Este + b * Norte + c
+ *
+ * Z = d * Este + e * Norte + f
+ *
+ * @type {Object|null}
+ */
+let transformacionGPS = null;
+
+
 /* =========================================================
- * INICIALIZACIÓN
+ * CONFIGURACION
+ * ========================================================= */
+
+const GPS_CONFIG = {
+
+    /**
+     * Altura del marcador.
+     */
+    alturaMarcador: 3,
+
+    /**
+     * Tamaño del marcador.
+     */
+    tamanoMarcador: 2.5,
+
+    /**
+     * Precision GPS maxima aceptada.
+     */
+    precisionMaxima: 100,
+
+    /**
+     * Radio en metros para considerar
+     * que estamos sobre un punto conocido.
+     */
+    radioCoincidencia: 8,
+
+    /**
+     * Color del marcador.
+     */
+    colorMarcador: 0x2196f3
+};
+
+
+/* =========================================================
+ * PUNTOS DE CALIBRACION
  * ========================================================= */
 
 /**
- * Inicializa el sistema de ubicación.
+ * Cada punto contiene:
+ *
+ * nombre
+ * x
+ * z
+ * latitud
+ * longitud
+ *
+ * Las coordenadas X/Z pertenecen al modelo 3D.
+ *
+ * Las coordenadas latitud/longitud pertenecen
+ * al sistema GPS real.
  */
-function inicializarUbicacion() {
 
-    const botonUbicacion =
-        document.getElementById("btn-user-location");
+const PUNTOS_CALIBRACION = [
 
-    if (!botonUbicacion) {
+    {
+        nombre: "Almacén y Salón de Taekwondo",
+        x: -44.637,
+        z: -52.286,
+        latitud: 18.865519,
+        longitud: -97.718915
+    },
 
-        console.warn(
-            "No se encontró el botón de ubicación."
+    {
+        nombre: "Cafetería",
+        x: -20.421,
+        z: 14.416,
+        latitud: 18.864801,
+        longitud: -97.721043
+    },
+
+    {
+        nombre: "Cancha de Béisbol",
+        x: 38.550,
+        z: -67.475,
+        latitud: 18.863444,
+        longitud: -97.717329
+    },
+
+    {
+        nombre: "Cancha de Fútbol",
+        x: 6.548,
+        z: 37.630,
+        latitud: 18.863875,
+        longitud: -97.722116
+    },
+
+    {
+        nombre: "Cancha Techada No. 1",
+        x: -35.247,
+        z: -0.173,
+        latitud: 18.865224,
+        longitud: -97.720515
+    },
+
+    {
+        nombre: "Cancha Techada No. 2",
+        x: 25.669,
+        z: -31.011,
+        latitud: 18.863695,
+        longitud: -97.719203
+    },
+
+    {
+        nombre: "Caseta de Información",
+        x: -11.354,
+        z: 55.151,
+        latitud: 18.864791,
+        longitud: -97.722652
+    },
+
+    {
+        nombre: "Caseta Vigilancia Entrada 3",
+        x: -58.812,
+        z: 4.036,
+        latitud: 18.865760,
+        longitud: -97.720568
+    },
+
+    {
+        nombre: "Caseta Vigilancia Entrada 1",
+        x: -23.477,
+        z: 66.218,
+        latitud: 18.865124,
+        longitud: -97.723094
+    },
+
+    {
+        nombre: "Caseta Vigilancia Entrada 2",
+        x: -67.333,
+        z: -49.606,
+        latitud: 18.866012,
+        longitud: -97.719255
+    },
+
+    {
+        nombre: "Edificio D y Biblioteca",
+        x: 13.988,
+        z: 20.459,
+        latitud: 18.863617,
+        longitud: -97.721565
+    },
+
+    {
+        nombre: "Edificio E",
+        x: -34.327,
+        z: 17.494,
+        latitud: 18.865380,
+        longitud: -97.721095
+    },
+
+    {
+        nombre: "Edificio F",
+        x: -4.955,
+        z: 19.996,
+        latitud: 18.864283,
+        longitud: -97.721334
+    },
+
+    {
+        nombre: "Edificio G",
+        x: 14.647,
+        z: -8.813,
+        latitud: 18.863809,
+        longitud: -97.720491
+    },
+
+    {
+        nombre: "Edificio H",
+        x: -34.595,
+        z: 32.747,
+        latitud: 18.865602,
+        longitud: -97.721835
+    },
+
+    {
+        nombre: "Edificio K",
+        x: 37.516,
+        z: 20.992,
+        latitud: 18.863182,
+        longitud: -97.721677
+    },
+
+    {
+        nombre: "Edificio L",
+        x: -20.366,
+        z: 1.246,
+        latitud: 18.864752,
+        longitud: -97.720631
+    },
+
+    {
+        nombre: "Edificio M",
+        x: -35.156,
+        z: -17.334,
+        latitud: 18.865192,
+        longitud: -97.719837
+    },
+
+    {
+        nombre: "Edificio R",
+        x: 26.425,
+        z: 5.636,
+        latitud: 18.863340,
+        longitud: -97.720992
+    },
+
+    {
+        nombre: "Edificio T",
+        x: -4.768,
+        z: 1.314,
+        latitud: 18.864262,
+        longitud: -97.720658
+    },
+
+    {
+        nombre: "Estacionamiento Oeste",
+        x: -44.218,
+        z: 59.125,
+        latitud: 18.865657,
+        longitud: -97.722755
+    },
+
+    {
+        nombre: "Estacionamiento Norte",
+        x: -66.446,
+        z: -28.139,
+        latitud: 18.865858,
+        longitud: -97.719896
+    },
+
+    {
+        nombre: "Huerta y Composta",
+        x: 66.645,
+        z: 10.643,
+        latitud: 18.861598,
+        longitud: -97.721064
+    },
+
+    {
+        nombre: "Invernaderos",
+        x: 53.608,
+        z: -30.237,
+        latitud: 18.862102,
+        longitud: -97.719390
+    },
+
+    {
+        nombre: "Laboratorio de Serigrafía",
+        x: -33.170,
+        z: 6.650,
+        latitud: 18.865132,
+        longitud: -97.720712
+    },
+
+    {
+        nombre: "Presa de Agua",
+        x: -11.267,
+        z: -39.786,
+        latitud: 18.864739,
+        longitud: -97.719165
+    }
+
+];
+
+
+/* =========================================================
+ * CONVERSION GPS A METROS LOCALES
+ * ========================================================= */
+
+/**
+ * Convierte latitud/longitud a metros locales.
+ *
+ * El primer punto funciona como origen.
+ *
+ * @param {number} latitud
+ * @param {number} longitud
+ * @returns {{este:number,norte:number}}
+ */
+function gpsAMetros(latitud, longitud) {
+
+    const referencia =
+        PUNTOS_CALIBRACION[0];
+
+
+    const metrosLatitud =
+        111320;
+
+
+    const metrosLongitud =
+        111320 *
+        Math.cos(
+            THREE.MathUtils.degToRad(
+                referencia.latitud
+            )
         );
+
+
+    const este =
+        (longitud - referencia.longitud) *
+        metrosLongitud;
+
+
+    const norte =
+        (latitud - referencia.latitud) *
+        metrosLatitud;
+
+
+    return {
+
+        este: este,
+
+        norte: norte
+    };
+}
+
+
+/* =========================================================
+ * DISTANCIA GPS
+ * ========================================================= */
+
+/**
+ * Calcula distancia entre dos coordenadas GPS.
+ *
+ * @param {number} lat1
+ * @param {number} lon1
+ * @param {number} lat2
+ * @param {number} lon2
+ * @returns {number}
+ */
+function distanciaGPS(
+    lat1,
+    lon1,
+    lat2,
+    lon2
+) {
+
+    const R = 6371000;
+
+
+    const lat1Rad =
+        THREE.MathUtils.degToRad(lat1);
+
+    const lat2Rad =
+        THREE.MathUtils.degToRad(lat2);
+
+
+    const deltaLat =
+        THREE.MathUtils.degToRad(
+            lat2 - lat1
+        );
+
+
+    const deltaLon =
+        THREE.MathUtils.degToRad(
+            lon2 - lon1
+        );
+
+
+    const a =
+        Math.sin(deltaLat / 2) ** 2 +
+        Math.cos(lat1Rad) *
+        Math.cos(lat2Rad) *
+        Math.sin(deltaLon / 2) ** 2;
+
+
+    const c =
+        2 *
+        Math.atan2(
+            Math.sqrt(a),
+            Math.sqrt(1 - a)
+        );
+
+
+    return R * c;
+}
+
+
+/* =========================================================
+ * PUNTO GPS MAS CERCANO
+ * ========================================================= */
+
+/**
+ * Busca el punto de calibracion mas cercano.
+ *
+ * @param {number} latitud
+ * @param {number} longitud
+ * @returns {{punto:Object|null,distancia:number}}
+ */
+function obtenerPuntoMasCercano(
+    latitud,
+    longitud
+) {
+
+    let puntoCercano = null;
+
+    let distanciaMenor =
+        Infinity;
+
+
+    for (
+        const punto of PUNTOS_CALIBRACION
+    ) {
+
+        const distancia =
+            distanciaGPS(
+                latitud,
+                longitud,
+                punto.latitud,
+                punto.longitud
+            );
+
+
+        if (
+            distancia <
+            distanciaMenor
+        ) {
+
+            distanciaMenor =
+                distancia;
+
+            puntoCercano =
+                punto;
+        }
+    }
+
+
+    return {
+
+        punto:
+            puntoCercano,
+
+        distancia:
+            distanciaMenor
+    };
+}
+
+
+/* =========================================================
+ * RESOLVER SISTEMA DE ECUACIONES
+ * ========================================================= */
+
+/**
+ * Resuelve un sistema de 3 ecuaciones
+ * con 3 incógnitas.
+ *
+ * Se utiliza para obtener la transformación
+ * GPS -> modelo.
+ *
+ * @param {number[][]} A
+ * @param {number[]} B
+ * @returns {number[]}
+ */
+function resolverSistema3x3(A, B) {
+
+    const matriz = [
+
+        [
+            A[0][0],
+            A[0][1],
+            A[0][2],
+            B[0]
+        ],
+
+        [
+            A[1][0],
+            A[1][1],
+            A[1][2],
+            B[1]
+        ],
+
+        [
+            A[2][0],
+            A[2][1],
+            A[2][2],
+            B[2]
+        ]
+
+    ];
+
+
+    for (
+        let columna = 0;
+        columna < 3;
+        columna++
+    ) {
+
+        let filaPivote =
+            columna;
+
+
+        for (
+            let fila = columna + 1;
+            fila < 3;
+            fila++
+        ) {
+
+            if (
+                Math.abs(
+                    matriz[fila][columna]
+                ) >
+                Math.abs(
+                    matriz[filaPivote][columna]
+                )
+            ) {
+
+                filaPivote =
+                    fila;
+            }
+        }
+
+
+        if (
+            Math.abs(
+                matriz[filaPivote][columna]
+            ) < 0.000000001
+        ) {
+
+            throw new Error(
+                "Sistema de calibracion degenerado."
+            );
+        }
+
+
+        const temporal =
+            matriz[columna];
+
+        matriz[columna] =
+            matriz[filaPivote];
+
+        matriz[filaPivote] =
+            temporal;
+
+
+        const pivote =
+            matriz[columna][columna];
+
+
+        for (
+            let j = columna;
+            j < 4;
+            j++
+        ) {
+
+            matriz[columna][j] /=
+                pivote;
+        }
+
+
+        for (
+            let fila = 0;
+            fila < 3;
+            fila++
+        ) {
+
+            if (
+                fila === columna
+            ) {
+
+                continue;
+            }
+
+
+            const factor =
+                matriz[fila][columna];
+
+
+            for (
+                let j = columna;
+                j < 4;
+                j++
+            ) {
+
+                matriz[fila][j] -=
+                    factor *
+                    matriz[columna][j];
+            }
+        }
+    }
+
+
+    return [
+
+        matriz[0][3],
+
+        matriz[1][3],
+
+        matriz[2][3]
+
+    ];
+}
+
+
+/* =========================================================
+ * CALCULAR TRANSFORMACION
+ * ========================================================= */
+
+/**
+ * Calcula la transformación afín utilizando
+ * todos los puntos de calibracion.
+ *
+ * Se utiliza regresion por minimos cuadrados.
+ */
+function calcularTransformacionGPS() {
+
+    console.log(
+        "Calculando transformacion GPS..."
+    );
+
+
+    let sEE = 0;
+    let sEN = 0;
+    let sNN = 0;
+
+    let sE = 0;
+    let sN = 0;
+
+    let sEX = 0;
+    let sNX = 0;
+    let sX = 0;
+
+    let sEZ = 0;
+    let sNZ = 0;
+    let sZ = 0;
+
+
+    const n =
+        PUNTOS_CALIBRACION.length;
+
+
+    for (
+        const punto of PUNTOS_CALIBRACION
+    ) {
+
+        const local =
+            gpsAMetros(
+                punto.latitud,
+                punto.longitud
+            );
+
+
+        sEE +=
+            local.este *
+            local.este;
+
+
+        sEN +=
+            local.este *
+            local.norte;
+
+
+        sNN +=
+            local.norte *
+            local.norte;
+
+
+        sE +=
+            local.este;
+
+
+        sN +=
+            local.norte;
+
+
+        sEX +=
+            local.este *
+            punto.x;
+
+
+        sNX +=
+            local.norte *
+            punto.x;
+
+
+        sX +=
+            punto.x;
+
+
+        sEZ +=
+            local.este *
+            punto.z;
+
+
+        sNZ +=
+            local.norte *
+            punto.z;
+
+
+        sZ +=
+            punto.z;
+    }
+
+
+    const matriz = [
+
+        [
+            sEE,
+            sEN,
+            sE
+        ],
+
+        [
+            sEN,
+            sNN,
+            sN
+        ],
+
+        [
+            sE,
+            sN,
+            n
+        ]
+
+    ];
+
+
+    const coefX =
+        resolverSistema3x3(
+            matriz,
+            [
+                sEX,
+                sNX,
+                sX
+            ]
+        );
+
+
+    const coefZ =
+        resolverSistema3x3(
+            matriz,
+            [
+                sEZ,
+                sNZ,
+                sZ
+            ]
+        );
+
+
+    transformacionGPS = {
+
+        a: coefX[0],
+        b: coefX[1],
+        c: coefX[2],
+
+        d: coefZ[0],
+        e: coefZ[1],
+        f: coefZ[2]
+    };
+
+
+    console.log(
+        "Transformacion GPS calculada:"
+    );
+
+    console.log(
+        transformacionGPS
+    );
+
+
+    evaluarCalibracion();
+}
+
+
+/* =========================================================
+ * EVALUAR PRECISION
+ * ========================================================= */
+
+/**
+ * Comprueba cuanto error produce la transformacion
+ * sobre cada punto conocido.
+ */
+function evaluarCalibracion() {
+
+    if (
+        !transformacionGPS
+    ) {
 
         return;
     }
 
-    botonUbicacion.addEventListener(
-        "click",
-        activarUbicacion
+
+    console.log(
+        "========================================"
     );
 
     console.log(
-        "Sistema de ubicación inicializado correctamente."
+        "ERROR DE CALIBRACION"
+    );
+
+    console.log(
+        "========================================"
+    );
+
+
+    let errorTotal =
+        0;
+
+
+    for (
+        const punto of PUNTOS_CALIBRACION
+    ) {
+
+        const local =
+            gpsAMetros(
+                punto.latitud,
+                punto.longitud
+            );
+
+
+        const x =
+            transformacionGPS.a *
+            local.este +
+
+            transformacionGPS.b *
+            local.norte +
+
+            transformacionGPS.c;
+
+
+        const z =
+            transformacionGPS.d *
+            local.este +
+
+            transformacionGPS.e *
+            local.norte +
+
+            transformacionGPS.f;
+
+
+        const errorX =
+            x - punto.x;
+
+
+        const errorZ =
+            z - punto.z;
+
+
+        const error =
+            Math.sqrt(
+                errorX * errorX +
+                errorZ * errorZ
+            );
+
+
+        errorTotal +=
+            error;
+
+
+        console.log(
+            punto.nombre,
+            "| Error:",
+            error.toFixed(3),
+            "m"
+        );
+    }
+
+
+    const errorPromedio =
+        errorTotal /
+        PUNTOS_CALIBRACION.length;
+
+
+    console.log(
+        "----------------------------------------"
+    );
+
+
+    console.log(
+        "Error promedio:",
+        errorPromedio.toFixed(3),
+        "unidades del modelo"
+    );
+
+
+    console.log(
+        "========================================"
     );
 }
 
 
 /* =========================================================
- * ACTIVAR GPS
+ * CONVERTIR GPS A MODELO
  * ========================================================= */
 
 /**
- * Activa el seguimiento GPS.
+ * Convierte una coordenada GPS a X/Z.
+ *
+ * @param {number} latitud
+ * @param {number} longitud
+ * @returns {THREE.Vector3}
  */
-function activarUbicacion() {
+function convertirGPSa3D(
+    latitud,
+    longitud
+) {
 
-    console.log(
-        "Activando sistema de ubicación..."
-    );
+    if (
+        !transformacionGPS
+    ) {
 
-    /*
-     * Si el GPS ya está activo,
-     * se detiene.
-     */
-    if (gpsActivo) {
-
-        detenerUbicacion();
-
-        return;
+        calcularTransformacionGPS();
     }
 
-    /*
-     * Comprobar compatibilidad.
-     */
-    if (!navigator.geolocation) {
 
-        mostrarErrorUbicacion(
-            "Tu navegador no permite obtener la ubicación."
+    /*
+     * Buscar punto conocido.
+     */
+
+    const cercano =
+        obtenerPuntoMasCercano(
+            latitud,
+            longitud
         );
 
-        return;
-    }
 
     /*
-     * Activar estado visual.
-     */
-    gpsActivo = true;
-
-    const boton =
-        document.getElementById(
-            "btn-user-location"
-        );
-
-    if (boton) {
-
-        boton.classList.add("active");
-    }
-
-
-    /*
-     * =====================================================
-     * CREAR MARCADOR INMEDIATAMENTE
-     * =====================================================
-     *
-     * Esto permite comprobar que el marcador funciona
-     * incluso antes de recibir la posición GPS.
+     * Si estamos muy cerca de un punto,
+     * utilizamos directamente su coordenada.
      */
 
     if (
-        typeof scene !== "undefined"
+        cercano.punto &&
+        cercano.distancia <=
+        GPS_CONFIG.radioCoincidencia
     ) {
 
-        if (!userLocationMarker) {
+        console.log(
+            "Punto conocido:",
+            cercano.punto.nombre
+        );
 
-            crearMarcadorUsuario();
-        }
 
-        /*
-         * Posición inicial de prueba.
-         */
-        if (
-            UBICACION_CONFIG.modoPrueba
-        ) {
+        return new THREE.Vector3(
 
-            const posicionInicial =
-                new THREE.Vector3(
-                    UBICACION_CONFIG.posicionPrueba.x,
-                    UBICACION_CONFIG.posicionPrueba.y,
-                    UBICACION_CONFIG.posicionPrueba.z
-                );
+            cercano.punto.x,
 
-            actualizarMarcadorUsuario(
-                posicionInicial
-            );
+            GPS_CONFIG.alturaMarcador,
 
-            console.log(
-                "Marcador de prueba colocado en el centro."
-            );
-        }
-
-    } else {
-
-        console.warn(
-            "La escena Three.js todavía no está disponible."
+            cercano.punto.z
         );
     }
 
 
     /*
-     * =====================================================
-     * INICIAR GPS
-     * =====================================================
+     * Convertir GPS a metros locales.
      */
 
-    watchID =
-        navigator.geolocation.watchPosition(
-
-            actualizarUbicacion,
-
-            errorUbicacion,
-
-            {
-                enableHighAccuracy: true,
-                maximumAge: 1000,
-                timeout: 15000
-            }
+    const local =
+        gpsAMetros(
+            latitud,
+            longitud
         );
 
+
+    /*
+     * Aplicar transformación.
+     */
+
+    const x =
+        transformacionGPS.a *
+        local.este +
+
+        transformacionGPS.b *
+        local.norte +
+
+        transformacionGPS.c;
+
+
+    const z =
+        transformacionGPS.d *
+        local.este +
+
+        transformacionGPS.e *
+        local.norte +
+
+        transformacionGPS.f;
+
+
     console.log(
-        "Seguimiento GPS iniciado."
-    );
-}
-
-
-/* =========================================================
- * ACTUALIZAR UBICACIÓN
- * ========================================================= */
-function actualizarUbicacion(position) {
-
-    const latitud =
-        position.coords.latitude;
-
-    const longitud =
-        position.coords.longitude;
-
-    const precision =
-        position.coords.accuracy;
-
-
-    console.log(
-        "===================================="
-    );
-
-    console.log(
-        "GPS RECIBIDO"
+        "GPS -> MODELO"
     );
 
     console.log(
@@ -224,178 +1067,23 @@ function actualizarUbicacion(position) {
     );
 
     console.log(
-        "Precisión:",
-        precision,
-        "metros"
-    );
-
-
-    /**
-     * Convertir GPS a coordenadas 3D.
-     */
-    const posicion3D =
-        convertirGPSa3D(
-            latitud,
-            longitud
-        );
-
-
-    console.log(
-        "POSICIÓN CALCULADA EN THREE.JS:"
-    );
-
-    console.log(
         "X:",
-        posicion3D.x
-    );
-
-    console.log(
-        "Y:",
-        posicion3D.y
+        x.toFixed(3)
     );
 
     console.log(
         "Z:",
-        posicion3D.z
+        z.toFixed(3)
     );
 
-
-    /**
-     * Actualizar marcador.
-     */
-    actualizarMarcadorUsuario(
-        posicion3D
-    );
-
-
-    /**
-     * Guardar última ubicación.
-     */
-    window.ultimaUbicacionUsuario = {
-
-        latitud: latitud,
-
-        longitud: longitud,
-
-        precision: precision,
-
-        posicion3D: posicion3D
-
-    };
-}
-
-/**
- * =========================================================
- * CONVERSIÓN GPS → THREE.JS
- * =========================================================
- *
- * Convierte una coordenada GPS real a una posición
- * dentro del modelo 3D.
- *
- * @param {number} latitud
- * @param {number} longitud
- * @returns {THREE.Vector3}
- */
-function convertirGPSa3D(latitud, longitud) {
-
-    const config = UBICACION_CONFIG;
-
-
-    /**
-     * =====================================================
-     * CONVERSIÓN DE GRADOS A METROS
-     * =====================================================
-     *
-     * Aproximación para la zona de Tecamachalco.
-     */
-
-    const metrosPorGradoLatitud = 111320;
-
-    const metrosPorGradoLongitud =
-        111320 *
-        Math.cos(
-            THREE.MathUtils.degToRad(
-                config.origenGPS.latitud
-            )
-        );
-
-
-    /**
-     * =====================================================
-     * DISTANCIA GPS RESPECTO AL ORIGEN
-     * =====================================================
-     */
-
-    const metrosNorte =
-        (latitud -
-            config.origenGPS.latitud) *
-        metrosPorGradoLatitud;
-
-
-    const metrosEste =
-        (longitud -
-            config.origenGPS.longitud) *
-        metrosPorGradoLongitud;
-
-
-    /**
-     * =====================================================
-     * CONVERSIÓN AL EJE X
-     * =====================================================
-     */
-
-    const x =
-        config.origen3D.x +
-
-        (
-            metrosEste *
-            config.conversionX.metrosEste
-        ) +
-
-        (
-            metrosNorte *
-            config.conversionX.metrosNorte
-        );
-
-
-    /**
-     * =====================================================
-     * CONVERSIÓN AL EJE Z
-     * =====================================================
-     */
-
-    const z =
-        config.origen3D.z +
-
-        (
-            metrosEste *
-            config.conversionZ.metrosEste
-        ) +
-
-        (
-            metrosNorte *
-            config.conversionZ.metrosNorte
-        );
-
-
-    /**
-     * =====================================================
-     * CREAR POSICIÓN THREE.JS
-     * =====================================================
-     *
-     * X = posición horizontal
-     * Y = altura sobre el terreno
-     * Z = profundidad horizontal
-     */
 
     return new THREE.Vector3(
 
         x,
 
-        config.alturaMarcador,
+        GPS_CONFIG.alturaMarcador,
 
         z
-
     );
 }
 
@@ -404,91 +1092,154 @@ function convertirGPSa3D(latitud, longitud) {
  * CREAR MARCADOR
  * ========================================================= */
 
-/**
- * Crea el marcador visual del usuario.
- */
 function crearMarcadorUsuario() {
 
-    console.log(
-        "Creando marcador del usuario..."
-    );
+    if (
+        typeof THREE === "undefined" ||
+        typeof scene === "undefined" ||
+        !scene
+    ) {
+
+        console.error(
+            "Three.js o scene no estan disponibles."
+        );
+
+        return;
+    }
+
+
+    if (
+        marcadorUsuario
+    ) {
+
+        return;
+    }
+
+
+    marcadorUsuario =
+        new THREE.Group();
+
+
+    marcadorUsuario.name =
+        "MarcadorUsuario";
 
 
     /*
-     * Geometría circular.
+     * Esfera.
      */
-    const geometry =
-        new THREE.CircleGeometry(
-            UBICACION_CONFIG.tamañoMarcador,
-            32
+
+    const geometria =
+        new THREE.SphereGeometry(
+            GPS_CONFIG.tamanoMarcador * 0.35,
+            24,
+            24
         );
 
 
-    /*
-     * Material azul.
-     */
     const material =
         new THREE.MeshBasicMaterial({
 
-            color: 0x2196f3,
+            color:
+                GPS_CONFIG.colorMarcador,
 
-            transparent: true,
+            depthTest:
+                false,
 
-            opacity: 0.95,
-
-            side: THREE.DoubleSide,
-
-            depthTest: false,
-
-            depthWrite: false
+            depthWrite:
+                false
         });
 
 
-    /*
-     * Crear Mesh.
-     */
-    userLocationMarker =
+    const esfera =
         new THREE.Mesh(
-            geometry,
+            geometria,
             material
         );
 
 
+    esfera.position.y =
+        2;
+
+
+    esfera.renderOrder =
+        1000;
+
+
+    marcadorUsuario.add(
+        esfera
+    );
+
+
     /*
-     * Colocar horizontalmente.
+     * Aro.
      */
-    userLocationMarker.rotation.x =
+
+    const geometriaAro =
+        new THREE.RingGeometry(
+            GPS_CONFIG.tamanoMarcador * 0.55,
+            GPS_CONFIG.tamanoMarcador * 0.75,
+            32
+        );
+
+
+    const materialAro =
+        new THREE.MeshBasicMaterial({
+
+            color:
+                GPS_CONFIG.colorMarcador,
+
+            side:
+                THREE.DoubleSide,
+
+            transparent:
+                true,
+
+            opacity:
+                0.35,
+
+            depthTest:
+                false,
+
+            depthWrite:
+                false
+        });
+
+
+    const aro =
+        new THREE.Mesh(
+            geometriaAro,
+            materialAro
+        );
+
+
+    aro.rotation.x =
         -Math.PI / 2;
 
 
-    /*
-     * Posición inicial.
-     */
-    userLocationMarker.position.set(
-        0,
-        UBICACION_CONFIG.alturaMarcador,
-        0
-    );
+    aro.position.y =
+        0.05;
 
 
-    /*
-     * Evitar que quede oculto
-     * detrás de otros elementos.
-     */
-    userLocationMarker.renderOrder =
+    aro.renderOrder =
         999;
 
 
-    /*
-     * Agregar a la escena.
-     */
-    scene.add(
-        userLocationMarker
+    marcadorUsuario.add(
+        aro
     );
 
 
+    scene.add(
+        marcadorUsuario
+    );
+
+
+    marcadorUsuario.visible =
+        false;
+
+
     console.log(
-        "Marcador creado correctamente."
+        "Marcador GPS creado."
     );
 }
 
@@ -497,114 +1248,214 @@ function crearMarcadorUsuario() {
  * ACTUALIZAR MARCADOR
  * ========================================================= */
 
-/**
- * Actualiza la posición del marcador.
- *
- * @param {THREE.Vector3} posicion
- */
 function actualizarMarcadorUsuario(
     posicion
 ) {
 
-    /*
-     * Comprobar escena.
-     */
     if (
-        typeof scene === "undefined"
+        !marcadorUsuario
     ) {
 
-        console.warn(
-            "La escena Three.js no está disponible."
+        crearMarcadorUsuario();
+    }
+
+
+    if (
+        !marcadorUsuario
+    ) {
+
+        return;
+    }
+
+
+    marcadorUsuario.position.set(
+
+        posicion.x,
+
+        posicion.y,
+
+        posicion.z
+    );
+
+
+    marcadorUsuario.visible =
+        true;
+
+
+    console.log(
+        "Marcador:",
+        "X =",
+        posicion.x.toFixed(3),
+        "Z =",
+        posicion.z.toFixed(3)
+    );
+}
+
+
+/* =========================================================
+ * CENTRAR CAMARA
+ * ========================================================= */
+
+function centrarCamaraEnUsuario(
+    posicion3D
+) {
+
+    if (
+        typeof camera === "undefined" ||
+        typeof controls === "undefined"
+    ) {
+
+        console.error(
+            "Camera o controls no disponibles."
         );
 
         return;
     }
 
 
-    /*
-     * Crear marcador si todavía no existe.
-     */
-    if (!userLocationMarker) {
-
-        crearMarcadorUsuario();
-    }
-
-
-    /*
-     * Actualizar posición.
-     */
-    userLocationMarker.position.copy(
-        posicion
+    controls.target.copy(
+        posicion3D
     );
 
 
-    /*
-     * Forzar altura.
-     */
-    userLocationMarker.position.y =
-        UBICACION_CONFIG.alturaMarcador;
+    camera.lookAt(
+        posicion3D
+    );
+
+
+    controls.update();
 
 
     console.log(
-        "Marcador actualizado:",
-        userLocationMarker.position
+        "Camara centrada en usuario."
     );
 }
 
 
 /* =========================================================
- * DETENER GPS
+ * ACTUALIZAR UBICACION
  * ========================================================= */
 
-/**
- * Detiene el seguimiento GPS.
- */
-function detenerUbicacion() {
+function actualizarUbicacion(
+    position
+) {
+
+    const coords =
+        position.coords;
+
+
+    const latitud =
+        coords.latitude;
+
+
+    const longitud =
+        coords.longitude;
+
+
+    const precision =
+        coords.accuracy;
+
+
+    console.log(
+        "========================================"
+    );
+
+
+    console.log(
+        "GPS RECIBIDO"
+    );
+
+
+    console.log(
+        "Latitud:",
+        latitud
+    );
+
+
+    console.log(
+        "Longitud:",
+        longitud
+    );
+
+
+    console.log(
+        "Precision:",
+        precision,
+        "metros"
+    );
+
+
+    /*
+     * Si el navegador no entrega accuracy,
+     * permitimos continuar.
+     */
 
     if (
-        watchID !== null
+        precision &&
+        precision >
+        GPS_CONFIG.precisionMaxima
     ) {
 
-        navigator.geolocation.clearWatch(
-            watchID
+        console.warn(
+            "Lectura GPS descartada por baja precision."
         );
 
-        watchID = null;
+        return;
     }
 
 
-    gpsActivo = false;
+    ultimaPosicionGPS =
+        position;
 
 
-    const boton =
-        document.getElementById(
-            "btn-user-location"
+    const posicion3D =
+        convertirGPSa3D(
+            latitud,
+            longitud
         );
 
-    if (boton) {
 
-        boton.classList.remove(
-            "active"
-        );
-    }
-
-
-    console.log(
-        "Seguimiento GPS detenido."
+    actualizarMarcadorUsuario(
+        posicion3D
     );
+
+
+    window.ultimaUbicacionUsuario = {
+
+        latitud:
+            latitud,
+
+        longitud:
+            longitud,
+
+        precision:
+            precision,
+
+        posicion3D:
+            posicion3D
+    };
+
+
+    if (
+        centrarCamaraPendiente
+    ) {
+
+        centrarCamaraEnUsuario(
+            posicion3D
+        );
+
+
+        centrarCamaraPendiente =
+            false;
+    }
 }
 
 
 /* =========================================================
- * MANEJO DE ERRORES
+ * ERROR GPS
  * ========================================================= */
 
-/**
- * Maneja errores del sistema GPS.
- *
- * @param {GeolocationPositionError} error
- */
-function errorUbicacion(
+function errorGPS(
     error
 ) {
 
@@ -614,30 +1465,32 @@ function errorUbicacion(
     );
 
 
-    switch (error.code) {
+    switch (
+        error.code
+    ) {
 
-        case error.PERMISSION_DENIED:
+        case 1:
 
-            mostrarErrorUbicacion(
-                "No se permitió acceder a tu ubicación."
+            console.error(
+                "Permiso de ubicacion denegado."
             );
 
             break;
 
 
-        case error.POSITION_UNAVAILABLE:
+        case 2:
 
-            mostrarErrorUbicacion(
-                "No fue posible obtener tu ubicación."
+            console.error(
+                "Ubicacion no disponible."
             );
 
             break;
 
 
-        case error.TIMEOUT:
+        case 3:
 
-            mostrarErrorUbicacion(
-                "La ubicación tardó demasiado en responder."
+            console.error(
+                "Tiempo de espera agotado."
             );
 
             break;
@@ -645,41 +1498,393 @@ function errorUbicacion(
 
         default:
 
-            mostrarErrorUbicacion(
-                "Ocurrió un error al obtener tu ubicación."
+            console.error(
+                "Error GPS desconocido."
             );
     }
 }
 
 
 /* =========================================================
- * MOSTRAR ERROR
+ * INICIAR GPS
  * ========================================================= */
 
-/**
- * Muestra un mensaje de error.
- *
- * @param {string} mensaje
- */
-function mostrarErrorUbicacion(
-    mensaje
-) {
+function iniciarGPS() {
 
-    console.warn(
-        mensaje
+    console.log(
+        "INICIANDO GPS..."
     );
 
-    alert(
-        mensaje
+
+    if (
+        !navigator.geolocation
+    ) {
+
+        console.error(
+            "El navegador no soporta geolocalizacion."
+        );
+
+        return;
+    }
+
+
+    crearMarcadorUsuario();
+
+
+    if (
+        watchIdGPS !== null
+    ) {
+
+        navigator.geolocation.clearWatch(
+            watchIdGPS
+        );
+
+
+        watchIdGPS =
+            null;
+    }
+
+
+    /*
+     * Primera lectura.
+     */
+
+    navigator.geolocation.getCurrentPosition(
+
+        actualizarUbicacion,
+
+        errorGPS,
+
+        {
+
+            enableHighAccuracy:
+                true,
+
+            timeout:
+                20000,
+
+            maximumAge:
+                0
+        }
+    );
+
+
+    /*
+     * Seguimiento continuo.
+     */
+
+    watchIdGPS =
+        navigator.geolocation.watchPosition(
+
+            actualizarUbicacion,
+
+            errorGPS,
+
+            {
+
+                enableHighAccuracy:
+                    true,
+
+                timeout:
+                    20000,
+
+                maximumAge:
+                    1000
+            }
+        );
+
+
+    gpsActivo =
+        true;
+
+
+    console.log(
+        "GPS ACTIVO."
     );
 }
 
 
 /* =========================================================
- * INICIAR SISTEMA
+ * DETENER GPS
+ * ========================================================= */
+
+function detenerGPS() {
+
+    if (
+        watchIdGPS !== null
+    ) {
+
+        navigator.geolocation.clearWatch(
+            watchIdGPS
+        );
+
+
+        watchIdGPS =
+            null;
+    }
+
+
+    gpsActivo =
+        false;
+
+
+    console.log(
+        "GPS DETENIDO."
+    );
+}
+
+
+/* =========================================================
+ * PRUEBA MANUAL
+ * ========================================================= */
+
+/**
+ * Prueba cualquier coordenada GPS.
+ *
+ * @param {number} latitud
+ * @param {number} longitud
+ */
+function probarUbicacion(
+    latitud,
+    longitud
+) {
+
+    console.log(
+        "========================================"
+    );
+
+    console.log(
+        "PRUEBA MANUAL GPS"
+    );
+
+    console.log(
+        "Latitud:",
+        latitud
+    );
+
+    console.log(
+        "Longitud:",
+        longitud
+    );
+
+
+    const posicion =
+        convertirGPSa3D(
+            latitud,
+            longitud
+        );
+
+
+    actualizarMarcadorUsuario(
+        posicion
+    );
+
+
+    /*
+     * Centrar automaticamente durante
+     * las pruebas manuales.
+     */
+
+    centrarCamaraEnUsuario(
+        posicion
+    );
+}
+
+
+/* =========================================================
+ * PRUEBA PUNTO DE CALIBRACION
+ * ========================================================= */
+
+function probarPuntoCalibracion(
+    indice
+) {
+
+    if (
+        indice < 0 ||
+        indice >=
+        PUNTOS_CALIBRACION.length
+    ) {
+
+        console.error(
+            "Indice invalido."
+        );
+
+        return;
+    }
+
+
+    const punto =
+        PUNTOS_CALIBRACION[indice];
+
+
+    console.log(
+        "Probando:",
+        punto.nombre
+    );
+
+
+    probarUbicacion(
+
+        punto.latitud,
+
+        punto.longitud
+    );
+}
+
+
+/* =========================================================
+ * INICIALIZAR CALIBRACION
+ * ========================================================= */
+
+calcularTransformacionGPS();
+
+
+/* =========================================================
+ * EXPORTAR FUNCIONES
+ * ========================================================= */
+
+window.iniciarGPS =
+    iniciarGPS;
+
+
+window.detenerGPS =
+    detenerGPS;
+
+
+window.actualizarUbicacion =
+    actualizarUbicacion;
+
+
+window.convertirGPSa3D =
+    convertirGPSa3D;
+
+
+window.crearMarcadorUsuario =
+    crearMarcadorUsuario;
+
+
+window.actualizarMarcadorUsuario =
+    actualizarMarcadorUsuario;
+
+
+window.centrarCamaraEnUsuario =
+    centrarCamaraEnUsuario;
+
+
+window.probarUbicacion =
+    probarUbicacion;
+
+
+window.probarPuntoCalibracion =
+    probarPuntoCalibracion;
+
+
+window.PUNTOS_CALIBRACION =
+    PUNTOS_CALIBRACION;
+
+
+/* =========================================================
+ * BOTON GPS
  * ========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
-    inicializarUbicacion
+    function () {
+
+        const botonUbicacion =
+            document.getElementById(
+                "btn-ubicacion"
+            );
+
+
+        if (
+            !botonUbicacion
+        ) {
+
+            console.error(
+                "No existe #btn-ubicacion."
+            );
+
+            return;
+        }
+
+
+        console.log(
+            "Boton GPS conectado."
+        );
+
+
+        botonUbicacion.addEventListener(
+            "click",
+            function () {
+
+                console.log(
+                    "BOTON DE UBICACION PRESIONADO"
+                );
+
+
+                if (
+                    !gpsActivo
+                ) {
+
+                    /*
+                     * La bandera debe activarse
+                     * ANTES de iniciar el GPS.
+                     */
+
+                    centrarCamaraPendiente =
+                        true;
+
+
+                    iniciarGPS();
+
+
+                    botonUbicacion.classList.add(
+                        "ubicacion-activa"
+                    );
+
+
+                    return;
+                }
+
+
+                /*
+                 * Si ya existe una ubicacion,
+                 * volver a centrar la camara.
+                 */
+
+                if (
+                    window.ultimaUbicacionUsuario &&
+                    window.ultimaUbicacionUsuario.posicion3D
+                ) {
+
+                    centrarCamaraEnUsuario(
+
+                        window
+                            .ultimaUbicacionUsuario
+                            .posicion3D
+                    );
+                }
+
+            }
+        );
+    }
+);
+
+
+console.log(
+    "========================================"
+);
+
+console.log(
+    "MODULO GPS CARGADO"
+);
+
+console.log(
+    PUNTOS_CALIBRACION.length,
+    "puntos de calibracion disponibles."
+);
+
+console.log(
+    "========================================"
 );
