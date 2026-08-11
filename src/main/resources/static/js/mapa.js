@@ -1606,10 +1606,16 @@ function showDetails(type, data) {
 
     if (backBtn) backBtn.style.display = 'none';
 
+    let imgHtml = '';
+    if (data && data.assetId) {
+        imgHtml = `<img src="/images/custom/${data.assetId}" class="card-detail-img" alt="${data.nombre || ''}">`;
+    }
+
     if (type === 'edificio') {
         currentAreaVerdeData = null;
         cardTitle.textContent = data.nombre;
         cardBody.innerHTML = `
+            ${imgHtml}
             <div class="info-row">
                 <div class="label">Carreras / Uso</div>
                 <div class="value">${data.carreras || 'General'}</div>
@@ -1639,6 +1645,7 @@ function showDetails(type, data) {
         }
 
         cardBody.innerHTML = `
+            ${imgHtml}
             <div class="info-row">
                 <div class="label">Ubicación / Sector</div>
                 <div class="value">${data.sector || 'Campus General'}</div>

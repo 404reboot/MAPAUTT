@@ -25,6 +25,7 @@ public class AreaVerde {
     private Double superficie;
     private String descripcion;
     private String codigoMesh;
+    private String assetId;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -38,12 +39,17 @@ public class AreaVerde {
     }
 
     public AreaVerde(int id, String nombre, String sector, Double superficie, String descripcion, String codigoMesh) {
+        this(id, nombre, sector, superficie, descripcion, codigoMesh, null);
+    }
+
+    public AreaVerde(int id, String nombre, String sector, Double superficie, String descripcion, String codigoMesh, String assetId) {
         this.id = id;
         this.nombre = nombre;
         this.sector = sector;
         this.superficie = superficie;
         this.descripcion = descripcion;
         this.codigoMesh = codigoMesh;
+        this.assetId = assetId;
     }
 
     public int getId() {
@@ -92,6 +98,14 @@ public class AreaVerde {
 
     public void setCodigoMesh(String codigoMesh) {
         this.codigoMesh = codigoMesh;
+    }
+
+    public String getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
     }
 
     public Set<Especie> getEspecies() {

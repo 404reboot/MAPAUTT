@@ -15,15 +15,21 @@ public class Edificio {
     private String nombre;
     private String carreras;
     private String codigoMesh;
+    private String assetId;
 
     public Edificio() {
     }
 
     public Edificio(Integer id, String nombre, String carreras, String codigoMesh) {
+        this(id, nombre, carreras, codigoMesh, null);
+    }
+
+    public Edificio(Integer id, String nombre, String carreras, String codigoMesh, String assetId) {
         this.id = id;
         this.nombre = nombre;
         this.carreras = carreras;
         this.codigoMesh = codigoMesh;
+        this.assetId = assetId;
     }
 
     public Integer getId() {
@@ -56,5 +62,13 @@ public class Edificio {
 
     public void setCodigoMesh(String codigoMesh) {
         this.codigoMesh = codigoMesh;
+    }
+
+    public String getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
     }
 }

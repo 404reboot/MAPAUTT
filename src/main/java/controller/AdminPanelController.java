@@ -108,13 +108,18 @@ public class AdminPanelController {
             @RequestParam("nombre") String nombre,
             @RequestParam("carreras") String carreras,
             @RequestParam(value = "codigoMesh", required = false) String codigoMesh,
+            @RequestParam(value = "imagen", required = false) MultipartFile imagenFile,
+            @RequestParam(value = "existingAssetId", required = false) String existingAssetId,
+            @RequestParam(value = "removeImage", required = false, defaultValue = "false") Boolean removeImage,
             HttpSession session) {
 
         if (session.getAttribute("user") == null) {
             return "redirect:/acceso?error=unauthorized";
         }
 
-        Edificio nuevoEdificio = new Edificio(null, nombre, carreras, codigoMesh);
+        String finalAssetId = processUploadedFile(imagenFile, existingAssetId, removeImage);
+
+        Edificio nuevoEdificio = new Edificio(null, nombre, carreras, codigoMesh, finalAssetId);
         mapService.addEdificio(nuevoEdificio);
 
         return "redirect:/admin-panel?section=edificios";
@@ -127,13 +132,18 @@ public class AdminPanelController {
             @RequestParam("superficie") Double superficie,
             @RequestParam("descripcion") String descripcion,
             @RequestParam(value = "codigoMesh", required = false) String codigoMesh,
+            @RequestParam(value = "imagen", required = false) MultipartFile imagenFile,
+            @RequestParam(value = "existingAssetId", required = false) String existingAssetId,
+            @RequestParam(value = "removeImage", required = false, defaultValue = "false") Boolean removeImage,
             HttpSession session) {
 
         if (session.getAttribute("user") == null) {
             return "redirect:/acceso?error=unauthorized";
         }
 
-        AreaVerde nuevaArea = new AreaVerde(0, nombre, sector, superficie, descripcion, codigoMesh);
+        String finalAssetId = processUploadedFile(imagenFile, existingAssetId, removeImage);
+
+        AreaVerde nuevaArea = new AreaVerde(0, nombre, sector, superficie, descripcion, codigoMesh, finalAssetId);
         mapService.addAreaVerde(nuevaArea);
 
         return "redirect:/admin-panel?section=areas-verdes";
@@ -204,13 +214,18 @@ public class AdminPanelController {
             @RequestParam("nombre") String nombre,
             @RequestParam("carreras") String carreras,
             @RequestParam(value = "codigoMesh", required = false) String codigoMesh,
+            @RequestParam(value = "imagen", required = false) MultipartFile imagenFile,
+            @RequestParam(value = "existingAssetId", required = false) String existingAssetId,
+            @RequestParam(value = "removeImage", required = false, defaultValue = "false") Boolean removeImage,
             HttpSession session) {
 
         if (session.getAttribute("user") == null) {
             return "redirect:/acceso?error=unauthorized";
         }
 
-        Edificio updatedEdificio = new Edificio(id, nombre, carreras, codigoMesh);
+        String finalAssetId = processUploadedFile(imagenFile, existingAssetId, removeImage);
+
+        Edificio updatedEdificio = new Edificio(id, nombre, carreras, codigoMesh, finalAssetId);
         mapService.updateEdificio(updatedEdificio);
 
         return "redirect:/admin-panel?section=edificios";
@@ -224,6 +239,9 @@ public class AdminPanelController {
             @RequestParam("superficie") Double superficie,
             @RequestParam("descripcion") String descripcion,
             @RequestParam(value = "codigoMesh", required = false) String codigoMesh,
+            @RequestParam(value = "imagen", required = false) MultipartFile imagenFile,
+            @RequestParam(value = "existingAssetId", required = false) String existingAssetId,
+            @RequestParam(value = "removeImage", required = false, defaultValue = "false") Boolean removeImage,
             HttpSession session) {
 
         if (session.getAttribute("user") == null) {
@@ -232,11 +250,13 @@ public class AdminPanelController {
 
         AreaVerde updatedArea = mapService.getAreaVerdeById(id);
         if (updatedArea != null) {
+            String finalAssetId = processUploadedFile(imagenFile, existingAssetId != null ? existingAssetId : updatedArea.getAssetId(), removeImage);
             updatedArea.setNombre(nombre);
             updatedArea.setSector(sector);
             updatedArea.setSuperficie(superficie);
             updatedArea.setDescripcion(descripcion);
             updatedArea.setCodigoMesh(codigoMesh);
+            updatedArea.setAssetId(finalAssetId);
             mapService.updateAreaVerde(updatedArea);
         }
 
@@ -280,6 +300,10 @@ public class AdminPanelController {
         if (session.getAttribute("user") == null) {
             return "redirect:/acceso?error=unauthorized";
         }
+        Edificio ed = mapService.getEdificios().stream().filter(e -> e.getId().equals(id)).findFirst().orElse(null);
+        if (ed != null && ed.getAssetId() != null) {
+            deletePhysicalFile(ed.getAssetId());
+        }
         mapService.deleteEdificio(id);
         return "redirect:/admin-panel?section=edificios";
     }
@@ -288,6 +312,10 @@ public class AdminPanelController {
     public String deleteAreaVerde(@RequestParam("id") Integer id, HttpSession session) {
         if (session.getAttribute("user") == null) {
             return "redirect:/acceso?error=unauthorized";
+        }
+        AreaVerde av = mapService.getAreaVerdeById(id);
+        if (av != null && av.getAssetId() != null) {
+            deletePhysicalFile(av.getAssetId());
         }
         mapService.deleteAreaVerde(id);
         return "redirect:/admin-panel?section=areas-verdes";

@@ -20,6 +20,18 @@ const sectionConfig = {
             document.getElementById('ed-codigoMesh').value = button.getAttribute('data-codigomesh') || '';
             document.getElementById('ed-nombre').value = button.getAttribute('data-nombre') || '';
             document.getElementById('ed-carrera').value = button.getAttribute('data-carreras') || '';
+
+            const assetId = button.getAttribute('data-assetid') || '';
+            const inputAsset = document.getElementById('ed-assetId');
+            if (inputAsset) inputAsset.value = assetId;
+            const removeFlag = document.getElementById('ed-removeImage');
+            if (removeFlag) removeFlag.value = 'false';
+
+            if (assetId) {
+                showImagePreview('ed', '/images/custom/' + assetId);
+            } else {
+                hideImagePreview('ed');
+            }
         }
     },
     'areas-verdes': {
@@ -35,6 +47,18 @@ const sectionConfig = {
             document.getElementById('av-sector').value = button.getAttribute('data-sector') || '';
             document.getElementById('av-superficie').value = button.getAttribute('data-superficie') || '';
             document.getElementById('av-descripcion').value = button.getAttribute('data-descripcion') || '';
+
+            const assetId = button.getAttribute('data-assetid') || '';
+            const inputAsset = document.getElementById('av-assetId');
+            if (inputAsset) inputAsset.value = assetId;
+            const removeFlag = document.getElementById('av-removeImage');
+            if (removeFlag) removeFlag.value = 'false';
+
+            if (assetId) {
+                showImagePreview('av', '/images/custom/' + assetId);
+            } else {
+                hideImagePreview('av');
+            }
         }
     },
     'especie': {
@@ -266,10 +290,11 @@ function openAddDialogFor(entityKey) {
     form.reset();
     document.getElementById('item-id').value = '';
 
-    const espRemove = document.getElementById('esp-removeImage');
-    if (espRemove) espRemove.value = 'false';
-
-    hideImagePreview('esp');
+    ['ed', 'av', 'esp'].forEach(prefix => {
+        const removeFlag = document.getElementById(prefix + '-removeImage');
+        if (removeFlag) removeFlag.value = 'false';
+        hideImagePreview(prefix);
+    });
 
     document.getElementById('dialog-title').textContent = config.addTitle;
     form.action = config.addAction;
@@ -409,6 +434,8 @@ function setupDragAndDrop(prefix) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    setupDragAndDrop('ed');
+    setupDragAndDrop('av');
     setupDragAndDrop('esp');
     document.addEventListener('click', (e) => {
         const wrapper = document.getElementById('as-combobox-wrapper');
