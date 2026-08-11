@@ -593,9 +593,9 @@ h2 {
     display: flex;
     align-items: center;
 
-    width: auto;
-    min-width: 190px;
-    max-width: 260px;
+    width: fit-content;
+    min-width: 0;
+    max-width: 100%;
 
     margin-top: 18px;
     padding: 12px 18px;
@@ -1398,4 +1398,143 @@ h2 {
         height: 38vh !important;
         max-height: 38vh !important;
     }
+}
+
+
+/* =========================================================
+   PALETA DE BIENVENIDA — SUPERFICIE BLANCA Y ACENTOS
+   Mantiene la composición y los comportamientos existentes.
+   ========================================================= */
+:root {
+    --color-map-bg: #ffffff;
+    --color-admin-bg: #ffffff;
+    --color-map-accent: #087f70;
+    --color-admin-accent: #e87039;
+    --color-text-light: #ffffff;
+    --color-text-dark: #153d36;
+    --color-surface: #ffffff;
+    --color-surface-muted: #eef8f4;
+    --color-text-muted: #547069;
+    --color-border: #d7ebe5;
+}
+
+body.centered-layout {
+    background-color: #ffffff;
+    background-image: none;
+}
+
+.map-side,
+.admin-side {
+    background-color: var(--color-surface);
+    color: var(--color-text-dark);
+}
+
+.map-side h1,
+.map-side h2,
+.admin-side h1,
+.admin-side h2 {
+    color: var(--color-text-dark) !important;
+}
+
+.subtitle {
+    color: var(--color-text-muted);
+}
+
+.map-side .brand-mark svg {
+    stroke: var(--color-map-accent);
+}
+
+.admin-side .brand-mark svg {
+    stroke: var(--color-admin-accent);
+}
+
+.welcome-meta {
+    background-color: #ffffff;
+    color: var(--color-map-accent);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 4px 15px rgba(21, 61, 54, 0.1);
+}
+
+.welcome-action {
+    background-color: var(--color-surface);
+    color: var(--color-text-dark);
+    box-shadow: 0 10px 25px rgba(21, 61, 54, 0.1);
+}
+
+.map-action {
+    background-color: var(--color-map-accent);
+    color: var(--color-text-light);
+}
+
+.admin-action {
+    border: 1px solid var(--color-admin-accent);
+    color: #c65326;
+}
+
+.map-action .action-icon svg {
+    stroke: var(--color-text-light);
+}
+
+.admin-action .action-icon svg {
+    stroke: var(--color-admin-accent);
+}
+
+.action-content small,
+.action-arrow {
+    color: var(--color-text-muted);
+}
+
+.map-action .action-content small,
+.map-action .action-arrow {
+    color: rgba(255, 255, 255, 0.84);
+}
+
+.welcome-information {
+    background: #ffffff;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-dark);
+    box-shadow: 0 8px 20px rgba(21, 61, 54, 0.08);
+}
+
+.welcome-information .eyebrow,
+.section-description {
+    color: var(--color-text-muted);
+}
+
+.welcome-information h2 {
+    color: var(--color-text-dark);
+}
+
+.feature-item {
+    background-color: var(--color-surface-muted);
+    color: var(--color-text-dark);
+}
+
+.feature-icon {
+    color: var(--color-map-accent);
+}
+
+.feature-text {
+    color: var(--color-text-dark);
+}
+
+.mascot-img {
+    filter: drop-shadow(0 10px 15px rgba(21, 61, 54, 0.16));
+}
+
+.section-switch {
+    background: #eef8f4;
+    border-color: #b9ded3;
+    color: var(--color-map-accent);
+    box-shadow: 0 8px 20px rgba(21, 61, 54, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.admin-side .section-switch {
+    background: #fff5ef;
+    border-color: #f3c5ae;
+    color: var(--color-admin-accent);
+}
+
+.welcome-footer {
+    color: var(--color-text-muted);
 }
