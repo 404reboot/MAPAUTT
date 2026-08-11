@@ -75,6 +75,8 @@
     <!-- Tarjeta lateral de información -->
     <div id="details-card" class="floating-details-card">
 
+        <div id="card-hero-container" class="card-hero-container"></div>
+
         <img class="mascota-viewing" th:src="@{/css/mascota_viewing_transparent.png}" alt="Mascota observando">
 
         <div class="card-drag-handle"></div>
@@ -89,7 +91,7 @@
             <button class="close-btn" onclick="closeDetailsCard()">&times;</button>
         </div>
 
-        <div id="card-body"></div>
+        <div id="card-body" class="card-content-body"></div>
 
     </div>
 
@@ -316,6 +318,12 @@
 
 
 
+
+<!-- Visor Modal de Imagen a Pantalla Completa (Lightbox) -->
+<div id="image-lightbox-modal" class="image-lightbox-modal" onclick="closeImageLightbox(event)">
+    <button class="lightbox-close-btn" onclick="closeImageLightbox(event)" title="Cerrar visor" aria-label="Cerrar visor">&times;</button>
+    <img id="lightbox-img" class="lightbox-img" src="" alt="Imagen ampliada" onclick="event.stopPropagation()">
+</div>
 
 </body>
 
