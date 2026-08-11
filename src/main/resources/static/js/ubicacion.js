@@ -1466,7 +1466,7 @@ function errorGPS(
 
 
     switch (
-        error.code
+    error.code
     ) {
 
         case 1:
