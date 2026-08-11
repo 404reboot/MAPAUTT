@@ -1,0 +1,450 @@
+/* =========================================================
+   CONTROL DE UBICACIÓN
+   ========================================================= */
+
+.location-controls {
+
+    position: absolute;
+
+    top: 20px;
+    right: 20px;
+    left: auto;
+
+    z-index: 1000;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   BOTÓN DE UBICACIÓN
+   ========================================================= */
+
+.location-button {
+
+    position: relative;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    width: 180px;
+    min-width: 180px;
+
+    height: 52px;
+
+    padding: 0 18px;
+
+    border: 1px solid rgba(255, 255, 255, 0.8);
+
+    border-radius: 15px;
+
+    background: rgba(255, 255, 255, 0.94);
+
+    color: #263238;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    line-height: 1;
+
+    letter-spacing: 0.2px;
+
+    white-space: nowrap;
+
+    text-align: center;
+
+    cursor: pointer;
+
+    user-select: none;
+
+    pointer-events: auto;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.16),
+        0 3px 8px rgba(0, 0, 0, 0.08);
+
+    backdrop-filter: blur(14px);
+
+    -webkit-backdrop-filter: blur(14px);
+
+    overflow: hidden;
+
+    transition:
+        transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.25s ease,
+        background 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease;
+}
+
+
+/* =========================================================
+   BRILLO DEL BOTÓN
+   ========================================================= */
+
+.location-button::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: -100%;
+
+    width: 70%;
+    height: 100%;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.45),
+        transparent
+    );
+
+    transform: skewX(-20deg);
+
+    transition: left 0.5s ease;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   HOVER
+   ========================================================= */
+
+.location-button:hover {
+
+    transform: translateY(-3px);
+
+    background: rgba(255, 255, 255, 0.98);
+
+    border-color: rgba(33, 150, 243, 0.35);
+
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.20),
+        0 5px 12px rgba(0, 0, 0, 0.10);
+}
+
+.location-button:hover::before {
+
+    left: 130%;
+}
+
+
+/* =========================================================
+   CLICK
+   ========================================================= */
+
+.location-button:active {
+
+    transform:
+        translateY(-1px)
+        scale(0.97);
+}
+
+
+/* =========================================================
+   ENFOQUE
+   ========================================================= */
+
+.location-button:focus-visible {
+
+    outline: none;
+
+    border-color: #2196f3;
+
+    box-shadow:
+        0 0 0 4px rgba(33, 150, 243, 0.25),
+        0 10px 30px rgba(0, 0, 0, 0.16);
+}
+
+
+/* =========================================================
+   ICONO
+   ========================================================= */
+
+.location-icon {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 22px;
+    height: 22px;
+
+    flex-shrink: 0;
+
+    color: #2196f3;
+
+    font-size: 24px;
+
+    line-height: 1;
+
+    transition:
+        transform 0.25s ease,
+        color 0.25s ease;
+}
+
+
+.location-button:hover .location-icon {
+
+    transform: scale(1.12);
+
+    color: #1565c0;
+}
+
+
+/* =========================================================
+   TEXTO
+   ========================================================= */
+
+.location-button-text {
+
+    position: relative;
+
+    display: inline-block;
+
+    color: #263238;
+
+    line-height: 1;
+
+    white-space: nowrap;
+
+    transition:
+        color 0.25s ease;
+}
+
+
+.location-button:hover .location-button-text {
+
+    color: #1565c0;
+}
+
+
+/* =========================================================
+   ESTADO ACTIVO
+   ========================================================= */
+
+.location-button.active {
+
+    background:
+        linear-gradient(
+            135deg,
+            #2196f3,
+            #1976d2
+        );
+
+    color: #ffffff;
+
+    border-color:
+        rgba(255, 255, 255, 0.35);
+
+    box-shadow:
+        0 8px 25px rgba(33, 150, 243, 0.38),
+        0 0 0 4px rgba(33, 150, 243, 0.12);
+}
+
+
+.location-button.active .location-icon {
+
+    color: #ffffff;
+
+    animation:
+        locationPulse 1.6s ease-in-out infinite;
+}
+
+
+.location-button.active
+.location-button-text {
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   INDICADOR DE GPS ACTIVO
+   ========================================================= */
+
+.location-button.active::after {
+
+    content: "";
+
+    position: absolute;
+
+    top: 6px;
+    right: 6px;
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 3px rgba(255, 255, 255, 0.20);
+
+    animation:
+        gpsIndicator 1.5s infinite;
+}
+
+
+/* =========================================================
+   ANIMACIÓN DEL ICONO
+   ========================================================= */
+
+@keyframes locationPulse {
+
+    0% {
+
+        transform: scale(1);
+
+        opacity: 1;
+    }
+
+    50% {
+
+        transform: scale(1.18);
+
+        opacity: 0.75;
+    }
+
+    100% {
+
+        transform: scale(1);
+
+        opacity: 1;
+    }
+}
+
+
+/* =========================================================
+   ANIMACIÓN DEL INDICADOR
+   ========================================================= */
+
+@keyframes gpsIndicator {
+
+    0% {
+
+        opacity: 1;
+
+        transform: scale(1);
+    }
+
+    50% {
+
+        opacity: 0.45;
+
+        transform: scale(0.75);
+    }
+
+    100% {
+
+        opacity: 1;
+
+        transform: scale(1);
+    }
+}
+
+
+/* =========================================================
+   MÓVILES
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .location-controls {
+
+        top: 15px;
+
+        right: 15px;
+
+        left: auto;
+    }
+
+
+    .location-button {
+
+        width: 52px;
+
+        min-width: 52px;
+
+        height: 52px;
+
+        padding: 0;
+
+        gap: 0;
+
+        border-radius: 15px;
+    }
+
+
+    .location-button-text {
+
+        display: none;
+    }
+
+
+    .location-icon {
+
+        width: 22px;
+
+        height: 22px;
+
+        font-size: 23px;
+    }
+}
+
+
+/* =========================================================
+   PANTALLAS MUY PEQUEÑAS
+   ========================================================= */
+
+@media (max-width: 400px) {
+
+    .location-controls {
+
+        top: 12px;
+
+        right: 12px;
+    }
+
+
+    .location-button {
+
+        width: 48px;
+
+        min-width: 48px;
+
+        height: 48px;
+
+        border-radius: 14px;
+    }
+
+
+    .location-icon {
+
+        width: 21px;
+
+        height: 21px;
+
+        font-size: 21px;
+    }
+}
