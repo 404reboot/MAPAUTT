@@ -33,6 +33,26 @@
                         <label for="ed-carrera">Carrera / Uso</label>
                         <input type="text" id="ed-carrera" name="carreras" class="form-control" placeholder="Ej: Sistemas" required>
                     </div>
+                    <div class="form-group">
+                        <label>Imagen del Edificio</label>
+                        <input type="hidden" id="ed-assetId" name="existingAssetId">
+                        <input type="hidden" id="ed-removeImage" name="removeImage" value="false">
+                        <input type="file" id="ed-imagen" name="imagen" class="esp-input" accept="image/*" style="display: none;" onchange="previewImage(this, 'ed')">
+                        
+                        <div id="ed-drop-zone" class="image-drop-zone" onclick="document.getElementById('ed-imagen').click()">
+                            <div id="ed-drop-content" class="drop-zone-content">
+                                <svg class="icon drop-zone-icon"><use th:href="@{/images/icons.svg#icon-upload}"></use></svg>
+                                <p class="drop-zone-text"><strong>Arrastra y suelta una imagen aquí</strong> o <span class="drop-zone-link">explora tus archivos</span></p>
+                                <span class="drop-zone-hint">Formatos soportados: JPG, PNG, WEBP, GIF (Máx. 5MB)</span>
+                            </div>
+                            <div id="ed-preview-container" class="drop-zone-preview" style="display: none;">
+                                <img id="ed-image-preview" src="" alt="Vista previa de imagen">
+                                <button type="button" class="btn-drop-zone-delete" onclick="removeSelectedImage(event, 'ed')" title="Eliminar imagen" aria-label="Eliminar imagen">
+                                    <svg class="icon"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Conditional fields for Áreas Verdes -->
@@ -56,6 +76,26 @@
                     <div class="form-group">
                         <label for="av-descripcion">Descripción</label>
                         <textarea id="av-descripcion" name="descripcion" class="form-control" placeholder="" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Imagen del Área Verde</label>
+                        <input type="hidden" id="av-assetId" name="existingAssetId">
+                        <input type="hidden" id="av-removeImage" name="removeImage" value="false">
+                        <input type="file" id="av-imagen" name="imagen" class="esp-input" accept="image/*" style="display: none;" onchange="previewImage(this, 'av')">
+                        
+                        <div id="av-drop-zone" class="image-drop-zone" onclick="document.getElementById('av-imagen').click()">
+                            <div id="av-drop-content" class="drop-zone-content">
+                                <svg class="icon drop-zone-icon"><use th:href="@{/images/icons.svg#icon-upload}"></use></svg>
+                                <p class="drop-zone-text"><strong>Arrastra y suelta una imagen aquí</strong> o <span class="drop-zone-link">explora tus archivos</span></p>
+                                <span class="drop-zone-hint">Formatos soportados: JPG, PNG, WEBP, GIF (Máx. 5MB)</span>
+                            </div>
+                            <div id="av-preview-container" class="drop-zone-preview" style="display: none;">
+                                <img id="av-image-preview" src="" alt="Vista previa de imagen">
+                                <button type="button" class="btn-drop-zone-delete" onclick="removeSelectedImage(event, 'av')" title="Eliminar imagen" aria-label="Eliminar imagen">
+                                    <svg class="icon"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
