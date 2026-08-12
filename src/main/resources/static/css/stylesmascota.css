@@ -12,6 +12,8 @@
 
 #mascota {
 
+    --mascota-scale: 1;
+
     position: fixed;
 
     right: 20px;
@@ -38,6 +40,10 @@
 
     -webkit-tap-highlight-color: transparent;
 
+    transform-origin: bottom right;
+
+    transform: scale(var(--mascota-scale));
+
     transition:
         transform 0.35s ease,
         opacity 0.35s ease,
@@ -60,8 +66,8 @@
     pointer-events: none;
 
     transform:
-        translateY(120px)
-        scale(0.8);
+        scale(calc(var(--mascota-scale) * 0.8))
+        translateY(120px);
 
 }
 
@@ -260,8 +266,8 @@
 #mascota.tocando {
 
     transform:
-        translateY(-6px)
-        scale(1.04);
+        scale(calc(var(--mascota-scale) * 1.04))
+        translateY(-6px);
 
 }
 
@@ -275,6 +281,7 @@
     0% {
 
         transform:
+            scale(var(--mascota-scale))
             translateY(0)
             rotate(0deg);
 
@@ -283,6 +290,7 @@
     25% {
 
         transform:
+            scale(var(--mascota-scale))
             translateY(-8px)
             rotate(-2deg);
 
@@ -291,6 +299,7 @@
     50% {
 
         transform:
+            scale(var(--mascota-scale))
             translateY(-12px)
             rotate(2deg);
 
@@ -299,6 +308,7 @@
     75% {
 
         transform:
+            scale(var(--mascota-scale))
             translateY(-6px)
             rotate(-1deg);
 
@@ -307,6 +317,7 @@
     100% {
 
         transform:
+            scale(var(--mascota-scale))
             translateY(0)
             rotate(0deg);
 
@@ -553,8 +564,7 @@
 
     #mascota {
 
-        transform:
-            scale(0.85);
+        --mascota-scale: 0.85;
 
         transform-origin:
             bottom right;
@@ -584,7 +594,7 @@
     #mascota.tocando {
 
         transform:
-            scale(0.88)
+            scale(calc(var(--mascota-scale) * 1.04))
             translateY(-5px);
 
     }
@@ -598,7 +608,7 @@
     #mascota.mascota-oculta {
 
         transform:
-            scale(0.85)
+            scale(calc(var(--mascota-scale) * 0.85))
             translateY(120px);
 
         opacity:
@@ -669,8 +679,7 @@
 
     #mascota {
 
-        transform:
-            scale(0.72);
+        --mascota-scale: 0.72;
 
         right:
             5px;
@@ -684,7 +693,7 @@
     #mascota.tocando {
 
         transform:
-            scale(0.75)
+            scale(calc(var(--mascota-scale) * 1.04))
             translateY(-5px);
 
     }
@@ -693,7 +702,7 @@
     #mascota.mascota-oculta {
 
         transform:
-            scale(0.72)
+            scale(calc(var(--mascota-scale) * 0.72))
             translateY(120px);
 
     }
