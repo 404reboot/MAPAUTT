@@ -5,6 +5,7 @@ import model.Edificio;
 import model.Especie;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,13 +24,14 @@ public class AdminPanelController {
     @Autowired
     private MapService mapService;
 
+    @Value("${app.upload.dir}")
+    private String uploadDir;
+
     private void deletePhysicalFile(String assetId) {
         if (assetId == null || assetId.trim().isEmpty()) return;
         try {
-            Path srcPath = Paths.get("src/main/resources/static/images/custom/", assetId);
-            Files.deleteIfExists(srcPath);
-            Path targetPath = Paths.get("target/classes/static/images/custom/", assetId);
-            Files.deleteIfExists(targetPath);
+            Path filePath = Paths.get(uploadDir).toAbsolutePath().normalize().resolve(assetId);
+            Files.deleteIfExists(filePath);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -49,16 +51,10 @@ public class AdminPanelController {
                 }
                 String filename = System.currentTimeMillis() + "_" + UUID.randomUUID().toString().substring(0, 8) + ext;
 
-                // Save to src/main/resources/static/images/custom/
-                Path srcPath = Paths.get("src/main/resources/static/images/custom/", filename);
-                Files.createDirectories(srcPath.getParent());
-                Files.write(srcPath, file.getBytes());
-
-                // Copy to target/classes/static/images/custom/ if target exists
-                Path targetPath = Paths.get("target/classes/static/images/custom/", filename);
-                if (Files.exists(targetPath.getParent())) {
-                    Files.write(targetPath, file.getBytes());
-                }
+                Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
+                Files.createDirectories(uploadPath);
+                Path filePath = uploadPath.resolve(filename);
+                Files.write(filePath, file.getBytes());
 
                 // Delete old physical file if replaced
                 if (existingAssetId != null && !existingAssetId.trim().isEmpty()) {
