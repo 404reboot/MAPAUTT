@@ -792,14 +792,10 @@ h2 {
 
     overflow: hidden;
 
-    border-radius:
-        150px 0 0 150px;
+    border-radius: 0;
 
     transition:
         transform var(--transition-speed)
-        ease-in-out,
-
-        border-radius var(--transition-speed)
         ease-in-out;
 }
 
@@ -893,8 +889,7 @@ h2 {
     transform:
         translateX(0);
 
-    border-radius:
-        150px 0 0 150px;
+    border-radius: 0;
 }
 
 .welcome-card.map-expanded
@@ -923,8 +918,7 @@ h2 {
     transform:
         translateX(-100%);
 
-    border-radius:
-        0 150px 150px 0;
+    border-radius: 0;
 }
 
 .welcome-card.admin-expanded

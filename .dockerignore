@@ -1,0 +1,9 @@
+.git
+.gitignore
+target/
+uploads/
+.vscode/
+.settings/
+.classpath
+.project
+*.md
