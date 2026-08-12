@@ -16,7 +16,7 @@
 
     <!-- Fuente externa -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap"
-        rel="stylesheet">
+          rel="stylesheet">
 
     <!-- Estilos propios -->
     <link rel="stylesheet" th:href="@{/css/main.css}">
@@ -63,9 +63,7 @@
     <div class="back-button-overlay">
 
         <a th:href="@{/}" class="btn-secondary">
-            <svg class="icon">
-                <use th:href="@{/images/icons.svg#icon-arrow-left}"></use>
-            </svg>
+            <svg class="icon"><use th:href="@{/images/icons.svg#icon-arrow-left}"></use></svg>
             Volver
         </a>
 
@@ -85,11 +83,8 @@
 
         <div class="card-header-overlay">
             <div class="card-header-left">
-                <button id="card-back-btn" class="btn-card-back" style="display: none;" onclick="goBackToAreaCard()"
-                    title="Volver al área verde" aria-label="Volver al área verde">
-                    <svg class="icon" style="width: 16px; height: 16px;">
-                        <use th:href="@{/images/icons.svg#icon-arrow-left}"></use>
-                    </svg>
+                <button id="card-back-btn" class="btn-card-back" style="display: none;" onclick="goBackToAreaCard()" title="Volver al área verde" aria-label="Volver al área verde">
+                    <svg class="icon" style="width: 16px; height: 16px;"><use th:href="@{/images/icons.svg#icon-arrow-left}"></use></svg>
                 </button>
                 <h3 id="card-title">Detalle</h3>
             </div>
@@ -104,7 +99,9 @@
     <div class="map-controls-overlay">
 
 
-        <button class="btn-control btn-reset" onclick="resetCameraView()" title="Restablecer vista original">
+        <button class="btn-control btn-reset"
+                onclick="resetCameraView()"
+                title="Restablecer vista original">
 
             🏠
 
@@ -112,7 +109,9 @@
 
 
 
-        <button class="btn-control" onclick="zoomIn()" title="Acercar">
+        <button class="btn-control"
+                onclick="zoomIn()"
+                title="Acercar">
 
             ➕
 
@@ -120,7 +119,9 @@
 
 
 
-        <button class="btn-control" onclick="zoomOut()" title="Alejar">
+        <button class="btn-control"
+                onclick="zoomOut()"
+                title="Alejar">
 
             ➖
 
@@ -133,20 +134,11 @@
         <img id="cola" th:src="@{/css/mascota/cola.png}" alt="Cola de la mascota">
 
         <img id="piernas" th:src="@{/css/mascota/piernas.png}" alt="Piernas de la mascota">
-        <img id="cola" th:src="@{/css/mascota/cola.png}" alt="Cola de la mascota">
 
-        <img id="piernas" th:src="@{/css/mascota/piernas.png}" alt="Piernas de la mascota">
-
-        <img id="torso" th:src="@{/css/mascota/torso.png}" alt="Torso de la mascota">
         <img id="torso" th:src="@{/css/mascota/torso.png}" alt="Torso de la mascota">
 
         <img id="cabeza" th:src="@{/css/mascota/cabeza.png}" alt="Cabeza de la mascota">
-        <img id="cabeza" th:src="@{/css/mascota/cabeza.png}" alt="Cabeza de la mascota">
 
-        <!-- Burbuja donde aparecerán los mensajes -->
-        <div id="mascota-mensaje">
-            <span id="mensaje-texto"></span>
-        </div>
         <!-- Burbuja donde aparecerán los mensajes -->
         <div id="mascota-mensaje">
             <span id="mensaje-texto"></span>
@@ -162,119 +154,137 @@
     <script th:src="@{/js/mascota.js}"></script>
 
 
-    <!-- =========================================================
+<!-- =========================================================
      UBICACIÓN Y EXPLORACIÓN DEL MAPA
      ========================================================= -->
 
-    <div class="map-explore-overlay">
+<div class="map-explore-overlay">
 
-        <!-- Botón de ubicación -->
-        <button id="btn-ubicacion" class="location-button" type="button" title="Mostrar mi ubicación"
-            aria-label="Mostrar mi ubicación">
+    <!-- Botón de ubicación -->
+    <button
+        id="btn-user-location"
+        class="location-button"
+        type="button"
+        title="Mostrar mi ubicación"
+        aria-label="Mostrar mi ubicación">
 
-            <span class="location-icon"> 📍 </span>
+        <span class="location-icon"> 📍 </span>
 
-            <span class="location-button-text">
-                Mi ubicación
+        <span class="location-button-text">
+            Mi ubicación
+        </span>
+
+    </button>
+
+
+    <!-- Contenedor del menú Explorar -->
+    <div class="explore-wrapper">
+
+        <!-- Botón principal -->
+        <button
+            id="btn-explore"
+            class="explore-button"
+            type="button"
+            aria-expanded="false"
+            aria-controls="explore-menu">
+
+            <span class="explore-icon"> 🔍 </span>
+
+            <span class="explore-text">
+                Explorar
+            </span>
+
+            <span class="explore-arrow">
+                ▾
             </span>
 
         </button>
 
 
-        <!-- Contenedor del menú Explorar -->
-        <div class="explore-wrapper">
+        <!-- Menú desplegable -->
+        <div
+            id="explore-menu"
+            class="explore-menu"
+            aria-hidden="true">
 
-            <!-- Botón principal -->
-            <button id="btn-explore" class="explore-button" type="button" aria-expanded="false"
-                aria-controls="explore-menu">
+            <div class="explore-menu-header">
+                <span>Mostrar en el mapa</span>
+            </div>
 
-                <span class="explore-icon"> 🔍 </span>
 
-                <span class="explore-text">
-                    Explorar
+            <!-- Infraestructura -->
+            <button
+                class="explore-option"
+                data-category="infraestructura"
+                type="button">
+
+                <span class="explore-option-icon">
+                    🏢
                 </span>
 
-                <span class="explore-arrow">
-                    ▾
+                <span class="explore-option-text">
+                    Infraestructura
+                </span>
+
+                <span class="explore-check">
+                    ✓
                 </span>
 
             </button>
 
 
-            <!-- Menú desplegable -->
-            <div id="explore-menu" class="explore-menu" aria-hidden="true">
+            <!-- Áreas comunes -->
+            <button
+                class="explore-option"
+                data-category="comunes"
+                type="button">
 
-                <div class="explore-menu-header">
-                    <span>Mostrar en el mapa</span>
-                </div>
+                <span class="explore-option-icon">
+                    👥
+                </span>
 
+                <span class="explore-option-text">
+                    Áreas comunes
+                </span>
 
-                <!-- Infraestructura -->
-                <button class="explore-option" data-category="infraestructura" type="button">
+                <span class="explore-check">
+                    ✓
+                </span>
 
-                    <span class="explore-option-icon">
-                        🏢
-                    </span>
-
-                    <span class="explore-option-text">
-                        Infraestructura
-                    </span>
-
-                    <span class="explore-check">
-                        ✓
-                    </span>
-
-                </button>
+            </button>
 
 
-                <!-- Áreas comunes -->
-                <button class="explore-option" data-category="comunes" type="button">
+            <!-- Espacios naturales -->
+            <button
+                class="explore-option"
+                data-category="naturales"
+                type="button">
 
-                    <span class="explore-option-icon">
-                        👥
-                    </span>
+                <span class="explore-option-icon">
+                    🌿
+                </span>
 
-                    <span class="explore-option-text">
-                        Áreas comunes
-                    </span>
+                <span class="explore-option-text">
+                    Espacios naturales
+                </span>
 
-                    <span class="explore-check">
-                        ✓
-                    </span>
+                <span class="explore-check">
+                    ✓
+                </span>
 
-                </button>
-
-
-                <!-- Espacios naturales -->
-                <button class="explore-option" data-category="naturales" type="button">
-
-                    <span class="explore-option-icon">
-                        🌿
-                    </span>
-
-                    <span class="explore-option-text">
-                        Espacios naturales
-                    </span>
-
-                    <span class="explore-check">
-                        ✓
-                    </span>
-
-                </button>
+            </button>
 
 
-                <!-- Indicador de entradas -->
-                <div class="explore-entrances-info">
+            <!-- Indicador de entradas -->
+            <div class="explore-entrances-info">
 
-                    <span class="entrance-indicator">
-                        ●
-                    </span>
+                <span class="entrance-indicator">
+                    ●
+                </span>
 
-                    <span>
-                        Entradas siempre visibles
-                    </span>
-
-                </div>
+                <span>
+                    Entradas siempre visibles
+                </span>
 
             </div>
 
@@ -282,27 +292,29 @@
 
     </div>
 
+</div>
+
 
     <!-- Three.js -->
-    <script src="/js/three.min.js"></script>
+<script src="/js/three.min.js"></script>
 
-    <!-- Controles -->
-    <script src="/js/OrbitControls.js"></script>
+<!-- Controles -->
+<script src="/js/OrbitControls.js"></script>
 
-    <!-- GLTF -->
-    <script src="/js/GLTFLoader.js"></script>
+<!-- GLTF -->
+<script src="/js/GLTFLoader.js"></script>
 
-    <!-- Tu código actual -->
-    <script src="/js/mapa.js"></script>
+<!-- Tu código actual -->
+<script src="/js/mapa.js"></script>
 
 
-    <!-- Sistema de ubicación -->
-    <script src="/js/ubicacion-config.js"></script>
-    <script src="/js/ubicacion.js"></script>
+<!-- Sistema de ubicación -->
+<script src="/js/ubicacion-config.js"></script>
+<script src="/js/ubicacion.js"></script>
 
-    <link rel="stylesheet" href="/css/mapa.css">
+<link rel="stylesheet" href="/css/mapa.css">
 
-    <link rel="stylesheet" href="/css/ubicacion.css">
+<link rel="stylesheet" href="/css/ubicacion.css">
 
 
 
