@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - MAPAUTT</title>
+    <meta name="description" content="Panel de administración de MAPAUTT para gestionar edificios y áreas verdes.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+
+    <!-- Custom JS -->
+    <script th:src="@{/js/admin.js}" defer></script>
+</head>
+<body>
+
+    <div class="admin-layout" th:data-active-section="${activeSection}">
+        <!-- Sidebar Fragment -->
+        <aside th:replace="~{fragments/sidebar :: sidebar}"></aside>
+
+        <!-- Main Workspace -->
+        <div class="main-wrapper">
+            
+            <!-- Top Navbar -->
+            <header class="top-navbar">
+                <div class="breadcrumb">
+                    <span>Admin</span>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-active" th:text="${activeSection == 'edificios' ? 'Edificios' : (activeSection == 'areas-verdes' ? 'Áreas Verdes' : (activeSection == 'seres-vivos' ? 'Seres Vivos' : 'Editor 3D'))}">Sección</span>
+                </div>
+                
+                <!-- Central Search Input -->
+                <div th:if="${activeSection != 'map-editor'}" class="navbar-search">
+                    <svg class="search-icon"><use th:href="@{/images/icons.svg#icon-search}"></use></svg>
+                    <input type="text" id="table-search-input" class="search-input" placeholder="Buscar en esta sección..." onkeyup="filterTableItems(this.value)">
+                </div>
+
+                <!-- Action Buttons in upper right -->
+                <button th:if="${activeSection == 'edificios' || activeSection == 'areas-verdes' || activeSection == 'seres-vivos'}" class="btn btn-primary" onclick="openAddDialog()">
+                    <svg class="icon"><use th:href="@{/images/icons.svg#icon-plus}"></use></svg> <span th:text="${activeSection == 'seres-vivos' ? 'Agregar Especie' : 'Agregar'}">Agregar</span>
+                </button>
+            </header>
+
+            <!-- Main Scrollable Body Content -->
+            <main class="content-body">
+                <!-- Dynamically replace content using Thymeleaf Fragments -->
+                <th:block th:if="${activeSection == 'edificios'}">
+                    <div th:replace="~{fragments/sections :: edificios}"></div>
+                </th:block>
+                <th:block th:if="${activeSection == 'areas-verdes'}">
+                    <div th:replace="~{fragments/sections :: areas-verdes}"></div>
+                </th:block>
+                <th:block th:if="${activeSection == 'seres-vivos'}">
+                    <div th:replace="~{fragments/sections :: seres-vivos}"></div>
+                </th:block>
+                <th:block th:if="${activeSection == 'map-editor'}">
+                    <div th:replace="~{fragments/sections :: map-editor}"></div>
+                </th:block>
+            </main>
+            
+        </div>
+    </div>
+
+    <!-- Reusable Dynamic Modal Fragments -->
+    <div th:replace="~{fragments/modal :: item-dialog}"></div>
+    <div th:replace="~{fragments/modal :: confirm-delete-dialog}"></div>
+    <div th:replace="~{fragments/modal :: add-species-to-area-dialog}"></div>
+
+</body>
+</html>
+

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <aside th:fragment="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <svg class="icon icon-lg"><use th:href="@{/images/icons.svg#icon-map}"></use></svg>
+                <span class="logo-text">MAPAUTT</span>
+            </div>
+            <div class="sidebar-subtitle">Panel de Control</div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li>
+                    <a th:href="@{/admin-panel(section='edificios')}"
+                        th:class="${activeSection == 'edificios'} ? 'nav-item active' : 'nav-item'">
+                        <svg class="icon"><use th:href="@{/images/icons.svg#icon-building}"></use></svg>
+                        <span class="nav-text">Gestionar Edificios</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/admin-panel(section='areas-verdes')}"
+                        th:class="${activeSection == 'areas-verdes'} ? 'nav-item active' : 'nav-item'">
+                        <svg class="icon"><use th:href="@{/images/icons.svg#icon-tree}"></use></svg>
+                        <span class="nav-text">Gestionar áreas verdes</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/admin-panel(section='seres-vivos')}"
+                        th:class="${activeSection == 'seres-vivos'} ? 'nav-item active' : 'nav-item'">
+                        <svg class="icon"><use th:href="@{/images/icons.svg#icon-paw}"></use></svg>
+                        <span class="nav-text">Gestionar seres vivos</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/admin-panel(section='map-editor')}"
+                        th:class="${activeSection == 'map-editor'} ? 'nav-item active' : 'nav-item'">
+                        <svg class="icon"><use th:href="@{/images/icons.svg#icon-map}"></use></svg>
+                        <span class="nav-text">Editor del mapa</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a th:href="@{/}" class="back-link">
+                <svg class="icon"><use th:href="@{/images/icons.svg#icon-arrow-left}"></use></svg> Volver al Inicio
+            </a>
+            <a th:href="@{/logout}" class="back-link back-link-danger">
+                <svg class="icon"><use th:href="@{/images/icons.svg#icon-logout}"></use></svg> Cerrar Sesión
+            </a>
+        </div>
+    </aside>
+</body>
+
+</html>

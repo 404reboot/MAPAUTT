@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+    <!-- Unified Dynamic Modal Fragment for Adding / Editing Items -->
+    <dialog th:fragment="item-dialog" id="item-dialog">
+        <div class="dialog-header">
+            <h3 id="dialog-title">Agregar Elemento</h3>
+            <button class="btn-close-dialog" onclick="closeItemDialog()" aria-label="Cerrar">
+                <svg class="icon"><use th:href="@{/images/icons.svg#icon-x}"></use></svg>
+            </button>
+        </div>
+        
+        <form id="item-form" class="dialog-form" method="POST" action="" enctype="multipart/form-data">
+            <div class="dialog-body">
+                <!-- Hidden field for ID (empty on Add, populated on Edit) -->
+                <input type="hidden" id="item-id" name="id">
+
+                <!-- Conditional fields for Edificios -->
+                <div th:if="${activeSection == 'edificios'}">
+                    <div class="form-group">
+                        <label for="ed-codigoMesh">Identificador del Mapa 3D</label>
+                        <input type="text" id="ed-codigoMesh" name="codigoMesh" class="form-control" placeholder="Ej: E" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ed-nombre">Nombre Público</label>
+                        <input type="text" id="ed-nombre" name="nombre" class="form-control" placeholder="Ej: Edificio Central" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ed-carrera">Carrera / Uso</label>
+                        <input type="text" id="ed-carrera" name="carreras" class="form-control" placeholder="Ej: Sistemas" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Imagen del Edificio</label>
+                        <input type="hidden" id="ed-assetId" name="existingAssetId">
+                        <input type="hidden" id="ed-removeImage" name="removeImage" value="false">
+                        <input type="file" id="ed-imagen" name="imagen" class="esp-input" accept="image/*" style="display: none;" onchange="previewImage(this, 'ed')">
+                        
+                        <div id="ed-drop-zone" class="image-drop-zone" onclick="document.getElementById('ed-imagen').click()">
+                            <div id="ed-drop-content" class="drop-zone-content">
+                                <svg class="icon drop-zone-icon"><use th:href="@{/images/icons.svg#icon-upload}"></use></svg>
+                                <p class="drop-zone-text"><strong>Arrastra y suelta una imagen aquí</strong> o <span class="drop-zone-link">explora tus archivos</span></p>
+                                <span class="drop-zone-hint">Formatos soportados: JPG, PNG, WEBP, GIF (Máx. 5MB)</span>
+                            </div>
+                            <div id="ed-preview-container" class="drop-zone-preview" style="display: none;">
+                                <img id="ed-image-preview" src="" alt="Vista previa de imagen">
+                                <button type="button" class="btn-drop-zone-delete" onclick="removeSelectedImage(event, 'ed')" title="Eliminar imagen" aria-label="Eliminar imagen">
+                                    <svg class="icon"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conditional fields for Áreas Verdes -->
+                <div th:if="${activeSection == 'areas-verdes'}">
+                    <div class="form-group">
+                        <label for="av-codigoMesh">Identificador del Mapa 3D</label>
+                        <input type="text" id="av-codigoMesh" name="codigoMesh" class="form-control" placeholder="Ej: Jardin_Norte" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="av-nombre">Nombre del Área</label>
+                        <input type="text" id="av-nombre" name="nombre" class="form-control" placeholder="Ej: Jardín Principal" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="av-sector">Sector / Ubicación</label>
+                        <input type="text" id="av-sector" name="sector" class="form-control" placeholder="Ej: Zona Este" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="av-superficie">Superficie (m²)</label>
+                        <input type="number" id="av-superficie" name="superficie" step="0.1" class="form-control" placeholder="Ej: 450.5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="av-descripcion">Descripción</label>
+                        <textarea id="av-descripcion" name="descripcion" class="form-control" placeholder="" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Imagen del Área Verde</label>
+                        <input type="hidden" id="av-assetId" name="existingAssetId">
+                        <input type="hidden" id="av-removeImage" name="removeImage" value="false">
+                        <input type="file" id="av-imagen" name="imagen" class="esp-input" accept="image/*" style="display: none;" onchange="previewImage(this, 'av')">
+                        
+                        <div id="av-drop-zone" class="image-drop-zone" onclick="document.getElementById('av-imagen').click()">
+                            <div id="av-drop-content" class="drop-zone-content">
+                                <svg class="icon drop-zone-icon"><use th:href="@{/images/icons.svg#icon-upload}"></use></svg>
+                                <p class="drop-zone-text"><strong>Arrastra y suelta una imagen aquí</strong> o <span class="drop-zone-link">explora tus archivos</span></p>
+                                <span class="drop-zone-hint">Formatos soportados: JPG, PNG, WEBP, GIF (Máx. 5MB)</span>
+                            </div>
+                            <div id="av-preview-container" class="drop-zone-preview" style="display: none;">
+                                <img id="av-image-preview" src="" alt="Vista previa de imagen">
+                                <button type="button" class="btn-drop-zone-delete" onclick="removeSelectedImage(event, 'av')" title="Eliminar imagen" aria-label="Eliminar imagen">
+                                    <svg class="icon"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conditional fields for Seres Vivos (Especies) -->
+                <div th:if="${activeSection == 'seres-vivos'}">
+                    <div id="fields-especie" class="entity-fields">
+                        <div class="form-group" style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px;">
+                            <div>
+                                <label for="esp-nombre">Nombre Común *</label>
+                                <input type="text" id="esp-nombre" name="nombre" class="form-control" placeholder="Ej: Jacaranda / Gato Campus" required>
+                            </div>
+                            <div>
+                                <label for="esp-reino">Reino *</label>
+                                <select id="esp-reino" name="reino" class="form-control" required>
+                                    <option value="Plantae">Plantae</option>
+                                    <option value="Animalia">Animalia</option>
+                                    <option value="Fungi">Fungi</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label for="esp-divisionPhylum">División / Phylum</label>
+                                <input type="text" id="esp-divisionPhylum" name="divisionPhylum" class="form-control" placeholder="Ej: Magnoliophyta / Chordata">
+                            </div>
+                            <div>
+                                <label for="esp-clase">Clase</label>
+                                <input type="text" id="esp-clase" name="clase" class="form-control" placeholder="Ej: Magnoliopsida / Mammalia">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label for="esp-subclase">Subclase</label>
+                                <input type="text" id="esp-subclase" name="subclase" class="form-control" placeholder="Ej: Theria">
+                            </div>
+                            <div>
+                                <label for="esp-orden">Orden</label>
+                                <input type="text" id="esp-orden" name="orden" class="form-control" placeholder="Ej: Lamiales / Carnivora">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label for="esp-familia">Familia</label>
+                                <input type="text" id="esp-familia" name="familia" class="form-control" placeholder="Ej: Bignoniaceae / Felidae">
+                            </div>
+                            <div>
+                                <label for="esp-subfamilia">Subfamilia</label>
+                                <input type="text" id="esp-subfamilia" name="subfamilia" class="form-control" placeholder="Ej: Felinae">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label for="esp-genero">Género</label>
+                                <input type="text" id="esp-genero" name="genero" class="form-control" placeholder="Ej: Jacaranda / Felis">
+                            </div>
+                            <div>
+                                <label for="esp-especie">Especie</label>
+                                <input type="text" id="esp-especie" name="especie" class="form-control" placeholder="Ej: mimosifolia / catus">
+                            </div>
+                            <div>
+                                <label for="esp-variedad">Variedad</label>
+                                <input type="text" id="esp-variedad" name="variedad" class="form-control" placeholder="Ej: alba">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="esp-observaciones">Observaciones / Notas</label>
+                            <textarea id="esp-observaciones" name="observaciones" class="form-control" rows="2" placeholder="Detalles de ubicación, hábitos, notas biológicas..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Imagen del Espécimen</label>
+                            <input type="hidden" id="esp-assetId" name="existingAssetId">
+                            <input type="hidden" id="esp-removeImage" name="removeImage" value="false">
+                            <input type="file" id="esp-imagen" name="imagen" class="esp-input" accept="image/*" style="display: none;" onchange="previewImage(this, 'esp')">
+                            
+                            <div id="esp-drop-zone" class="image-drop-zone" onclick="document.getElementById('esp-imagen').click()">
+                                <div id="esp-drop-content" class="drop-zone-content">
+                                    <svg class="icon drop-zone-icon"><use th:href="@{/images/icons.svg#icon-upload}"></use></svg>
+                                    <p class="drop-zone-text"><strong>Arrastra y suelta una imagen aquí</strong> o <span class="drop-zone-link">explora tus archivos</span></p>
+                                    <span class="drop-zone-hint">Formatos soportados: JPG, PNG, WEBP, GIF (Máx. 5MB)</span>
+                                </div>
+                                <div id="esp-preview-container" class="drop-zone-preview" style="display: none;">
+                                    <img id="esp-image-preview" src="" alt="Vista previa de imagen">
+                                    <button type="button" class="btn-drop-zone-delete" onclick="removeSelectedImage(event, 'esp')" title="Eliminar imagen" aria-label="Eliminar imagen">
+                                        <svg class="icon"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dialog-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeItemDialog()">Cancelar</button>
+                <button type="submit" id="dialog-submit-btn" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Confirmation Dialog Fragment for Deleting / Removing Items -->
+    <dialog th:fragment="confirm-delete-dialog" id="confirm-delete-dialog">
+        <div class="dialog-header">
+            <div class="dialog-header-left">
+                <div class="dialog-icon-danger">
+                    <svg class="icon"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
+                </div>
+                <h3>Confirmar Eliminación</h3>
+            </div>
+            <button class="btn-close-dialog" onclick="closeConfirmDeleteDialog()" aria-label="Cerrar">
+                <svg class="icon"><use th:href="@{/images/icons.svg#icon-x}"></use></svg>
+            </button>
+        </div>
+        
+        <form id="delete-form" class="dialog-form" method="POST" action="">
+            <div class="dialog-body">
+                <input type="hidden" id="delete-item-id" name="id">
+                <input type="hidden" id="delete-extra-id1" name="areaVerdeId" disabled>
+                <input type="hidden" id="delete-extra-id2" name="especieId" disabled>
+                <p class="dialog-confirm-message" id="delete-confirm-message">¿Estás seguro de eliminar este elemento?</p>
+                <p class="dialog-confirm-subtext" id="delete-confirm-subtext">Esta acción no se puede deshacer.</p>
+            </div>
+
+            <div class="dialog-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeConfirmDeleteDialog()">Cancelar</button>
+                <button type="submit" id="delete-confirm-submit-btn" class="btn btn-danger">Eliminar</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Dialog Fragment for Adding Species to Area Verde -->
+    <dialog th:fragment="add-species-to-area-dialog" id="add-species-to-area-dialog">
+        <div class="dialog-header">
+            <h3 id="add-species-dialog-title">Asignar Especie a Área Verde</h3>
+            <button class="btn-close-dialog" onclick="closeAddSpeciesToAreaDialog()" aria-label="Cerrar">
+                <svg class="icon"><use th:href="@{/images/icons.svg#icon-x}"></use></svg>
+            </button>
+        </div>
+        
+        <form id="add-species-to-area-form" class="dialog-form" method="POST" th:action="@{/admin-panel/area-verde/add-especie}" onsubmit="return validateComboboxSpeciesSubmit()">
+            <div class="dialog-body" style="min-height: 260px; overflow: visible;">
+                <input type="hidden" id="as-areaVerdeId" name="areaVerdeId">
+                <input type="hidden" id="as-especieId" name="especieId" required>
+                
+                <div class="form-group">
+                    <label for="as-species-combobox-input">Especie a Asignar *</label>
+
+                    <!-- Unified Searchable Combobox Component -->
+                    <div id="as-combobox-wrapper" class="custom-combobox-wrapper">
+                        <div class="custom-combobox-input-container">
+                            <input type="text" 
+                                   id="as-species-combobox-input" 
+                                   class="form-control custom-combobox-input" 
+                                   placeholder="🔍 Escribe para buscar o haz clic para ver todas..." 
+                                   onfocus="openComboboxDropdown()"
+                                   oninput="handleComboboxInput(this.value)"
+                                   onclick="toggleComboboxDropdown(event)"
+                                   autocomplete="off"
+                                   required>
+                            <svg class="custom-combobox-arrow icon" onclick="toggleComboboxDropdown(event)"><use th:href="@{/images/icons.svg#icon-chevron-down}"></use></svg>
+                        </div>
+
+                        <div class="custom-combobox-menu" id="as-combobox-menu" onclick="event.stopPropagation()">
+                            <div class="custom-combobox-options" id="as-combobox-options-list">
+                                <div th:each="esp : ${especies}" 
+                                     class="custom-combobox-option" 
+                                     th:data-id="${esp.id}" 
+                                     th:data-search="${#strings.toLowerCase(esp.nombre + ' ' + esp.reino + ' ' + (esp.genero != null ? esp.genero : ''))}"
+                                     th:data-label="${esp.nombre + ' (' + esp.reino + (esp.genero != null and !esp.genero.isEmpty() ? ' - ' + esp.genero : '') + ')'}"
+                                     onclick="selectComboboxOption(this)">
+                                     <span th:text="${esp.nombre + ' (' + esp.reino + (esp.genero != null and !esp.genero.isEmpty() ? ' - ' + esp.genero : '') + ')'}">Especie</span>
+                                </div>
+                                <div id="as-combobox-no-results" class="custom-combobox-no-results" style="display: none;">
+                                    No se encontraron especies coincidentes.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <small th:if="${#lists.isEmpty(especies)}" class="form-text text-muted" style="color: var(--text-tertiary); display: block; margin-top: 6px;">
+                        ⚠️ No hay especies registradas. Agrega especies primero en la sección <strong>Seres Vivos</strong>.
+                    </small>
+                </div>
+            </div>
+
+            <div class="dialog-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeAddSpeciesToAreaDialog()">Cancelar</button>
+                <button type="submit" id="as-submit-btn" class="btn btn-primary" th:disabled="${#lists.isEmpty(especies)}">Asignar Especie</button>
+            </div>
+        </form>
+    </dialog>
+
+</body>
+</html>
+
