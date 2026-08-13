@@ -562,11 +562,14 @@ h2 {
    ========================================================= */
 .mascot-admin {
 <<<<<<< HEAD
+<<<<<<< HEAD
     height: 46vh !important;       /* Fuerza la altura exacta deseada */
     max-height: 46vh !important;   /* Limita la altura máxima */
     max-width: none !important;    /* Evita que el contenedor la confine horizontalmente */
     width: auto !important;        /* Mantiene la proporción de la imagen */
 =======
+=======
+>>>>>>> a90eee1 (Ubicación corregida (#20))
     height: 46vh !important;
     /* Fuerza la altura exacta deseada */
     max-height: 46vh !important;
@@ -575,7 +578,10 @@ h2 {
     /* Evita que el contenedor la confine horizontalmente */
     width: auto !important;
     /* Mantiene la proporción de la imagen */
+<<<<<<< HEAD
 >>>>>>> a90eee181a4be4e37eb55551fd63e1792960575a
+=======
+>>>>>>> a90eee1 (Ubicación corregida (#20))
 }
 
 .mascot-wrapper {
@@ -613,6 +619,7 @@ h2 {
 
     background:
 <<<<<<< HEAD
+<<<<<<< HEAD
         linear-gradient(
             135deg,
             rgba(255, 255, 255, 0.14),
@@ -623,6 +630,11 @@ h2 {
             rgba(255, 255, 255, 0.14),
             rgba(255, 255, 255, 0.04));
 >>>>>>> a90eee181a4be4e37eb55551fd63e1792960575a
+=======
+        linear-gradient(135deg,
+            rgba(255, 255, 255, 0.14),
+            rgba(255, 255, 255, 0.04));
+>>>>>>> a90eee1 (Ubicación corregida (#20))
 
     border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 14px;
@@ -672,6 +684,7 @@ h2 {
     height: 100%;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     background: linear-gradient(
         90deg,
         transparent,
@@ -679,11 +692,16 @@ h2 {
         transparent
     );
 =======
+=======
+>>>>>>> a90eee1 (Ubicación corregida (#20))
     background: linear-gradient(90deg,
             transparent,
             rgba(255, 255, 255, 0.18),
             transparent);
+<<<<<<< HEAD
 >>>>>>> a90eee181a4be4e37eb55551fd63e1792960575a
+=======
+>>>>>>> a90eee1 (Ubicación corregida (#20))
 
     transform: skewX(-20deg);
 
@@ -702,6 +720,7 @@ h2 {
 
     background:
 <<<<<<< HEAD
+<<<<<<< HEAD
         linear-gradient(
             135deg,
             rgba(255, 255, 255, 0.20),
@@ -712,6 +731,11 @@ h2 {
             rgba(255, 255, 255, 0.20),
             rgba(255, 255, 255, 0.07));
 >>>>>>> a90eee181a4be4e37eb55551fd63e1792960575a
+=======
+        linear-gradient(135deg,
+            rgba(255, 255, 255, 0.20),
+            rgba(255, 255, 255, 0.07));
+>>>>>>> a90eee1 (Ubicación corregida (#20))
 
     border-color: rgba(255, 255, 255, 0.42);
 
@@ -775,6 +799,7 @@ h2 {
 
     background:
 <<<<<<< HEAD
+<<<<<<< HEAD
         linear-gradient(
             135deg,
             rgba(255, 255, 255, 0.22),
@@ -785,6 +810,11 @@ h2 {
             rgba(255, 255, 255, 0.22),
             rgba(255, 255, 255, 0.08));
 >>>>>>> a90eee181a4be4e37eb55551fd63e1792960575a
+=======
+        linear-gradient(135deg,
+            rgba(255, 255, 255, 0.22),
+            rgba(255, 255, 255, 0.08));
+>>>>>>> a90eee1 (Ubicación corregida (#20))
 
     border-color: rgba(255, 255, 255, 0.5);
 
@@ -833,6 +863,7 @@ h2 {
 
     transition:
 <<<<<<< HEAD
+<<<<<<< HEAD
         transform var(--transition-speed)
         ease-in-out,
 
@@ -843,6 +874,11 @@ h2 {
 
         border-radius var(--transition-speed) ease-in-out;
 >>>>>>> a90eee181a4be4e37eb55551fd63e1792960575a
+=======
+        transform var(--transition-speed) ease-in-out,
+
+        border-radius var(--transition-speed) ease-in-out;
+>>>>>>> a90eee1 (Ubicación corregida (#20))
 }
 
 
@@ -861,11 +897,15 @@ h2 {
 
     transition:
 <<<<<<< HEAD
+<<<<<<< HEAD
         opacity var(--transition-speed)
         ease-in-out;
 =======
         opacity var(--transition-speed) ease-in-out;
 >>>>>>> a90eee181a4be4e37eb55551fd63e1792960575a
+=======
+        opacity var(--transition-speed) ease-in-out;
+>>>>>>> a90eee1 (Ubicación corregida (#20))
 }
 
 .page-transition-front {
@@ -910,11 +950,15 @@ h2 {
 
     transition:
 <<<<<<< HEAD
+<<<<<<< HEAD
         left var(--transition-speed)
         ease-in-out;
 =======
         left var(--transition-speed) ease-in-out;
 >>>>>>> a90eee181a4be4e37eb55551fd63e1792960575a
+=======
+        left var(--transition-speed) ease-in-out;
+>>>>>>> a90eee1 (Ubicación corregida (#20))
 }
 
 .mascot-transition {
@@ -928,12 +972,16 @@ h2 {
 
     filter:
 <<<<<<< HEAD
+<<<<<<< HEAD
         drop-shadow(
             0 15px 20px rgba(0, 0, 0, 0.3)
         );
 =======
         drop-shadow(0 15px 20px rgba(0, 0, 0, 0.3));
 >>>>>>> a90eee181a4be4e37eb55551fd63e1792960575a
+=======
+        drop-shadow(0 15px 20px rgba(0, 0, 0, 0.3));
+>>>>>>> a90eee1 (Ubicación corregida (#20))
 }
 
 
@@ -942,11 +990,15 @@ h2 {
    ========================================================= */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 .welcome-card.map-expanded
 .page-transition {
 =======
 .welcome-card.map-expanded .page-transition {
 >>>>>>> a90eee181a4be4e37eb55551fd63e1792960575a
+=======
+.welcome-card.map-expanded .page-transition {
+>>>>>>> a90eee1 (Ubicación corregida (#20))
 
     transform:
         translateX(0);
@@ -956,16 +1008,20 @@ h2 {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 .welcome-card.map-expanded
 .page-transition-front {
+=======
+.welcome-card.map-expanded .page-transition-front {
+>>>>>>> a90eee1 (Ubicación corregida (#20))
     opacity: 1;
 }
 
-.welcome-card.map-expanded
-.page-transition-back {
+.welcome-card.map-expanded .page-transition-back {
     opacity: 0;
 }
 
+<<<<<<< HEAD
 .welcome-card.map-expanded
 .mascot-transition-layer {
 =======
@@ -979,6 +1035,9 @@ h2 {
 
 .welcome-card.map-expanded .mascot-transition-layer {
 >>>>>>> a90eee181a4be4e37eb55551fd63e1792960575a
+=======
+.welcome-card.map-expanded .mascot-transition-layer {
+>>>>>>> a90eee1 (Ubicación corregida (#20))
     left: 75%;
 }
 
@@ -988,11 +1047,15 @@ h2 {
    ========================================================= */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 .welcome-card.admin-expanded
 .page-transition {
 =======
 .welcome-card.admin-expanded .page-transition {
 >>>>>>> a90eee181a4be4e37eb55551fd63e1792960575a
+=======
+.welcome-card.admin-expanded .page-transition {
+>>>>>>> a90eee1 (Ubicación corregida (#20))
 
     transform:
         translateX(-100%);
@@ -1002,16 +1065,20 @@ h2 {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 .welcome-card.admin-expanded
 .page-transition-front {
+=======
+.welcome-card.admin-expanded .page-transition-front {
+>>>>>>> a90eee1 (Ubicación corregida (#20))
     opacity: 0;
 }
 
-.welcome-card.admin-expanded
-.page-transition-back {
+.welcome-card.admin-expanded .page-transition-back {
     opacity: 1;
 }
 
+<<<<<<< HEAD
 .welcome-card.admin-expanded
 .mascot-transition-layer {
 =======
@@ -1025,6 +1092,9 @@ h2 {
 
 .welcome-card.admin-expanded .mascot-transition-layer {
 >>>>>>> a90eee181a4be4e37eb55551fd63e1792960575a
+=======
+.welcome-card.admin-expanded .mascot-transition-layer {
+>>>>>>> a90eee1 (Ubicación corregida (#20))
     left: 25%;
 }
 
@@ -1293,7 +1363,7 @@ h2 {
         display: none;
 <<<<<<< HEAD
     }
-    
+
     .welcome-meta.bubble-collapsed::before {
         content: "⏰";
         font-size: 1.2rem;
@@ -1501,6 +1571,7 @@ h2 {
         max-height: 38vh !important;
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 
@@ -1508,3 +1579,6 @@ h2 {
 =======
 }
 >>>>>>> a90eee181a4be4e37eb55551fd63e1792960575a
+=======
+}
+>>>>>>> a90eee1 (Ubicación corregida (#20))
