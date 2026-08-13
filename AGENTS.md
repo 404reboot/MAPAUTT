@@ -29,7 +29,6 @@ The primary Spring Boot application is located in the current workspace director
 3. **Simplicity First**: Write straightforward, functional, and maintainable code without adding unnecessary abstract layers or complex design patterns.
 4. **Thymeleaf Modularization**: HTML views must be modularized using Thymeleaf fragments (located in `src/main/resources/templates/fragments/`) to avoid spaghetti code and ensure view component reusability.
 5. **CSS Modularization**: CSS styles must also be modularized and logically structured in `src/main/resources/static/` (e.g. component/page specific stylesheets) rather than written as monolithic or unorganized style blocks.
-6. **Database Schema Synchronization**: Whenever an entity model in `src/main/java/model/` is modified or added, `src/main/resources/schema.sql` **MUST be updated in tandem** (both `CREATE TABLE IF NOT EXISTS` definitions and `ALTER TABLE ... ADD COLUMN IF NOT EXISTS` statements for existing databases).
 
 ## Common Commands
 All Maven commands should be run directly from the project root directory.
@@ -54,4 +53,4 @@ All Maven commands should be run directly from the project root directory.
 ## Database Settings (`application.properties`)
 - Driver: `org.mariadb.jdbc.Driver`
 - JDBC URL: `jdbc:mariadb://localhost:3306/mapavutt`
-- DDL Auto: `validate`
+- DDL Auto: `update`

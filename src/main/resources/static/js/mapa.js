@@ -1598,69 +1598,13 @@ function closeDetailsCard() {
 
 let currentAreaVerdeData = null;
 
-function openImageLightbox(src, alt) {
-    const modal = document.getElementById('image-lightbox-modal');
-    const img = document.getElementById('lightbox-img');
-    if (!modal || !img) return;
-    img.src = src;
-    img.alt = alt || '';
-    modal.classList.add('active');
-}
-
-function closeImageLightbox(event) {
-    if (event) event.stopPropagation();
-    const modal = document.getElementById('image-lightbox-modal');
-    if (modal) {
-        modal.classList.remove('active');
-    }
-}
-
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        closeImageLightbox();
-    }
-});
-
-function adjustHeroImgDimensions(img) {
-    if (!img || !img.naturalWidth || !img.naturalHeight) return;
-    const diffRatio = (img.naturalWidth - img.naturalHeight) / img.naturalWidth;
-    if (diffRatio > 0.4) {
-        img.classList.add('contain-mode');
-    } else {
-        img.classList.remove('contain-mode');
-    }
-}
-
-function setCardHero(assetId, altText) {
-    const heroContainer = document.getElementById('card-hero-container');
-    const detailsCard = document.getElementById('details-card');
-    if (!heroContainer) return;
-    if (assetId) {
-        heroContainer.innerHTML = `<img src="/images/custom/${assetId}" class="card-hero-img" alt="${altText || ''}" title="Hacer clic para ampliar" onload="adjustHeroImgDimensions(this)" onclick="openImageLightbox(this.src, this.alt)">`;
-        heroContainer.classList.add('visible');
-        if (detailsCard) detailsCard.classList.add('has-hero');
-        const img = heroContainer.querySelector('img');
-        if (img && img.complete) {
-            adjustHeroImgDimensions(img);
-        }
-    } else {
-        heroContainer.innerHTML = '';
-        heroContainer.classList.remove('visible');
-        if (detailsCard) detailsCard.classList.remove('has-hero');
-    }
-}
-
 //Muestra los detalles del edificio o área verde en la tarjeta de detalles
 function showDetails(type, data) {
     const cardTitle = document.getElementById('card-title');
     const cardBody = document.getElementById('card-body');
     const backBtn = document.getElementById('card-back-btn');
-    const detailsCard = document.getElementById('details-card');
 
     if (backBtn) backBtn.style.display = 'none';
-    if (detailsCard) detailsCard.classList.remove('has-back-btn');
-
-    setCardHero(data ? data.assetId : null, data ? data.nombre : '');
 
     if (type === 'edificio') {
         currentAreaVerdeData = null;
@@ -1720,28 +1664,6 @@ function showDetails(type, data) {
     openDetailsCard();
 }
 
-function transitionCardContent(updateCallback) {
-    const cardBody = document.getElementById('card-body');
-    const cardTitle = document.getElementById('card-title');
-
-    if (!cardBody) {
-        updateCallback();
-        return;
-    }
-
-    cardBody.classList.add('content-fading');
-    if (cardTitle) cardTitle.classList.add('title-fading');
-
-    setTimeout(() => {
-        updateCallback();
-
-        requestAnimationFrame(() => {
-            cardBody.classList.remove('content-fading');
-            if (cardTitle) cardTitle.classList.remove('title-fading');
-        });
-    }, 160);
-}
-
 function showSpeciesDetails(especieId) {
     if (!currentAreaVerdeData || !currentAreaVerdeData.especies) return;
 
@@ -1752,77 +1674,76 @@ function showSpeciesDetails(especieId) {
     const especie = speciesList.find(e => e.id == especieId);
     if (!especie) return;
 
-    transitionCardContent(() => {
-        const cardTitle = document.getElementById('card-title');
-        const cardBody = document.getElementById('card-body');
-        const backBtn = document.getElementById('card-back-btn');
-        const detailsCard = document.getElementById('details-card');
+    const cardTitle = document.getElementById('card-title');
+    const cardBody = document.getElementById('card-body');
+    const backBtn = document.getElementById('card-back-btn');
 
-        if (backBtn) backBtn.style.display = 'inline-flex';
-        if (detailsCard) detailsCard.classList.add('has-back-btn');
-        if (cardTitle) cardTitle.textContent = especie.nombre;
+    if (backBtn) backBtn.style.display = 'inline-flex';
+    cardTitle.textContent = especie.nombre;
 
-        setCardHero(especie.assetId, especie.nombre);
+    let imgHtml = '';
+    if (especie.assetId) {
+        imgHtml = `<img src="/images/custom/${especie.assetId}" class="species-detail-img" alt="${especie.nombre}">`;
+    }
 
-        const reinoClass = especie.reino ? 'reino-' + especie.reino.toLowerCase() : '';
+    const reinoClass = especie.reino ? 'reino-' + especie.reino.toLowerCase() : '';
 
-        cardBody.innerHTML = `
-            <div class="info-row" style="display: flex; align-items: center; justify-content: space-between;">
-                <div>
-                    <div class="label">Nombre Común</div>
-                    <div class="value" style="font-size: 16px; color: #1a202c;">${especie.nombre}</div>
-                </div>
-                <span class="map-species-tag ${reinoClass}" style="cursor: default;">
-                    <span class="map-species-dot"></span>
-                    <span>${especie.reino || 'Plantae'}</span>
-                </span>
+    cardBody.innerHTML = `
+        ${imgHtml}
+        
+        <div class="info-row" style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+                <div class="label">Nombre Común</div>
+                <div class="value" style="font-size: 16px; color: #1a202c;">${especie.nombre}</div>
             </div>
+            <span class="map-species-tag ${reinoClass}" style="cursor: default;">
+                <span class="map-species-dot"></span>
+                <span>${especie.reino || 'Plantae'}</span>
+            </span>
+        </div>
 
-            <div class="info-row" style="margin-top: 12px;">
-                <div class="label">Taxonomía</div>
-                <div class="taxonomy-grid">
-                    <div class="taxonomy-item">
-                        <span class="tax-label">Phylum / Div.</span>
-                        <span class="tax-val">${especie.divisionPhylum || '-'}</span>
-                    </div>
-                    <div class="taxonomy-item">
-                        <span class="tax-label">Clase</span>
-                        <span class="tax-val">${especie.clase || '-'}</span>
-                    </div>
-                    <div class="taxonomy-item">
-                        <span class="tax-label">Orden</span>
-                        <span class="tax-val">${especie.orden || '-'}</span>
-                    </div>
-                    <div class="taxonomy-item">
-                        <span class="tax-label">Familia</span>
-                        <span class="tax-val">${especie.familia || '-'}</span>
-                    </div>
-                    <div class="taxonomy-item">
-                        <span class="tax-label">Género</span>
-                        <span class="tax-val">${especie.genero || '-'}</span>
-                    </div>
-                    <div class="taxonomy-item">
-                        <span class="tax-label">Especie</span>
-                        <span class="tax-val">${especie.especie || '-'}</span>
-                    </div>
+        <div class="info-row" style="margin-top: 12px;">
+            <div class="label">Taxonomía</div>
+            <div class="taxonomy-grid">
+                <div class="taxonomy-item">
+                    <span class="tax-label">Phylum / Div.</span>
+                    <span class="tax-val">${especie.divisionPhylum || '-'}</span>
                 </div>
-            </div>
-
-            <div class="info-row" style="margin-top: 12px;">
-                <div class="label">Observaciones / Notas</div>
-                <div class="value" style="font-size: 13px; font-weight: 500; color: #4a5568; line-height: 1.5;">
-                    ${especie.observaciones || 'Sin observaciones registradas.'}
+                <div class="taxonomy-item">
+                    <span class="tax-label">Clase</span>
+                    <span class="tax-val">${especie.clase || '-'}</span>
+                </div>
+                <div class="taxonomy-item">
+                    <span class="tax-label">Orden</span>
+                    <span class="tax-val">${especie.orden || '-'}</span>
+                </div>
+                <div class="taxonomy-item">
+                    <span class="tax-label">Familia</span>
+                    <span class="tax-val">${especie.familia || '-'}</span>
+                </div>
+                <div class="taxonomy-item">
+                    <span class="tax-label">Género</span>
+                    <span class="tax-val">${especie.genero || '-'}</span>
+                </div>
+                <div class="taxonomy-item">
+                    <span class="tax-label">Especie</span>
+                    <span class="tax-val">${especie.especie || '-'}</span>
                 </div>
             </div>
-        `;
-    });
+        </div>
+
+        <div class="info-row" style="margin-top: 12px;">
+            <div class="label">Observaciones / Notas</div>
+            <div class="value" style="font-size: 13px; font-weight: 500; color: #4a5568; line-height: 1.5;">
+                ${especie.observaciones || 'Sin observaciones registradas.'}
+            </div>
+        </div>
+    `;
 }
 
 function goBackToAreaCard() {
     if (currentAreaVerdeData) {
-        transitionCardContent(() => {
-            showDetails('area-verde', currentAreaVerdeData);
-        });
+        showDetails('area-verde', currentAreaVerdeData);
     }
 }
 
