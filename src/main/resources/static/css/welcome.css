@@ -561,10 +561,14 @@ h2 {
    MASCOTA DE ADMINISTRACIÓN (Corregida para que crezca)
    ========================================================= */
 .mascot-admin {
-    height: 46vh !important;       /* Fuerza la altura exacta deseada */
-    max-height: 46vh !important;   /* Limita la altura máxima */
-    max-width: none !important;    /* Evita que el contenedor la confine horizontalmente */
-    width: auto !important;        /* Mantiene la proporción de la imagen */
+    height: 46vh !important;
+    /* Fuerza la altura exacta deseada */
+    max-height: 46vh !important;
+    /* Limita la altura máxima */
+    max-width: none !important;
+    /* Evita que el contenedor la confine horizontalmente */
+    width: auto !important;
+    /* Mantiene la proporción de la imagen */
 }
 
 .mascot-wrapper {
@@ -601,11 +605,9 @@ h2 {
     padding: 12px 18px;
 
     background:
-        linear-gradient(
-            135deg,
+        linear-gradient(135deg,
             rgba(255, 255, 255, 0.14),
-            rgba(255, 255, 255, 0.04)
-        );
+            rgba(255, 255, 255, 0.04));
 
     border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 14px;
@@ -654,12 +656,10 @@ h2 {
     width: 80%;
     height: 100%;
 
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.18),
-        transparent
-    );
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.18),
+            transparent);
 
     transform: skewX(-20deg);
 
@@ -677,11 +677,9 @@ h2 {
     opacity: 1;
 
     background:
-        linear-gradient(
-            135deg,
+        linear-gradient(135deg,
             rgba(255, 255, 255, 0.20),
-            rgba(255, 255, 255, 0.07)
-        );
+            rgba(255, 255, 255, 0.07));
 
     border-color: rgba(255, 255, 255, 0.42);
 
@@ -744,11 +742,9 @@ h2 {
     opacity: 1;
 
     background:
-        linear-gradient(
-            135deg,
+        linear-gradient(135deg,
             rgba(255, 255, 255, 0.22),
-            rgba(255, 255, 255, 0.08)
-        );
+            rgba(255, 255, 255, 0.08));
 
     border-color: rgba(255, 255, 255, 0.5);
 
@@ -796,11 +792,9 @@ h2 {
         150px 0 0 150px;
 
     transition:
-        transform var(--transition-speed)
-        ease-in-out,
+        transform var(--transition-speed) ease-in-out,
 
-        border-radius var(--transition-speed)
-        ease-in-out;
+        border-radius var(--transition-speed) ease-in-out;
 }
 
 
@@ -818,8 +812,7 @@ h2 {
     height: 100%;
 
     transition:
-        opacity var(--transition-speed)
-        ease-in-out;
+        opacity var(--transition-speed) ease-in-out;
 }
 
 .page-transition-front {
@@ -863,8 +856,7 @@ h2 {
     pointer-events: none;
 
     transition:
-        left var(--transition-speed)
-        ease-in-out;
+        left var(--transition-speed) ease-in-out;
 }
 
 .mascot-transition {
@@ -877,9 +869,7 @@ h2 {
     object-fit: contain;
 
     filter:
-        drop-shadow(
-            0 15px 20px rgba(0, 0, 0, 0.3)
-        );
+        drop-shadow(0 15px 20px rgba(0, 0, 0, 0.3));
 }
 
 
@@ -887,8 +877,7 @@ h2 {
    ESTADO: MAPA
    ========================================================= */
 
-.welcome-card.map-expanded
-.page-transition {
+.welcome-card.map-expanded .page-transition {
 
     transform:
         translateX(0);
@@ -897,18 +886,15 @@ h2 {
         150px 0 0 150px;
 }
 
-.welcome-card.map-expanded
-.page-transition-front {
+.welcome-card.map-expanded .page-transition-front {
     opacity: 1;
 }
 
-.welcome-card.map-expanded
-.page-transition-back {
+.welcome-card.map-expanded .page-transition-back {
     opacity: 0;
 }
 
-.welcome-card.map-expanded
-.mascot-transition-layer {
+.welcome-card.map-expanded .mascot-transition-layer {
     left: 75%;
 }
 
@@ -917,8 +903,7 @@ h2 {
    ESTADO: ADMINISTRACIÓN
    ========================================================= */
 
-.welcome-card.admin-expanded
-.page-transition {
+.welcome-card.admin-expanded .page-transition {
 
     transform:
         translateX(-100%);
@@ -927,18 +912,15 @@ h2 {
         0 150px 150px 0;
 }
 
-.welcome-card.admin-expanded
-.page-transition-front {
+.welcome-card.admin-expanded .page-transition-front {
     opacity: 0;
 }
 
-.welcome-card.admin-expanded
-.page-transition-back {
+.welcome-card.admin-expanded .page-transition-back {
     opacity: 1;
 }
 
-.welcome-card.admin-expanded
-.mascot-transition-layer {
+.welcome-card.admin-expanded .mascot-transition-layer {
     left: 25%;
 }
 
@@ -1206,7 +1188,7 @@ h2 {
         font-size: 0 !important;
         display: none;
     }
-    
+
     .welcome-meta.bubble-collapsed::before {
         content: "⏰";
         font-size: 1.2rem;
