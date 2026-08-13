@@ -1291,17 +1291,6 @@ function onPointerMove(event) {
         return;
     }
 
-    // Ignorar trazado de rayos e interacciones 3D si el cursor está sobre elementos de interfaz flotantes
-    if (event.target && event.target.closest('#details-card, .map-controls-overlay, .back-button-overlay')) {
-        if (hoveredObject) {
-            hoveredObject = null;
-            updateOutlines();
-        }
-        if (tooltip) tooltip.classList.remove('visible');
-        document.body.style.cursor = 'default';
-        return;
-    }
-
     updateMouseCoordinates(event);
 
     raycaster.setFromCamera(mouse, camera);
