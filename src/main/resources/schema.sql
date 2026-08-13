@@ -11,8 +11,7 @@ CREATE TABLE IF NOT EXISTS edificio (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255),
     carreras VARCHAR(255),
-    codigo_mesh VARCHAR(255),
-    asset_id VARCHAR(255)
+    codigo_mesh VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS area_verde (
@@ -21,8 +20,7 @@ CREATE TABLE IF NOT EXISTS area_verde (
     sector VARCHAR(255),
     superficie DOUBLE,
     descripcion VARCHAR(255),
-    codigo_mesh VARCHAR(255),
-    asset_id VARCHAR(255)
+    codigo_mesh VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS especies (
@@ -50,9 +48,4 @@ CREATE TABLE IF NOT EXISTS area_verde_especie (
     CONSTRAINT fk_ave_area FOREIGN KEY (area_verde_id) REFERENCES area_verde (id) ON DELETE CASCADE,
     CONSTRAINT fk_ave_especie FOREIGN KEY (especie_id) REFERENCES especies (id) ON DELETE CASCADE
 );
-
--- Asegurar la existencia de las columnas de imagen en tablas preexistentes
-ALTER TABLE edificio ADD COLUMN IF NOT EXISTS asset_id VARCHAR(255);
-ALTER TABLE area_verde ADD COLUMN IF NOT EXISTS asset_id VARCHAR(255);
-
 
