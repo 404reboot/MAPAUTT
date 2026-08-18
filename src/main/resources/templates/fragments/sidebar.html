@@ -32,6 +32,13 @@
                     </a>
                 </li>
                 <li>
+                    <a th:href="@{/admin-panel(section='seres-vivos')}"
+                        th:class="${activeSection == 'seres-vivos'} ? 'nav-item active' : 'nav-item'">
+                        <svg class="icon"><use th:href="@{/images/icons.svg#icon-paw}"></use></svg>
+                        <span class="nav-text">Gestionar seres vivos</span>
+                    </a>
+                </li>
+                <li>
                     <a th:href="@{/admin-panel(section='map-editor')}"
                         th:class="${activeSection == 'map-editor'} ? 'nav-item active' : 'nav-item'">
                         <svg class="icon"><use th:href="@{/images/icons.svg#icon-map}"></use></svg>

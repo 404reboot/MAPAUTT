@@ -1,35 +1,44 @@
 package model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Entity;
 
 @Entity
-@Table(name = "animal")
-public class Animal {
-   @Id
+@Table(name = "especies")
+public class Especie {
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nombre;
-    private String reino; 
+    private String reino;
+    private String divisionPhylum;
     private String clase;
-    private String subclase; 
+    private String subclase;
     private String orden;
     private String familia;
     private String subfamilia;
     private String genero;
     private String especie;
+    private String variedad;
+    private String assetId;
+    @Column(columnDefinition = "TEXT")
+    private String observaciones;
 
-    public Animal(){
+    public Especie() {
     }
 
-    public Animal(Integer id,String nombre, String reino, String clase, String subclase, String orden, String familia,
-            String subfamilia, String genero, String especie) {
+    public Especie(Integer id, String nombre, String reino, String divisionPhylum, String clase, String subclase,
+                   String orden, String familia, String subfamilia, String genero, String especie, String variedad,
+                   String assetId, String observaciones) {
         this.id = id;
-        this.nombre=nombre;
+        this.nombre = nombre;
         this.reino = reino;
+        this.divisionPhylum = divisionPhylum;
         this.clase = clase;
         this.subclase = subclase;
         this.orden = orden;
@@ -37,6 +46,9 @@ public class Animal {
         this.subfamilia = subfamilia;
         this.genero = genero;
         this.especie = especie;
+        this.variedad = variedad;
+        this.assetId = assetId;
+        this.observaciones = observaciones;
     }
 
     public Integer getId() {
@@ -47,7 +59,13 @@ public class Animal {
         this.id = id;
     }
 
-    
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
     public String getReino() {
         return reino;
@@ -55,6 +73,14 @@ public class Animal {
 
     public void setReino(String reino) {
         this.reino = reino;
+    }
+
+    public String getDivisionPhylum() {
+        return divisionPhylum;
+    }
+
+    public void setDivisionPhylum(String divisionPhylum) {
+        this.divisionPhylum = divisionPhylum;
     }
 
     public String getClase() {
@@ -113,13 +139,27 @@ public class Animal {
         this.especie = especie;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getVariedad() {
+        return variedad;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setVariedad(String variedad) {
+        this.variedad = variedad;
     }
 
+    public String getAssetId() {
+        return assetId;
+    }
 
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
+    }
+
+    public String getObservaciones() {
+        return observaciones;
+    }
+
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
+    }
 }

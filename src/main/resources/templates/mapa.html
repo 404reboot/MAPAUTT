@@ -16,7 +16,7 @@
 
     <!-- Fuente externa -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap"
-          rel="stylesheet">
+        rel="stylesheet">
 
     <!-- Estilos propios -->
     <link rel="stylesheet" th:href="@{/css/main.css}">
@@ -63,7 +63,9 @@
     <div class="back-button-overlay">
 
         <a th:href="@{/}" class="btn-secondary">
-            <svg class="icon"><use th:href="@{/images/icons.svg#icon-arrow-left}"></use></svg>
+            <svg class="icon">
+                <use th:href="@{/images/icons.svg#icon-arrow-left}"></use>
+            </svg>
             Volver
         </a>
 
@@ -75,18 +77,21 @@
     <!-- Tarjeta lateral de información -->
     <div id="details-card" class="floating-details-card">
 
+        <img class="mascota-viewing" th:src="@{/css/mascota_viewing_transparent.png}" alt="Mascota observando">
+
+        <div class="card-drag-handle"></div>
+
         <div class="card-header-overlay">
-
-            <h3 id="card-title">
-                Detalle
-            </h3>
-
-            <button class="close-btn" onclick="closeDetailsCard()">
-
-                &times;
-
-            </button>
-
+            <div class="card-header-left">
+                <button id="card-back-btn" class="btn-card-back" style="display: none;" onclick="goBackToAreaCard()"
+                    title="Volver al área verde" aria-label="Volver al área verde">
+                    <svg class="icon" style="width: 16px; height: 16px;">
+                        <use th:href="@{/images/icons.svg#icon-arrow-left}"></use>
+                    </svg>
+                </button>
+                <h3 id="card-title">Detalle</h3>
+            </div>
+            <button class="close-btn" onclick="closeDetailsCard()">&times;</button>
         </div>
 
         <div id="card-body"></div>
@@ -97,9 +102,7 @@
     <div class="map-controls-overlay">
 
 
-        <button class="btn-control btn-reset"
-                onclick="resetCameraView()"
-                title="Restablecer vista original">
+        <button class="btn-control btn-reset" onclick="resetCameraView()" title="Restablecer vista original">
 
             🏠
 
@@ -107,9 +110,7 @@
 
 
 
-        <button class="btn-control"
-                onclick="zoomIn()"
-                title="Acercar">
+        <button class="btn-control" onclick="zoomIn()" title="Acercar">
 
             ➕
 
@@ -117,9 +118,7 @@
 
 
 
-        <button class="btn-control"
-                onclick="zoomOut()"
-                title="Alejar">
+        <button class="btn-control" onclick="zoomOut()" title="Alejar">
 
             ➖
 
@@ -152,6 +151,7 @@
     <script th:src="@{/js/mascota.js}"></script>
 
 
+<<<<<<< HEAD
 <!-- =========================================================
      UBICACIÓN Y EXPLORACIÓN DEL MAPA
      ========================================================= -->
@@ -194,11 +194,28 @@
 
             <span class="explore-arrow">
                 ▾
+=======
+    <!-- =========================================================
+     UBICACIÓN Y EXPLORACIÓN DEL MAPA
+     ========================================================= -->
+
+    <div class="map-explore-overlay">
+
+        <!-- Botón de ubicación -->
+        <button id="btn-user-location" class="location-button" type="button" title="Mostrar mi ubicación"
+            aria-label="Mostrar mi ubicación">
+
+            <span class="location-icon"> 📍 </span>
+
+            <span class="location-button-text">
+                Mi ubicación
+>>>>>>> a90eee181a4be4e37eb55551fd63e1792960575a
             </span>
 
         </button>
 
 
+<<<<<<< HEAD
         <!-- Menú desplegable -->
         <div
             id="explore-menu"
@@ -226,11 +243,29 @@
 
                 <span class="explore-check">
                     ✓
+=======
+        <!-- Contenedor del menú Explorar -->
+        <div class="explore-wrapper">
+
+            <!-- Botón principal -->
+            <button id="btn-explore" class="explore-button" type="button" aria-expanded="false"
+                aria-controls="explore-menu">
+
+                <span class="explore-icon"> 🔍 </span>
+
+                <span class="explore-text">
+                    Explorar
+                </span>
+
+                <span class="explore-arrow">
+                    ▾
+>>>>>>> a90eee181a4be4e37eb55551fd63e1792960575a
                 </span>
 
             </button>
 
 
+<<<<<<< HEAD
             <!-- Áreas comunes -->
             <button
                 class="explore-option"
@@ -283,6 +318,82 @@
                 <span>
                     Entradas siempre visibles
                 </span>
+=======
+            <!-- Menú desplegable -->
+            <div id="explore-menu" class="explore-menu" aria-hidden="true">
+
+                <div class="explore-menu-header">
+                    <span>Mostrar en el mapa</span>
+                </div>
+
+
+                <!-- Infraestructura -->
+                <button class="explore-option" data-category="infraestructura" type="button">
+
+                    <span class="explore-option-icon">
+                        🏢
+                    </span>
+
+                    <span class="explore-option-text">
+                        Infraestructura
+                    </span>
+
+                    <span class="explore-check">
+                        ✓
+                    </span>
+
+                </button>
+
+
+                <!-- Áreas comunes -->
+                <button class="explore-option" data-category="comunes" type="button">
+
+                    <span class="explore-option-icon">
+                        👥
+                    </span>
+
+                    <span class="explore-option-text">
+                        Áreas comunes
+                    </span>
+
+                    <span class="explore-check">
+                        ✓
+                    </span>
+
+                </button>
+
+
+                <!-- Espacios naturales -->
+                <button class="explore-option" data-category="naturales" type="button">
+
+                    <span class="explore-option-icon">
+                        🌿
+                    </span>
+
+                    <span class="explore-option-text">
+                        Espacios naturales
+                    </span>
+
+                    <span class="explore-check">
+                        ✓
+                    </span>
+
+                </button>
+
+
+                <!-- Indicador de entradas -->
+                <div class="explore-entrances-info">
+
+                    <span class="entrance-indicator">
+                        ●
+                    </span>
+
+                    <span>
+                        Entradas siempre visibles
+                    </span>
+
+                </div>
+>>>>>>> a90eee181a4be4e37eb55551fd63e1792960575a
 
             </div>
 
@@ -290,6 +401,7 @@
 
     </div>
 
+<<<<<<< HEAD
 </div>
 
 
@@ -313,6 +425,29 @@
 <link rel="stylesheet" href="/css/mapa.css">
 
 <link rel="stylesheet" href="/css/ubicacion.css">
+=======
+
+    <!-- Three.js -->
+    <script src="/js/three.min.js"></script>
+
+    <!-- Controles -->
+    <script src="/js/OrbitControls.js"></script>
+
+    <!-- GLTF -->
+    <script src="/js/GLTFLoader.js"></script>
+
+    <!-- Tu código actual -->
+    <script src="/js/mapa.js"></script>
+
+
+    <!-- Sistema de ubicación -->
+    <script src="/js/ubicacion-config.js"></script>
+    <script src="/js/ubicacion.js"></script>
+
+    <link rel="stylesheet" href="/css/mapa.css">
+
+    <link rel="stylesheet" href="/css/ubicacion.css">
+>>>>>>> a90eee181a4be4e37eb55551fd63e1792960575a
 
 
 

@@ -7,17 +7,12 @@
 
     <!-- Fragment: Gestionar Edificios -->
     <div th:fragment="edificios" class="section-container animate-fade-in">
-        <div class="section-header-info">
-            <h2>Gestionar Edificios</h2>
-            <p>Visualiza y administra todos los módulos y edificios del campus universitario.</p>
-        </div>
         
         <div class="table-responsive">
             <table class="data-table">
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Identificador (3D)</th>
                         <th>Nombre del Edificio</th>
                         <th>Carreras</th>
                         <th>Acciones</th>
@@ -26,33 +21,34 @@
                 <tbody>
                     <tr th:each="edificio : ${edificios}">
                         <td class="font-mono text-muted" th:text="'#' + ${edificio.id}">#1</td>
-                        <td class="font-mono" th:text="${edificio.codigoMesh}">E</td>
                         <td class="font-semibold" th:text="${edificio.nombre}">Edificio Principal</td>
                         <td>
                             <span class="badge badge-code"
                                 th:text="${edificio.carreras}">Ninguna</span>
                         </td>
-                        <td class="table-actions">
-                            <button class="btn-action btn-edit" 
-                                    th:data-id="${edificio.id}"
-                                    th:data-codigomesh="${edificio.codigoMesh}"
-                                    th:data-nombre="${edificio.nombre}"
-                                    th:data-carreras="${edificio.carreras}"
-                                    onclick="openEditDialog(this)" 
-                                    title="Editar">
-                                <svg class="icon"><use th:href="@{/images/icons.svg#icon-edit}"></use></svg>
-                            </button>
-                            <button class="btn-action btn-delete" 
-                                    th:data-id="${edificio.id}"
-                                    th:data-nombre="${edificio.nombre}"
-                                    onclick="deleteItem(this.getAttribute('data-id'), this.getAttribute('data-nombre'))" 
-                                    title="Eliminar">
-                                <svg class="icon"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
-                            </button>
+                        <td>
+                            <div class="table-actions">
+                                <button class="btn-action btn-edit" 
+                                        th:data-id="${edificio.id}"
+                                        th:data-codigomesh="${edificio.codigoMesh}"
+                                        th:data-nombre="${edificio.nombre}"
+                                        th:data-carreras="${edificio.carreras}"
+                                        onclick="openEditDialog(this)" 
+                                        title="Editar">
+                                    <svg class="icon"><use th:href="@{/images/icons.svg#icon-edit}"></use></svg>
+                                </button>
+                                <button class="btn-action btn-delete" 
+                                        th:data-id="${edificio.id}"
+                                        th:data-nombre="${edificio.nombre}"
+                                        onclick="deleteItem(this.getAttribute('data-id'), this.getAttribute('data-nombre'))" 
+                                        title="Eliminar">
+                                    <svg class="icon"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(edificios)}">
-                        <td colspan="5" class="text-center text-muted py-8">No hay edificios registrados.</td>
+                        <td colspan="4" class="text-center text-muted py-8">No hay edificios registrados.</td>
                     </tr>
                 </tbody>
             </table>
@@ -61,53 +57,77 @@
 
     <!-- Fragment: Gestionar Areas Verdes -->
     <div th:fragment="areas-verdes" class="section-container animate-fade-in">
-        <div class="section-header-info">
-            <h2>Gestionar Áreas Verdes</h2>
-            <p>Supervisa, planifica y administra los jardines, bosques y áreas de esparcimiento ecológico.</p>
-        </div>
         
         <div class="table-responsive">
             <table class="data-table">
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Identificador (3D)</th>
                         <th>Nombre del Área</th>
                         <th>Sector / Ubicación</th>
                         <th>Superficie (m²)</th>
                         <th>Descripción</th>
+                        <th>Especies</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="area : ${areasVerdes}">
                         <td class="font-mono text-muted" th:text="'#' + ${area.id}">#1</td>
-                        <td class="font-mono" th:text="${area.codigoMesh}">Jardin_Norte</td>
                         <td class="font-semibold" th:text="${area.nombre}">Jardín Norte</td>
                         <td th:text="${area.sector}">Zona Norte</td>
                         <td th:text="${area.superficie} + ' m²'">120 m²</td>
                         <td>
                             <span th:text="${area.descripcion}">Sin descripción</span>
                         </td>
-                        <td class="table-actions">
-                            <button class="btn-action btn-edit" 
-                                    th:data-id="${area.id}"
-                                    th:data-codigomesh="${area.codigoMesh}"
-                                    th:data-nombre="${area.nombre}"
-                                    th:data-sector="${area.sector}"
-                                    th:data-superficie="${area.superficie}"
-                                    th:data-descripcion="${area.descripcion}"
-                                    onclick="openEditDialog(this)" 
-                                    title="Editar">
-                                <svg class="icon"><use th:href="@{/images/icons.svg#icon-edit}"></use></svg>
-                            </button>
-                            <button class="btn-action btn-delete" 
-                                    th:data-id="${area.id}"
-                                    th:data-nombre="${area.nombre}"
-                                    onclick="deleteItem(this.getAttribute('data-id'), this.getAttribute('data-nombre'))" 
-                                    title="Eliminar">
-                                <svg class="icon"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
-                            </button>
+                        <td>
+                            <div class="species-tags-container">
+                                <div th:each="esp : ${area.especies}" 
+                                     class="species-tag"
+                                     th:classappend="${esp.reino != null ? 'reino-' + #strings.toLowerCase(esp.reino) : ''}">
+                                    <div class="species-tag-indicator">
+                                        <span class="species-tag-dot"></span>
+                                        <button type="button" 
+                                                class="species-tag-remove" 
+                                                th:data-area-id="${area.id}" 
+                                                th:data-especie-id="${esp.id}" 
+                                                th:data-especie-nombre="${esp.nombre}"
+                                                onclick="confirmRemoveSpeciesFromArea(this)" 
+                                                title="Quitar especie">✕</button>
+                                    </div>
+                                    <span class="species-tag-name" th:text="${esp.nombre}">Nombre</span>
+                                </div>
+                                <button type="button" 
+                                        class="btn-add-species-tag" 
+                                        th:data-area-id="${area.id}" 
+                                        th:data-area-nombre="${area.nombre}"
+                                        onclick="openAddSpeciesToAreaDialog(this)" 
+                                        title="Agregar Especie">
+                                    <svg class="icon"><use th:href="@{/images/icons.svg#icon-plus}"></use></svg>
+                                </button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="btn-action btn-edit" 
+                                        th:data-id="${area.id}"
+                                        th:data-codigomesh="${area.codigoMesh}"
+                                        th:data-nombre="${area.nombre}"
+                                        th:data-sector="${area.sector}"
+                                        th:data-superficie="${area.superficie}"
+                                        th:data-descripcion="${area.descripcion}"
+                                        onclick="openEditDialog(this)" 
+                                        title="Editar">
+                                    <svg class="icon"><use th:href="@{/images/icons.svg#icon-edit}"></use></svg>
+                                </button>
+                                <button class="btn-action btn-delete" 
+                                        th:data-id="${area.id}"
+                                        th:data-nombre="${area.nombre}"
+                                        onclick="deleteItem(this.getAttribute('data-id'), this.getAttribute('data-nombre'))" 
+                                        title="Eliminar">
+                                    <svg class="icon"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(areasVerdes)}">
@@ -117,6 +137,80 @@
             </table>
         </div>
     </div>
+
+    <!-- Fragment: Gestionar Seres Vivos -->
+    <div th:fragment="seres-vivos" class="section-container animate-fade-in">
+        <div class="table-responsive">
+            <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre Común</th>
+                            <th>Reino</th>
+                            <th>División / Phylum</th>
+                            <th>Clase / Orden</th>
+                            <th>Taxonomía (Familia / Género / Especie)</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="especie : ${especies}">
+                            <td class="font-mono text-muted" th:text="'#' + ${especie.id}">#1</td>
+                            <td class="font-semibold">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <img th:if="${especie.assetId != null and !especie.assetId.empty}" 
+                                         th:src="@{'/images/custom/' + ${especie.assetId}}" 
+                                         alt="Foto" 
+                                         style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid var(--outline-variant); flex-shrink: 0;">
+                                    <span th:text="${especie.nombre}">Jacaranda</span>
+                                </div>
+                            </td>
+                            <td th:text="${especie.reino}">Plantae</td>
+                            <td th:text="${especie.divisionPhylum != null and !especie.divisionPhylum.empty ? especie.divisionPhylum : '-'}">Magnoliophyta</td>
+                            <td th:text="${(especie.clase != null ? especie.clase : '-') + ' / ' + (especie.orden != null ? especie.orden : '-')}">Magnoliopsida</td>
+                            <td>
+                                <span th:text="${(especie.familia != null ? especie.familia : '-') + ' / ' + (especie.genero != null ? especie.genero : '-') + ' ' + (especie.especie != null ? especie.especie : '')}">Bignoniaceae / Jacaranda mimosifolia</span>
+                            </td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="btn-action btn-edit" 
+                                            data-entity="especie"
+                                            th:data-id="${especie.id}"
+                                            th:data-nombre="${especie.nombre}"
+                                            th:data-reino="${especie.reino}"
+                                            th:data-divisionphylum="${especie.divisionPhylum}"
+                                            th:data-clase="${especie.clase}"
+                                            th:data-subclase="${especie.subclase}"
+                                            th:data-orden="${especie.orden}"
+                                            th:data-familia="${especie.familia}"
+                                            th:data-subfamilia="${especie.subfamilia}"
+                                            th:data-genero="${especie.genero}"
+                                            th:data-especie="${especie.especie}"
+                                            th:data-variedad="${especie.variedad}"
+                                            th:data-observaciones="${especie.observaciones}"
+                                            th:data-assetid="${especie.assetId}"
+                                            onclick="openEditDialog(this)" 
+                                            title="Editar Especie">
+                                        <svg class="icon"><use th:href="@{/images/icons.svg#icon-edit}"></use></svg>
+                                    </button>
+                                    <button class="btn-action btn-delete" 
+                                            data-entity="especie"
+                                            th:data-id="${especie.id}"
+                                            th:data-nombre="${especie.nombre}"
+                                            onclick="deleteItemEntity(this)" 
+                                            title="Eliminar Especie">
+                                        <svg class="icon"><use th:href="@{/images/icons.svg#icon-trash}"></use></svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(especies)}">
+                            <td colspan="7" class="text-center text-muted py-8">No hay registros de especies.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
     <!-- Fragment: Editor del Mapa -->
     <div th:fragment="map-editor" class="section-container animate-fade-in" style="text-align: center; padding: 60px 20px;">
@@ -129,3 +223,4 @@
 
 </body>
 </html>
+
