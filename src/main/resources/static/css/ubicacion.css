@@ -448,3 +448,236 @@
         font-size: 21px;
     }
 }
+
+
+/* =========================================================
+   AVISO DE PRECISION GPS
+   ========================================================= */
+
+#gps-precision-aviso {
+
+    position: fixed;
+
+    top: 85px;
+    right: 20px;
+
+    z-index: 5000;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    width: 310px;
+
+    padding: 14px 38px 14px 14px;
+
+    border-radius: 14px;
+
+    background: rgba(255, 255, 255, 0.96);
+
+    border: 1px solid rgba(33, 150, 243, 0.25);
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.18),
+        0 3px 10px rgba(33, 150, 243, 0.12);
+
+    backdrop-filter: blur(14px);
+
+    -webkit-backdrop-filter: blur(14px);
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transform:
+        translateY(-15px)
+        scale(0.95);
+
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease,
+        visibility 0.3s ease;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   AVISO VISIBLE
+   ========================================================= */
+
+#gps-precision-aviso.gps-aviso-visible {
+
+    opacity: 1;
+
+    visibility: visible;
+
+    transform:
+        translateY(0)
+        scale(1);
+
+    pointer-events: auto;
+}
+
+
+/* =========================================================
+   ICONO
+   ========================================================= */
+
+.gps-aviso-icono {
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: rgba(33, 150, 243, 0.12);
+
+    font-size: 19px;
+}
+
+
+/* =========================================================
+   CONTENIDO
+   ========================================================= */
+
+.gps-aviso-contenido {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+    line-height: 1.35;
+}
+
+
+.gps-aviso-contenido strong {
+
+    color: #263238;
+
+    font-size: 14px;
+
+    font-weight: 700;
+}
+
+
+.gps-aviso-contenido span {
+
+    color: #546e7a;
+
+    font-size: 12px;
+
+    font-weight: 500;
+}
+
+
+.gps-aviso-contenido b {
+
+    color: #1976d2;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   BOTON CERRAR
+   ========================================================= */
+
+.gps-aviso-cerrar {
+
+    position: absolute;
+
+    top: 7px;
+    right: 8px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 25px;
+    height: 25px;
+
+    padding: 0;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: transparent;
+
+    color: #78909c;
+
+    font-size: 20px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.gps-aviso-cerrar:hover {
+
+    background: rgba(0, 0, 0, 0.08);
+
+    color: #263238;
+}
+
+
+/* =========================================================
+   MOVILES
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    #gps-precision-aviso {
+
+        top: 78px;
+
+        right: 15px;
+
+        left: 15px;
+
+        width: auto;
+
+        max-width: none;
+    }
+}
+
+
+@media (max-width: 400px) {
+
+    #gps-precision-aviso {
+
+        top: 70px;
+
+        right: 12px;
+
+        left: 12px;
+
+        padding: 12px 35px 12px 12px;
+    }
+
+    .gps-aviso-contenido strong {
+        font-size: 13px;
+    }
+
+    .gps-aviso-contenido span {
+        font-size: 11px;
+    }
+}

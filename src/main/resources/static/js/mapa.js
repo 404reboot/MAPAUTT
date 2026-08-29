@@ -98,54 +98,179 @@ const detailsCard = document.getElementById('details-card');
 function normalizeKey(str) {
     if (!str) return '';
     return str.toString()
-              .toLowerCase()
-              .trim()
-              .replace(/[\s\-_]+/g, '_');
+        .toLowerCase()
+        .trim()
+        .replace(/[\s\-_]+/g, '_');
 }
+/* =========================================================
+   CARGAR TODOS LOS DATOS DEL MAPA
+   ========================================================= */
 
+/**
+ * Carga todos los registros disponibles
+ * desde la base de datos.
+ *
+ * No limita la información a categorías específicas.
+ *
+ * @author Cristobal Torres Ramos
+ * @version 1.4
+ */
 function loadDbMapData() {
-    fetch('/api/map-data')
-        .then(res => res.json())
-        .then(data => {
-            dbItemsMap.clear();
-            if (data.edificios) {
-                data.edificios.forEach(item => {
-                    const entry = { type: 'edificio', data: item, nombre: item.nombre };
-                    if (item.codigoMesh) {
-                        dbItemsMap.set(normalizeKey(item.codigoMesh), entry);
-                    }
-                    if (item.nombre) {
-                        dbItemsMap.set(normalizeKey(item.nombre), entry);
-                    }
-                });
+
+    fetch(
+        '/api/map-data'
+    )
+
+        .then(
+            function (response) {
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        'No se pudieron cargar los datos del mapa.'
+                    );
+
+                }
+
+                return response.json();
+
             }
-            if (data.areasVerdes) {
-                data.areasVerdes.forEach(item => {
-                    const entry = { type: 'area-verde', data: item, nombre: item.nombre };
-                    if (item.codigoMesh) {
-                        dbItemsMap.set(normalizeKey(item.codigoMesh), entry);
+        )
+
+        .then(
+            function (data) {
+
+                dbItemsMap.clear();
+
+
+                /*
+                 * Recorrer TODAS las propiedades
+                 * devueltas por Spring Boot.
+                 */
+                Object.keys(
+                    data
+                ).forEach(
+                    function (categoria) {
+
+                        const elementos =
+                            data[
+                            categoria
+                            ];
+
+
+                        /*
+                         * Solo procesamos arreglos.
+                         */
+                        if (
+                            !Array.isArray(
+                                elementos
+                            )
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        elementos.forEach(
+                            function (item) {
+
+                                if (!item) {
+                                    return;
+                                }
+
+
+                                const entry = {
+
+                                    type:
+                                        obtenerTipoResultado(
+                                            categoria
+                                        ),
+
+                                    categoria:
+                                        categoria,
+
+                                    data:
+                                        item,
+
+                                    nombre:
+                                        obtenerNombreResultado(
+                                            item
+                                        )
+
+                                };
+
+
+                                /*
+                                 * Registrar por codigoMesh.
+                                 */
+                                if (
+                                    item.codigoMesh
+                                ) {
+
+                                    dbItemsMap.set(
+
+                                        normalizeKey(
+                                            item.codigoMesh
+                                        ),
+
+                                        entry
+
+                                    );
+
+                                }
+
+
+                                /*
+                                 * Registrar por nombre.
+                                 */
+                                if (
+                                    item.nombre
+                                ) {
+
+                                    dbItemsMap.set(
+
+                                        normalizeKey(
+                                            item.nombre
+                                        ),
+
+                                        entry
+
+                                    );
+
+                                }
+
+                            }
+                        );
+
                     }
-                    if (item.nombre) {
-                        dbItemsMap.set(normalizeKey(item.nombre), entry);
-                    }
-                });
+                );
+
+
+                console.log(
+                    'Datos del mapa cargados:',
+                    dbItemsMap.size
+                );
+
             }
+        )
 
+        .catch(
+            function (error) {
 
-            //cargar etiquetas del mapa si el modelo ya está cargado
-            if (mapModel) {
-                buildMapLabels();
+                console.error(
+                    'Error al cargar datos del mapa:',
+                    error
+                );
+
             }
+        );
 
-
-
-        })
-        .catch(err => console.error('Error al cargar datos del mapa desde BD:', err));
 }
 
 function findDbItemForMesh(object) {
     if (!object || !dbItemsMap || dbItemsMap.size === 0) return null;
-    
+
     let current = object;
     const candidateNames = [];
 
@@ -726,7 +851,23 @@ function createMapLabel(object, dbItem) {
 /* =========================================================
    MENÚ EXPLORAR
    ========================================================= */
+/* =========================================================
+   MENÚ EXPLORAR
+   ========================================================= */
 
+/**
+ * Configura todas las interacciones del menú Explorar.
+ *
+ * Incluye:
+ * - Abrir y cerrar el menú.
+ * - Cerrar mediante el botón X.
+ * - Seleccionar categorías.
+ * - Cerrar al hacer clic fuera.
+ *
+ * Autor: Cristobal Torres Ramos
+ * Año: 2026
+ * Versión: 1.3
+ */
 function setupExploreMenu() {
 
     const exploreButton =
@@ -747,22 +888,35 @@ function setupExploreMenu() {
         );
 
 
+    /*
+     * Verificar que los elementos principales
+     * existan antes de continuar.
+     */
     if (
         !exploreButton ||
         !exploreMenu
     ) {
+
+        console.warn(
+            'Menú Explorar: no se encontraron los elementos necesarios.'
+        );
+
         return;
     }
 
 
-    /*
-     * Abrir / cerrar menú.
-     */
+    /* =====================================================
+       ABRIR / CERRAR MENÚ
+       ===================================================== */
+
     exploreButton.addEventListener(
         'click',
-        function(event) {
+        function (event) {
+
+            event.preventDefault();
 
             event.stopPropagation();
+
 
             const isOpen =
                 exploreMenu.classList.contains(
@@ -784,14 +938,57 @@ function setupExploreMenu() {
     );
 
 
-    /*
-     * Seleccionar categorías.
-     */
+    /* =====================================================
+       BOTÓN X
+       ===================================================== */
+
+    exploreMenu.addEventListener(
+        'click',
+        function (event) {
+
+            /*
+             * Buscar si el elemento pulsado pertenece
+             * al botón de cerrar.
+             */
+            const closeButton =
+                event.target.closest(
+                    '#btn-close-explore'
+                );
+
+
+            if (closeButton) {
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
+                closeExploreMenu();
+
+                return;
+            }
+
+
+            /*
+             * Evitar que los demás elementos del menú
+             * propaguen el clic hacia el documento.
+             */
+            event.stopPropagation();
+
+        }
+    );
+
+
+    /* =====================================================
+       SELECCIONAR CATEGORÍAS
+       ===================================================== */
+
     options.forEach(option => {
 
         option.addEventListener(
             'click',
-            function(event) {
+            function (event) {
+
+                event.preventDefault();
 
                 event.stopPropagation();
 
@@ -800,6 +997,9 @@ function setupExploreMenu() {
                     option.dataset.category;
 
 
+                /*
+                 * Activar / desactivar categoría.
+                 */
                 if (
                     activeExploreCategories.has(
                         category
@@ -823,12 +1023,13 @@ function setupExploreMenu() {
                     option.classList.add(
                         'active'
                     );
+
                 }
 
 
                 /*
                  * Actualizar inmediatamente
-                 * las etiquetas.
+                 * las etiquetas del mapa.
                  */
                 updateMapLabels();
 
@@ -838,41 +1039,37 @@ function setupExploreMenu() {
     });
 
 
-    /*
-     * Evitar que tocar dentro del menú
-     * lo cierre.
-     */
-    exploreMenu.addEventListener(
-        'click',
-        function(event) {
+    /* =====================================================
+       CERRAR AL HACER CLIC FUERA
+       ===================================================== */
 
-            event.stopPropagation();
-
-        }
-    );
-
-
-    /*
-     * Cerrar al tocar fuera.
-     */
     document.addEventListener(
         'click',
-        function(event) {
+        function (event) {
 
+            /*
+             * Si el clic ocurrió dentro del contenedor
+             * Explorar, no cerrar.
+             */
             if (
-                !event.target.closest(
+                event.target.closest(
                     '.explore-wrapper'
                 )
             ) {
 
-                closeExploreMenu();
-
+                return;
             }
+
+
+            /*
+             * Si ocurrió fuera, cerrar.
+             */
+            closeExploreMenu();
 
         }
     );
-}
 
+}
 
 /**
  * Abre el menú Explorar.
@@ -985,140 +1182,315 @@ animate();
 
 
 //Inicializa la escena, la cámara, el renderizador y los controles de Three.js
+//Inicializa la escena, la cámara, el renderizador y los controles de Three.js
 function init() {
 
     loadDbMapData();
 
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x807f7f);
 
-    camera = new THREE.PerspectiveCamera(
-        45,
-        window.innerWidth / window.innerHeight,
-        0.1,
-        1000
+    /* =========================================================
+       ESCENA
+       ========================================================= */
+
+    scene = new THREE.Scene();
+
+    scene.background =
+        new THREE.Color(0x807f7f);
+
+
+    /* =========================================================
+       CÁMARA
+       ========================================================= */
+
+    camera =
+        new THREE.PerspectiveCamera(
+            45,
+            window.innerWidth /
+            window.innerHeight,
+            0.1,
+            1000
+        );
+
+
+    camera.position.set(
+        0,
+        50,
+        80
     );
 
-    camera.position.set(0, 50, 80);
 
-    renderer = new THREE.WebGLRenderer({
-        antialias: true,
-        logarithmicDepthBuffer: true
-    });
+    /* =========================================================
+       RENDERIZADOR
+       ========================================================= */
+
+    renderer =
+        new THREE.WebGLRenderer({
+            antialias: true,
+            logarithmicDepthBuffer: true
+        });
+
 
     renderer.setSize(
         window.innerWidth,
         window.innerHeight
     );
 
-    renderer.setPixelRatio(window.devicePixelRatio);
 
-    renderer.shadowMap.enabled = true;
-
-    container.appendChild(renderer.domElement);
-
-
-    const ambientLight = new THREE.AmbientLight(
-        0xffffff,
-        0.7
+    renderer.setPixelRatio(
+        window.devicePixelRatio
     );
 
-    scene.add(ambientLight);
+
+    renderer.shadowMap.enabled =
+        true;
 
 
-    const sunLight = new THREE.DirectionalLight(
-        0xffffff,
-        1.0
-    );
-
-    sunLight.position.set(50, 80, 50);
-    sunLight.castShadow = true;
-
-    scene.add(sunLight);
-
-
-    controls = new THREE.OrbitControls(
-        camera,
+    container.appendChild(
         renderer.domElement
     );
 
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.screenSpacePanning = true;
 
-    controls.minPolarAngle = 0;
-    controls.maxPolarAngle = Math.PI / 2.5 - 0.05;
+    /* =========================================================
+       ILUMINACIÓN AMBIENTE
+       ========================================================= */
 
-    controls.minDistance = 40;
-    controls.maxDistance = 250;
+    const ambientLight =
+        new THREE.AmbientLight(
+            0xffffff,
+            0.7
+        );
 
-    controls.target.set(0, 25, 0);
+
+    scene.add(
+        ambientLight
+    );
+
+
+    /* =========================================================
+       LUZ DIRECCIONAL
+       ========================================================= */
+
+    const sunLight =
+        new THREE.DirectionalLight(
+            0xffffff,
+            1.0
+        );
+
+
+    sunLight.position.set(
+        50,
+        80,
+        50
+    );
+
+
+    sunLight.castShadow =
+        true;
+
+
+    scene.add(
+        sunLight
+    );
+
+
+    /* =========================================================
+       ORBIT CONTROLS
+       ========================================================= */
+
+    controls =
+        new THREE.OrbitControls(
+            camera,
+            renderer.domElement
+        );
+
+
+    controls.enableDamping =
+        true;
+
+
+    controls.dampingFactor =
+        0.05;
+
+
+    controls.screenSpacePanning =
+        true;
+
+
+    controls.minPolarAngle =
+        0;
+
+
+    controls.maxPolarAngle =
+        Math.PI / 2.5 - 0.05;
+
+
+    controls.minDistance =
+        40;
+
+
+    controls.maxDistance =
+        250;
+
+
+    controls.target.set(
+        0,
+        25,
+        0
+    );
+
+
     controls.update();
 
-    raycaster = new THREE.Raycaster();
-    mouse = new THREE.Vector2();
+
+    /* =========================================================
+       RAYCASTER
+       ========================================================= */
+
+    raycaster =
+        new THREE.Raycaster();
 
 
-    const loader = new THREE.GLTFLoader();
- 
- 
-    // Cargar el modelo GLB del mapa
+    mouse =
+        new THREE.Vector2();
+
+
+    /* =========================================================
+       CARGADOR GLTF
+       ========================================================= */
+
+    const loader =
+        new THREE.GLTFLoader();
+
+
+    /* =========================================================
+       CARGAR MODELO GLB
+       ========================================================= */
+
     loader.load(
+
         '/modelo/Mapa_UTTECAM.glb',
-        function(gltf) {
- 
-            const model = gltf.scene;
-
-            mapModel = model;
-
-            scene.add(model);
 
 
-            model.traverse(function(child) {
+        function (gltf) {
 
-                if(child.isMesh) {
+            const model =
+                gltf.scene;
 
-                    child.castShadow = true;
-                    child.receiveShadow = true;
 
-                    interactiveObjects.push(child);
+            mapModel =
+                model;
+
+
+            scene.add(
+                model
+            );
+
+
+            /* ---------------------------------------------
+               Registrar objetos interactivos
+               --------------------------------------------- */
+
+            model.traverse(
+                function (child) {
+
+                    if (
+                        child.isMesh
+                    ) {
+
+                        child.castShadow =
+                            true;
+
+
+                        child.receiveShadow =
+                            true;
+
+
+                        interactiveObjects.push(
+                            child
+                        );
+
+                    }
 
                 }
+            );
 
-            });
 
-            /*
-            * Crear las etiquetas después de cargar
-            * completamente el modelo.
-            */
+            /* ---------------------------------------------
+               Crear etiquetas
+               --------------------------------------------- */
+
             buildMapLabels();
+
+
+            /* ---------------------------------------------
+               Restablecer cámara
+               --------------------------------------------- */
 
             resetCameraView();
 
 
-            const loaderScreen = document.getElementById('loader');
+            /* ---------------------------------------------
+               Ocultar pantalla de carga
+               --------------------------------------------- */
 
-            if(loaderScreen) {
+            const loaderScreen =
+                document.getElementById(
+                    'loader'
+                );
 
-                loaderScreen.style.opacity = '0';
 
-                setTimeout(function() {
+            if (
+                loaderScreen
+            ) {
 
-                    loaderScreen.style.display = 'none';
+                loaderScreen.style.opacity =
+                    '0';
 
-                },500);
+
+                setTimeout(
+                    function () {
+
+                        loaderScreen.style.display =
+                            'none';
+
+                    },
+                    500
+                );
 
             }
 
         },
-        function(xhr) {
 
-            console.log(
-                (xhr.loaded / xhr.total * 100) + '% cargado'
-            );
+
+        /* =====================================================
+           PROGRESO DE CARGA
+           ===================================================== */
+
+        function (xhr) {
+
+            if (
+                xhr.total
+            ) {
+
+                console.log(
+                    (
+                        xhr.loaded /
+                        xhr.total *
+                        100
+                    ) +
+                    '% cargado'
+                );
+
+            }
 
         },
-        function(error) {
+
+
+        /* =====================================================
+           ERROR DE CARGA
+           ===================================================== */
+
+        function (error) {
 
             console.error(
                 'Error al cargar la maqueta:',
@@ -1126,96 +1498,184 @@ function init() {
             );
 
 
-            const loaderScreen = document.getElementById('loader');
+            const loaderScreen =
+                document.getElementById(
+                    'loader'
+                );
 
-            if(loaderScreen) {
+
+            if (
+                loaderScreen
+            ) {
 
                 loaderScreen.innerHTML =
-                '<h2>Error al cargar Mapa_UTTECAM.glb</h2><p>Asegúrate de que el archivo esté disponible en la ruta especificada</p>';
+                    '<h2>Error al cargar Mapa_UTTECAM.glb</h2>' +
+                    '<p>Asegúrate de que el archivo esté disponible en la ruta especificada</p>';
 
             }
 
         }
+
     );
 
 
-    composer = new THREE.EffectComposer(
-        renderer
+    /* =========================================================
+       EFFECT COMPOSER
+       ========================================================= */
+
+    composer =
+        new THREE.EffectComposer(
+            renderer
+        );
+
+
+    /* =========================================================
+       RENDER PASS
+       ========================================================= */
+
+    const renderPass =
+        new THREE.RenderPass(
+            scene,
+            camera
+        );
+
+
+    composer.addPass(
+        renderPass
     );
 
 
-    const renderPass = new THREE.RenderPass(
-        scene,
-        camera
+    /* =========================================================
+       OUTLINE PASS
+       ========================================================= */
+
+    outlinePass =
+        new THREE.OutlinePass(
+            new THREE.Vector2(
+                window.innerWidth,
+                window.innerHeight
+            ),
+            scene,
+            camera
+        );
+
+
+    outlinePass.edgeStrength =
+        5.0;
+
+
+    outlinePass.edgeGlow =
+        1.0;
+
+
+    outlinePass.edgeThickness =
+        2.0;
+
+
+    outlinePass.visibleEdgeColor.set(
+        '#4fd1c5'
     );
 
-    composer.addPass(renderPass);
 
-
-    outlinePass = new THREE.OutlinePass(
-        new THREE.Vector2(
-            window.innerWidth,
-            window.innerHeight
-        ),
-        scene,
-        camera
+    outlinePass.hiddenEdgeColor.set(
+        '#4fd1c5'
     );
 
 
-    outlinePass.edgeStrength = 5.0;
-    outlinePass.edgeGlow = 1.0;
-    outlinePass.edgeThickness = 2.0;
-
-    outlinePass.visibleEdgeColor.set('#4fd1c5');
-    outlinePass.hiddenEdgeColor.set('#4fd1c5');
+    composer.addPass(
+        outlinePass
+    );
 
 
-    composer.addPass(outlinePass);
-
+    /* =========================================================
+       EVENTO RESIZE
+       ========================================================= */
 
     window.addEventListener(
         'resize',
         onWindowResize
     );
 
+
+    /* =========================================================
+       MOVIMIENTO DEL MOUSE
+       ========================================================= */
+
     window.addEventListener(
         'mousemove',
         onPointerMove
     );
+
+
+    /* =========================================================
+       POINTER DOWN
+       ========================================================= */
 
     renderer.domElement.addEventListener(
         'pointerdown',
         onPointerDown
     );
 
+
+    /* =========================================================
+       TOUCH START
+       ========================================================= */
+
     renderer.domElement.addEventListener(
         'touchstart',
         onPointerDown,
-        { passive: true }
+        {
+            passive: true
+        }
     );
+
+
+    /* =========================================================
+       POINTER UP
+       ========================================================= */
 
     renderer.domElement.addEventListener(
         'pointerup',
         onPointerUp
     );
 
+
+    /* =========================================================
+       TOUCH END
+       ========================================================= */
+
     renderer.domElement.addEventListener(
         'touchend',
         onPointerUp
     );
+
+
+    /* =========================================================
+       CLICK
+       ========================================================= */
 
     renderer.domElement.addEventListener(
         'click',
         onPointerUp
     );
 
+
+    /* =========================================================
+       RUEDA DEL RATÓN
+       ========================================================= */
+
     window.addEventListener(
         'wheel',
         onMouseWheel,
         {
-            passive:true
+            passive: true
         }
     );
+
+
+    /* =========================================================
+       BOTTOM SHEET
+       ========================================================= */
 
     setupBottomSheetGestures();
 
@@ -1262,7 +1722,6 @@ function onPointerDown(event) {
 
 //Maneja el evento de movimiento del mouse para mostrar el tooltip y resaltar el objeto intersectado
 function onPointerMove(event) {
-
 
     const elemento = event.target;
 
@@ -1353,7 +1812,7 @@ function onMouseWheel(event) {
     );
 
 
-    if(intersects.length > 0) {
+    if (intersects.length > 0) {
 
         const intersectPoint =
             intersects[0].point;
@@ -1376,9 +1835,9 @@ function getGroupObject(object) {
     let current = object;
 
 
-    while(current.parent) {
+    while (current.parent) {
 
-        if(
+        if (
             current.name.startsWith("Edificio_") ||
             current.name.startsWith("Zona_") ||
             current.name.startsWith("Area_") ||
@@ -1494,68 +1953,68 @@ function formatName(name) {
 
 
 //Obtiene los detalles del edificio o área verde desde la API y los muestra en la tarjeta de detalles
-function fetchDetails(type,id,rawName) {
+function fetchDetails(type, id, rawName) {
 
 
     const url =
         type === 'edificio'
-        ? `/api/edificios/${id}`
-        : `/api/areas-verdes/${id}`;
+            ? `/api/edificios/${id}`
+            : `/api/areas-verdes/${id}`;
 
 
 
     fetch(url)
 
-    .then(function(res) {
+        .then(function (res) {
 
-        if(!res.ok) {
+            if (!res.ok) {
 
-            throw new Error(
-                'Sin detalles'
+                throw new Error(
+                    'Sin detalles'
+                );
+
+            }
+
+
+            return res.json();
+
+        })
+
+
+        .then(function (data) {
+
+            showDetails(
+                type,
+                data
             );
 
-        }
+        })
 
 
-        return res.json();
-
-    })
+        .catch(function () {
 
 
-    .then(function(data) {
-
-        showDetails(
-            type,
-            data
-        );
-
-    })
+            const title =
+                formatName(rawName);
 
 
-    .catch(function() {
+            const cardTitle =
+                document.getElementById(
+                    'card-title'
+                );
 
 
-        const title =
-            formatName(rawName);
+            const cardBody =
+                document.getElementById(
+                    'card-body'
+                );
 
 
-        const cardTitle =
-            document.getElementById(
-                'card-title'
-            );
+            cardTitle.textContent =
+                title;
 
-
-        const cardBody =
-            document.getElementById(
-                'card-body'
-            );
-
-
-        cardTitle.textContent =
-            title;
-
-// TODO: Cambiar mensaje
-        cardBody.innerHTML = `
+            // TODO: Cambiar mensaje
+            cardBody.innerHTML = `
 
             <div class="info-row">
 
@@ -1573,9 +2032,9 @@ function fetchDetails(type,id,rawName) {
         `;
 
 
-        openDetailsCard();
+            openDetailsCard();
 
-    });
+        });
 
 }
 
@@ -1745,8 +2204,8 @@ function transitionCardContent(updateCallback) {
 function showSpeciesDetails(especieId) {
     if (!currentAreaVerdeData || !currentAreaVerdeData.especies) return;
 
-    const speciesList = Array.isArray(currentAreaVerdeData.especies) 
-        ? currentAreaVerdeData.especies 
+    const speciesList = Array.isArray(currentAreaVerdeData.especies)
+        ? currentAreaVerdeData.especies
         : Object.values(currentAreaVerdeData.especies);
 
     const especie = speciesList.find(e => e.id == especieId);
@@ -1872,35 +2331,35 @@ function setupBottomSheetGestures() {
     }
 
     // Eventos táctiles (Smartphones)
-    detailsCard.addEventListener('touchstart', function(e) {
+    detailsCard.addEventListener('touchstart', function (e) {
         if (e.touches && e.touches.length === 1) {
             onDragStart(e.touches[0].clientY);
         }
     }, { passive: true });
 
-    detailsCard.addEventListener('touchmove', function(e) {
+    detailsCard.addEventListener('touchmove', function (e) {
         if (e.touches && e.touches.length === 1) {
             onDragMove(e.touches[0].clientY);
         }
     }, { passive: true });
 
-    detailsCard.addEventListener('touchend', function() {
+    detailsCard.addEventListener('touchend', function () {
         onDragEnd();
     });
 
     // Eventos de puntero para simular arrastre en navegador/PC DevTools
-    detailsCard.addEventListener('pointerdown', function(e) {
+    detailsCard.addEventListener('pointerdown', function (e) {
         if (e.pointerType === 'mouse' && e.button !== 0) return;
         onDragStart(e.clientY);
     });
 
-    window.addEventListener('pointermove', function(e) {
+    window.addEventListener('pointermove', function (e) {
         if (isDragging) {
             onDragMove(e.clientY);
         }
     });
 
-    window.addEventListener('pointerup', function() {
+    window.addEventListener('pointerup', function () {
         if (isDragging) {
             onDragEnd();
         }
@@ -1938,13 +2397,15 @@ function animate() {
 
     controls.update();
 
-
-
     /*
      * Mantiene las burbujas sincronizadas
      * con la cámara y el mapa.
      */
     updateMapLabels();
+
+    if (typeof updateCompass === 'function') {
+        updateCompass();
+    }
 
     composer.render();
 
@@ -1960,7 +2421,7 @@ function resetCameraView() {
         new THREE.Box3();
 
 
-    interactiveObjects.forEach(function(obj) {
+    interactiveObjects.forEach(function (obj) {
 
         box.expandByObject(
             obj
@@ -2020,7 +2481,7 @@ function resetCameraView() {
 
 
 
-    if(hoveredObject || selectedObject) {
+    if (hoveredObject || selectedObject) {
 
         hoveredObject = null;
         selectedObject = null;
@@ -2030,6 +2491,93 @@ function resetCameraView() {
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+/*
+  Autor: Cristobal Torres Ramos
+  Ano: 2026
+  Version: 1.2
+  Descripcion: Ajuste de la posicion inicial de la camara en Three.js para mostrar la maqueta desde la perspectiva opuesta.
+*/
+
+function norteCameraView() {
+
+    const box = new THREE.Box3();
+
+    // Calcula la caja delimitadora que envuelve todos los objetos interactivos
+    interactiveObjects.forEach(function (obj) {
+        box.expandByObject(obj);
+    });
+
+    const center = box.getCenter(new THREE.Vector3());
+    const size = box.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+
+    // Configura el punto hacia donde mira la camara (el centro del mapa)
+    controls.target.copy(center);
+    controls.target.set(
+        center.x,
+        center.y - (maxDim * 0.15),
+        center.z
+    );
+
+    // MODIFICACION: Se cambian los signos de X y Z a negativos.
+    // Esto mueve la camara al lado contrario del mapa para coincidir con la nueva vista.
+    camera.position.set(
+
+        center.x + maxDim * 0.8,
+
+        center.y + maxDim * 0.4,
+
+        center.z
+
+    );
+
+    controls.update();
+
+    // Reinicia los estados visuales si habia un objeto seleccionado
+    if (hoveredObject || selectedObject) {
+        hoveredObject = null;
+        selectedObject = null;
+        updateOutlines();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2553,8 +3101,2440 @@ function setupExploreMenu() {
    INICIALIZACIÓN
    ========================================================= */
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
 
-    setupExploreMenu();
+        setupExploreMenu();
 
-});
+        setupMapSearch();
+
+    }
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   SISTEMA DE BÚSQUEDA DEL MAPA
+   ========================================================= */
+
+/**
+ * Configura el buscador general del mapa.
+ *
+ * Permite buscar:
+ *
+ * - Edificios
+ * - Áreas verdes
+ * - Canchas
+ *
+ * La búsqueda de edificios y áreas verdes se realiza
+ * mediante la API de Spring Boot.
+ *
+ * Las canchas se localizan directamente dentro
+ * del modelo 3D mediante el nombre del objeto.
+ *
+ * @author Cristobal Torres Ramos
+ * @version 1.3
+ */
+function setupMapSearch() {
+
+    const searchInput =
+        document.getElementById(
+            'map-search-input'
+        );
+
+    const searchResults =
+        document.getElementById(
+            'map-search-results'
+        );
+
+    const clearButton =
+        document.getElementById(
+            'map-search-clear'
+        );
+
+
+    if (
+        !searchInput ||
+        !searchResults ||
+        !clearButton
+    ) {
+
+        console.warn(
+            'No se encontraron los elementos del buscador.'
+        );
+
+        return;
+    }
+
+
+    let searchTimeout = null;
+
+
+    /* =====================================================
+       ESCRIBIR EN EL BUSCADOR
+       ===================================================== */
+
+    searchInput.addEventListener(
+        'input',
+        function () {
+
+            const texto =
+                searchInput.value.trim();
+
+
+            clearButton.style.display =
+                texto.length > 0
+                    ? 'flex'
+                    : 'none';
+
+
+            clearTimeout(
+                searchTimeout
+            );
+
+
+            if (!texto) {
+
+                closeSearchResults();
+
+                return;
+            }
+
+
+            /*
+             * Esperar un momento antes de buscar.
+             *
+             * Esto evita realizar una petición
+             * por cada letra escrita.
+             */
+            searchTimeout =
+                setTimeout(
+                    function () {
+
+                        searchCampus(
+                            texto
+                        );
+
+                    },
+                    250
+                );
+
+        }
+    );
+
+
+    /* =====================================================
+       BOTÓN LIMPIAR
+       ===================================================== */
+
+    clearButton.addEventListener(
+        'click',
+        function (event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            searchInput.value = '';
+
+            clearButton.style.display =
+                'none';
+
+            closeSearchResults();
+
+            searchInput.focus();
+
+        }
+    );
+
+
+    /* =====================================================
+       EVITAR INTERACCIÓN CON EL MAPA 3D
+       ===================================================== */
+
+    const searchContainer =
+        document.getElementById(
+            'map-search-container'
+        );
+
+
+    if (searchContainer) {
+
+        searchContainer.addEventListener(
+            'pointerdown',
+            function (event) {
+
+                event.stopPropagation();
+
+            }
+        );
+
+
+        searchContainer.addEventListener(
+            'click',
+            function (event) {
+
+                event.stopPropagation();
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       CERRAR RESULTADOS AL HACER CLIC FUERA
+       ===================================================== */
+
+    document.addEventListener(
+        'click',
+        function (event) {
+
+            if (
+                !event.target.closest(
+                    '#map-search-container'
+                )
+            ) {
+
+                closeSearchResults();
+
+            }
+
+        }
+    );
+}
+
+
+/* =========================================================
+   BÚSQUEDA GENERAL DEL CAMPUS
+   ========================================================= */
+
+/**
+ * Busca cualquier elemento disponible en la base de datos.
+ *
+ * La búsqueda utiliza un único endpoint general:
+ *
+ *      /api/map-data
+ *
+ * Esto permite buscar sin limitarse a una lista fija
+ * de categorías.
+ *
+ * También se buscan elementos que existan directamente
+ * en el modelo 3D.
+ *
+ * @param {string} texto Texto introducido por el usuario.
+ *
+ * @author Cristobal Torres Ramos
+ * @version 1.4
+ */
+async function searchCampus(texto) {
+
+    const searchResults =
+        document.getElementById(
+            'map-search-results'
+        );
+
+
+    if (!searchResults) {
+        return;
+    }
+
+
+    const textoBusqueda =
+        normalizeSearchText(
+            texto
+        );
+
+
+    if (!textoBusqueda) {
+
+        closeSearchResults();
+
+        return;
+    }
+
+
+    /*
+     * Mostrar estado de búsqueda.
+     */
+    searchResults.innerHTML = `
+        <div class="map-search-empty">
+            Buscando...
+        </div>
+    `;
+
+
+    searchResults.classList.add(
+        'visible'
+    );
+
+
+    try {
+
+        /*
+         * =====================================================
+         * OBTENER TODOS LOS DATOS DE LA BASE DE DATOS
+         * =====================================================
+         *
+         * El endpoint debe devolver todas las categorías
+         * disponibles en la base de datos.
+         */
+        const response =
+            await fetch(
+                '/api/map-data'
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                'No se pudieron obtener los datos del campus.'
+            );
+
+        }
+
+
+        const mapData =
+            await response.json();
+
+
+        const resultados = [];
+
+
+        /*
+         * =====================================================
+         * RECORRER TODAS LAS CATEGORÍAS
+         * =====================================================
+         *
+         * No se utiliza una lista cerrada de tipos.
+         *
+         * Cualquier propiedad del JSON que contenga
+         * un arreglo será considerada como una categoría.
+         */
+        Object.keys(
+            mapData
+        ).forEach(
+            function (categoria) {
+
+                const elementos =
+                    mapData[
+                    categoria
+                    ];
+
+
+                /*
+                 * Ignorar propiedades que no sean arreglos.
+                 */
+                if (
+                    !Array.isArray(
+                        elementos
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                elementos.forEach(
+                    function (elemento) {
+
+                        if (!elemento) {
+                            return;
+                        }
+
+
+                        /*
+                         * Construir un texto con TODOS
+                         * los datos del registro.
+                         *
+                         * Esto permite encontrar un elemento
+                         * aunque la coincidencia esté en otro
+                         * campo distinto a "nombre".
+                         */
+                        const textoRegistro =
+                            Object.keys(
+                                elemento
+                            )
+                                .map(
+                                    function (campo) {
+
+                                        const valor =
+                                            elemento[
+                                            campo
+                                            ];
+
+
+                                        if (
+                                            valor === null ||
+                                            valor === undefined
+                                        ) {
+
+                                            return '';
+
+                                        }
+
+
+                                        return String(
+                                            valor
+                                        );
+
+                                    }
+                                )
+                                .join(' ');
+
+
+                        const textoNormalizado =
+                            normalizeSearchText(
+                                textoRegistro
+                            );
+
+
+                        /*
+                         * =================================================
+                         * COINCIDENCIA
+                         * =================================================
+                         *
+                         * Solamente mostrar registros relacionados
+                         * con lo que escribió el usuario.
+                         */
+                        if (
+                            !textoNormalizado.includes(
+                                textoBusqueda
+                            )
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        /*
+                         * Determinar el tipo a partir
+                         * del nombre de la categoría.
+                         */
+                        const tipo =
+                            obtenerTipoResultado(
+                                categoria
+                            );
+
+
+                        resultados.push({
+
+                            type:
+                                tipo,
+
+                            categoria:
+                                categoria,
+
+                            data:
+                                elemento,
+
+                            nombre:
+                                obtenerNombreResultado(
+                                    elemento
+                                )
+
+                        });
+
+                    }
+                );
+
+            }
+        );
+
+
+        /*
+         * =====================================================
+         * BUSCAR TAMBIÉN EN EL MODELO 3D
+         * =====================================================
+         *
+         * Esto mantiene funcionando la búsqueda de canchas
+         * y cualquier otro objeto que todavía no tenga
+         * una tabla en la base de datos.
+         */
+        const objetos3D =
+            searchObjectsInModel(
+                textoBusqueda
+            );
+
+
+        objetos3D.forEach(
+            function (objeto) {
+
+                /*
+                 * Evitar duplicados si posteriormente
+                 * el objeto también existe en la BD.
+                 */
+                const existe =
+                    resultados.some(
+                        function (resultado) {
+
+                            return (
+                                resultado.data &&
+                                resultado.data.object ===
+                                objeto.object
+                            );
+
+                        }
+                    );
+
+
+                if (!existe) {
+
+                    resultados.push({
+
+                        type:
+                            objeto.type,
+
+                        categoria:
+                            'modelo3D',
+
+                        data:
+                            objeto,
+
+                        nombre:
+                            objeto.nombre
+
+                    });
+
+                }
+
+            }
+        );
+
+
+        /*
+         * =====================================================
+         * ELIMINAR DUPLICADOS
+         * =====================================================
+         */
+        const resultadosUnicos =
+            eliminarResultadosDuplicados(
+                resultados
+            );
+
+
+        /*
+         * =====================================================
+         * MOSTRAR RESULTADOS
+         * =====================================================
+         */
+        renderSearchResults(
+            resultadosUnicos
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            'Error general en la búsqueda:',
+            error
+        );
+
+
+        searchResults.innerHTML = `
+            <div class="map-search-empty">
+                No se pudo realizar la búsqueda.
+            </div>
+        `;
+
+    }
+
+}
+
+/* =========================================================
+   OBTENER NOMBRE DEL RESULTADO
+   ========================================================= */
+
+/**
+ * Obtiene el nombre visible de un registro.
+ *
+ * Se prueban diferentes campos comunes para que el
+ * buscador no dependa exclusivamente de "nombre".
+ *
+ * @param {Object} elemento Registro de la BD.
+ * @return {string} Nombre para mostrar.
+ */
+function obtenerNombreResultado(elemento) {
+
+    if (!elemento) {
+        return 'Elemento del campus';
+    }
+
+
+    const posiblesNombres = [
+
+        elemento.nombre,
+
+        elemento.nombreLugar,
+
+        elemento.nombreArea,
+
+        elemento.descripcion,
+
+        elemento.titulo,
+
+        elemento.nombreEdificio,
+
+        elemento.nombreEstacionamiento,
+
+        elemento.nombrePresa,
+
+        elemento.nombreInvernadero,
+
+        elemento.nombreHuerta
+
+    ];
+
+
+    for (
+        let i = 0;
+        i < posiblesNombres.length;
+        i++
+    ) {
+
+        if (
+            posiblesNombres[i] !== null &&
+            posiblesNombres[i] !== undefined &&
+            String(
+                posiblesNombres[i]
+            ).trim() !== ''
+        ) {
+
+            return String(
+                posiblesNombres[i]
+            );
+
+        }
+
+    }
+
+
+    return 'Elemento del campus';
+
+}
+
+
+/* =========================================================
+   DETERMINAR TIPO DE RESULTADO
+   ========================================================= */
+
+/**
+ * Convierte el nombre de la propiedad JSON
+ * en un tipo entendible para la interfaz.
+ *
+ * @param {string} categoria Categoría del JSON.
+ * @return {string} Tipo del resultado.
+ */
+function obtenerTipoResultado(categoria) {
+
+    const categoriaNormalizada =
+        normalizeSearchText(
+            categoria
+        );
+
+
+    if (
+        categoriaNormalizada.includes(
+            'edificio'
+        )
+    ) {
+
+        return 'edificio';
+
+    }
+
+
+    if (
+        categoriaNormalizada.includes(
+            'area'
+        ) ||
+        categoriaNormalizada.includes(
+            'zona'
+        )
+    ) {
+
+        return 'area-verde';
+
+    }
+
+
+    if (
+        categoriaNormalizada.includes(
+            'estacionamiento'
+        )
+    ) {
+
+        return 'estacionamiento';
+
+    }
+
+
+    if (
+        categoriaNormalizada.includes(
+            'presa'
+        )
+    ) {
+
+        return 'presa';
+
+    }
+
+
+    if (
+        categoriaNormalizada.includes(
+            'invernadero'
+        )
+    ) {
+
+        return 'invernadero';
+
+    }
+
+
+    if (
+        categoriaNormalizada.includes(
+            'huerta'
+        )
+    ) {
+
+        return 'huerta';
+
+    }
+
+
+    if (
+        categoriaNormalizada.includes(
+            'cancha'
+        )
+    ) {
+
+        return 'cancha';
+
+    }
+
+
+    /*
+     * Si aparece una categoría nueva que todavía
+     * no hemos contemplado, NO se descarta.
+     */
+    return 'otro';
+
+}
+
+
+/* =========================================================
+   BUSCAR OBJETOS EN EL MODELO 3D
+   ========================================================= */
+
+/**
+ * Busca objetos directamente en el modelo 3D.
+ *
+ * @param {string} texto Texto normalizado.
+ * @return {Array} Objetos encontrados.
+ */
+function searchObjectsInModel(texto) {
+
+    const resultados = [];
+
+
+    if (
+        !interactiveObjects ||
+        interactiveObjects.length === 0
+    ) {
+
+        return resultados;
+
+    }
+
+
+    const procesados =
+        new Set();
+
+
+    interactiveObjects.forEach(
+        function (mesh) {
+
+            const groupObject =
+                getGroupObject(
+                    mesh
+                );
+
+
+            if (!groupObject) {
+                return;
+            }
+
+
+            if (
+                procesados.has(
+                    groupObject
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            procesados.add(
+                groupObject
+            );
+
+
+            /*
+             * Obtener todos los nombres de la
+             * jerarquía del objeto.
+             */
+            const nombres = [];
+
+
+            let current =
+                groupObject;
+
+
+            while (
+                current &&
+                current !== scene
+            ) {
+
+                if (
+                    current.name
+                ) {
+
+                    nombres.push(
+                        current.name
+                    );
+
+                }
+
+
+                current =
+                    current.parent;
+
+            }
+
+
+            const nombreCompleto =
+                nombres.join(' ');
+
+
+            const nombreNormalizado =
+                normalizeSearchText(
+                    nombreCompleto
+                );
+
+
+            /*
+             * Buscar coincidencia.
+             */
+            if (
+                !nombreNormalizado.includes(
+                    texto
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            /*
+             * Determinar tipo.
+             */
+            let tipo =
+                'otro';
+
+
+            if (
+                nombreNormalizado.includes(
+                    'cancha'
+                ) ||
+                nombreNormalizado.includes(
+                    'campo'
+                )
+            ) {
+
+                tipo =
+                    'cancha';
+
+            } else if (
+                nombreNormalizado.includes(
+                    'estacionamiento'
+                )
+            ) {
+
+                tipo =
+                    'estacionamiento';
+
+            } else if (
+                nombreNormalizado.includes(
+                    'presa'
+                )
+            ) {
+
+                tipo =
+                    'presa';
+
+            } else if (
+                nombreNormalizado.includes(
+                    'invernadero'
+                )
+            ) {
+
+                tipo =
+                    'invernadero';
+
+            } else if (
+                nombreNormalizado.includes(
+                    'huerta'
+                )
+            ) {
+
+                tipo =
+                    'huerta';
+
+            } else if (
+                nombreNormalizado.includes(
+                    'area'
+                ) ||
+                nombreNormalizado.includes(
+                    'zona verde'
+                )
+            ) {
+
+                tipo =
+                    'area-verde';
+
+            }
+
+
+            resultados.push({
+
+                type:
+                    tipo,
+
+                nombre:
+                    formatName(
+                        groupObject.name
+                    ),
+
+                codigoMesh:
+                    groupObject.name,
+
+                object:
+                    groupObject
+
+            });
+
+        }
+    );
+
+
+    return resultados;
+
+}
+
+
+/* =========================================================
+   ELIMINAR RESULTADOS DUPLICADOS
+   ========================================================= */
+
+/**
+ * Elimina registros repetidos de la búsqueda.
+ *
+ * @param {Array} resultados Resultados originales.
+ * @return {Array} Resultados únicos.
+ */
+function eliminarResultadosDuplicados(
+    resultados
+) {
+
+    const vistos =
+        new Set();
+
+
+    return resultados.filter(
+        function (resultado) {
+
+            const elemento =
+                resultado.data;
+
+
+            if (!elemento) {
+                return true;
+            }
+
+
+            const id =
+                elemento.id !== undefined
+                    ? String(
+                        elemento.id
+                    )
+                    : '';
+
+
+            const codigo =
+                elemento.codigoMesh
+                    ? normalizeSearchText(
+                        elemento.codigoMesh
+                    )
+                    : '';
+
+
+            const nombre =
+                normalizeSearchText(
+                    resultado.nombre ||
+                    ''
+                );
+
+
+            const clave =
+                resultado.type +
+                '|' +
+                id +
+                '|' +
+                codigo +
+                '|' +
+                nombre;
+
+
+            if (
+                vistos.has(
+                    clave
+                )
+            ) {
+
+                return false;
+
+            }
+
+
+            vistos.add(
+                clave
+            );
+
+
+            return true;
+
+        }
+    );
+
+}
+
+/* =========================================================
+   BUSCAR CANCHAS EN EL MODELO 3D
+   ========================================================= */
+
+/**
+ * Busca canchas directamente dentro del modelo GLB.
+ *
+ * Esto permite localizar canchas aunque todavía
+ * no exista una tabla específica para ellas en la BD.
+ *
+ * @param {string} texto Texto de búsqueda.
+ * @return {Array} Canchas encontradas.
+ */
+function searchCourtsInModel(texto) {
+
+    const resultados = [];
+
+
+    if (
+        !mapModel ||
+        !interactiveObjects ||
+        interactiveObjects.length === 0
+    ) {
+
+        return resultados;
+
+    }
+
+
+    const textoNormalizado =
+        normalizeSearchText(
+            texto
+        );
+
+
+    const procesados =
+        new Set();
+
+
+    interactiveObjects.forEach(function (mesh) {
+
+        const groupObject =
+            getGroupObject(
+                mesh
+            );
+
+
+        if (!groupObject) {
+            return;
+        }
+
+
+        if (
+            procesados.has(
+                groupObject
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        procesados.add(
+            groupObject
+        );
+
+
+        const nombres = [];
+
+
+        let current =
+            groupObject;
+
+
+        while (
+            current &&
+            current !== scene
+        ) {
+
+            if (current.name) {
+
+                nombres.push(
+                    current.name
+                );
+
+            }
+
+
+            current =
+                current.parent;
+
+        }
+
+
+        const nombreCompleto =
+            nombres.join(' ');
+
+
+        const nombreNormalizado =
+            normalizeSearchText(
+                nombreCompleto
+            );
+
+
+        /*
+         * Solamente considerar objetos
+         * relacionados con canchas.
+         */
+        const esCancha =
+            nombreNormalizado.includes(
+                'cancha'
+            ) ||
+            nombreNormalizado.includes(
+                'campo'
+            );
+
+
+        if (!esCancha) {
+            return;
+        }
+
+
+        /*
+         * Comprobar si coincide con
+         * el texto buscado.
+         */
+        if (
+            !nombreNormalizado.includes(
+                textoNormalizado
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        resultados.push({
+
+            nombre:
+                formatName(
+                    groupObject.name
+                ),
+
+            codigoMesh:
+                groupObject.name,
+
+            object:
+                groupObject
+
+        });
+
+    });
+
+
+    return resultados;
+}
+
+
+/* =========================================================
+   NORMALIZAR TEXTO DE BÚSQUEDA
+   ========================================================= */
+
+/**
+ * Normaliza texto para facilitar las búsquedas.
+ *
+ * @param {string} texto Texto original.
+ * @return {string} Texto normalizado.
+ */
+function normalizeSearchText(texto) {
+
+    if (!texto) {
+        return '';
+    }
+
+
+    return texto
+        .toString()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[_\-]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+
+/* =========================================================
+   MOSTRAR RESULTADOS
+   ========================================================= */
+
+/**
+ * Muestra únicamente los nombres de los resultados
+ * que coinciden con la búsqueda.
+ *
+ * No muestra información adicional como:
+ *
+ * - Carreras
+ * - Sector
+ * - Tipo de objeto
+ *
+ * Esto mantiene el buscador limpio y fácil de leer.
+ *
+ * @param {Array} resultados Resultados encontrados.
+ */
+function renderSearchResults(resultados) {
+
+    const searchResults =
+        document.getElementById(
+            'map-search-results'
+        );
+
+
+    if (!searchResults) {
+        return;
+    }
+
+
+    /*
+     * Limpiar resultados anteriores.
+     */
+    searchResults.innerHTML = '';
+
+
+    /*
+     * Si no existen resultados,
+     * mostrar únicamente el mensaje correspondiente.
+     */
+    if (
+        !resultados ||
+        resultados.length === 0
+    ) {
+
+        searchResults.innerHTML = `
+            <div class="map-search-empty">
+                No se encontraron resultados.
+            </div>
+        `;
+
+        searchResults.classList.add(
+            'visible'
+        );
+
+        return;
+    }
+
+
+    /*
+     * Crear un resultado por cada coincidencia.
+     */
+    resultados.forEach(function (resultado) {
+
+        /*
+         * Crear botón del resultado.
+         */
+        const result =
+            document.createElement(
+                'button'
+            );
+
+
+        result.type =
+            'button';
+
+
+        result.className =
+            'map-search-result';
+
+
+        /*
+         * =================================================
+         * NOMBRE DEL RESULTADO
+         * =================================================
+         *
+         * Este será el único texto que aparecerá
+         * debajo del buscador.
+         */
+        const nombre =
+            document.createElement(
+                'span'
+            );
+
+
+        nombre.className =
+            'map-search-result-name';
+
+
+        nombre.textContent =
+            resultado.nombre;
+
+
+        /*
+         * Agregar solamente el nombre.
+         */
+        result.appendChild(
+            nombre
+        );
+
+
+        /*
+         * =================================================
+         * SELECCIONAR RESULTADO
+         * =================================================
+         */
+        result.addEventListener(
+            'click',
+            function (event) {
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
+
+                selectSearchResult(
+                    resultado
+                );
+
+            }
+        );
+
+
+        /*
+         * Agregar resultado al buscador.
+         */
+        searchResults.appendChild(
+            result
+        );
+
+    });
+
+
+    /*
+     * Mostrar lista de resultados.
+     */
+    searchResults.classList.add(
+        'visible'
+    );
+
+}
+
+
+/* =========================================================
+   SELECCIONAR RESULTADO
+   ========================================================= */
+
+/**
+ * Selecciona cualquier elemento encontrado.
+ *
+ * @param {Object} resultado Resultado seleccionado.
+ *
+ * @author Cristobal Torres Ramos
+ * @version 1.4
+ */
+function selectSearchResult(resultado) {
+
+    if (!resultado) {
+        return;
+    }
+
+
+    let groupObject = null;
+
+
+    /*
+     * =====================================================
+     * OBJETO DIRECTO DEL MODELO 3D
+     * =====================================================
+     */
+    if (
+        resultado.data &&
+        resultado.data.object
+    ) {
+
+        groupObject =
+            resultado.data.object;
+
+    }
+
+
+    /*
+     * =====================================================
+     * ELEMENTO DE LA BASE DE DATOS
+     * =====================================================
+     */
+    else {
+
+        groupObject =
+            findMeshObjectForDbItem(
+                resultado.data
+            );
+
+    }
+
+
+    /*
+     * =====================================================
+     * SI NO SE ENCUENTRA EN EL MODELO
+     * =====================================================
+     */
+    if (!groupObject) {
+
+        console.warn(
+            'No se encontró el objeto 3D para:',
+            resultado
+        );
+
+        return;
+
+    }
+
+
+    /*
+     * =====================================================
+     * SELECCIONAR
+     * =====================================================
+     */
+    selectedObject =
+        groupObject;
+
+
+    hoveredObject =
+        null;
+
+
+    updateOutlines();
+
+
+    /*
+     * =====================================================
+     * MOSTRAR INFORMACIÓN
+     * =====================================================
+     *
+     * Para edificios y áreas verdes se conserva
+     * showDetails().
+     *
+     * Para las demás categorías utilizamos una
+     * función genérica.
+     */
+    if (
+        resultado.type === 'edificio' ||
+        resultado.type === 'area-verde'
+    ) {
+
+        showDetails(
+            resultado.type,
+            resultado.data
+        );
+
+    } else {
+
+        showGenericSearchDetails(
+            resultado
+        );
+
+    }
+
+
+    /*
+     * =====================================================
+     * CERRAR RESULTADOS
+     * =====================================================
+     */
+    closeSearchResults();
+
+
+    /*
+     * =====================================================
+     * ACTUALIZAR INPUT
+     * =====================================================
+     */
+    const searchInput =
+        document.getElementById(
+            'map-search-input'
+        );
+
+
+    if (searchInput) {
+
+        searchInput.value =
+            resultado.nombre || '';
+
+    }
+
+
+    const clearButton =
+        document.getElementById(
+            'map-search-clear'
+        );
+
+
+    if (clearButton) {
+
+        clearButton.style.display =
+            'flex';
+
+    }
+
+
+    /*
+     * =====================================================
+     * CENTRAR CÁMARA
+     * =====================================================
+     */
+    focusCameraOnObject(
+        groupObject
+    );
+
+}
+
+
+/* =========================================================
+   INFORMACIÓN DE CANCHAS
+   ========================================================= */
+
+/**
+ * Muestra información básica de una cancha.
+ *
+ * Si posteriormente agregas una tabla de canchas
+ * en la base de datos, esta función puede sustituirse
+ * por showDetails().
+ *
+ * @param {Object} cancha Información de la cancha.
+ */
+function showCourtDetails(cancha) {
+
+    const cardTitle =
+        document.getElementById(
+            'card-title'
+        );
+
+    const cardBody =
+        document.getElementById(
+            'card-body'
+        );
+
+
+    if (!cardTitle || !cardBody) {
+        return;
+    }
+
+
+    const nombre =
+        cancha.nombre ||
+        'Cancha deportiva';
+
+
+    cardTitle.textContent =
+        nombre;
+
+
+    cardBody.innerHTML = `
+
+        <div class="info-row">
+
+            <div class="label">
+                Tipo
+            </div>
+
+            <div class="value">
+                Cancha deportiva
+            </div>
+
+        </div>
+
+        <div class="info-row">
+
+            <div class="label">
+                Ubicación
+            </div>
+
+            <div class="value">
+                Campus UTTECAM
+            </div>
+
+        </div>
+
+    `;
+
+
+    openDetailsCard();
+}
+
+
+/* =========================================================
+   BUSCAR OBJETO 3D ASOCIADO A BD
+   ========================================================= */
+
+/**
+ * Busca dentro del modelo 3D el objeto asociado
+ * con un registro de la base de datos.
+ *
+ * @param {Object} item Registro de BD.
+ * @return {THREE.Object3D|null} Objeto encontrado.
+ */
+function findMeshObjectForDbItem(item) {
+
+    if (
+        !item ||
+        !interactiveObjects ||
+        interactiveObjects.length === 0
+    ) {
+
+        return null;
+    }
+
+
+    /* =====================================================
+       BUSCAR POR codigoMesh
+       ===================================================== */
+
+    if (item.codigoMesh) {
+
+        const targetKey =
+            normalizeKey(
+                item.codigoMesh
+            );
+
+
+        for (
+            let i = 0;
+            i < interactiveObjects.length;
+            i++
+        ) {
+
+            const mesh =
+                interactiveObjects[i];
+
+
+            const dbItem =
+                findDbItemForMesh(
+                    mesh
+                );
+
+
+            if (!dbItem) {
+                continue;
+            }
+
+
+            if (
+                dbItem.data &&
+                dbItem.data.codigoMesh &&
+                normalizeKey(
+                    dbItem.data.codigoMesh
+                ) === targetKey
+            ) {
+
+                return getGroupObject(
+                    mesh
+                );
+
+            }
+
+        }
+
+    }
+
+
+    /* =====================================================
+       BUSCAR POR ID
+       ===================================================== */
+
+    if (
+        item.id !== undefined
+    ) {
+
+        for (
+            let i = 0;
+            i < interactiveObjects.length;
+            i++
+        ) {
+
+            const mesh =
+                interactiveObjects[i];
+
+
+            const dbItem =
+                findDbItemForMesh(
+                    mesh
+                );
+
+
+            if (
+                dbItem &&
+                dbItem.data &&
+                dbItem.data.id === item.id
+            ) {
+
+                return getGroupObject(
+                    mesh
+                );
+
+            }
+
+        }
+
+    }
+
+
+    /* =====================================================
+       BUSCAR POR NOMBRE
+       ===================================================== */
+
+    if (item.nombre) {
+
+        const targetName =
+            normalizeSearchText(
+                item.nombre
+            );
+
+
+        for (
+            let i = 0;
+            i < interactiveObjects.length;
+            i++
+        ) {
+
+            const mesh =
+                interactiveObjects[i];
+
+
+            const group =
+                getGroupObject(
+                    mesh
+                );
+
+
+            if (!group) {
+                continue;
+            }
+
+
+            const objectName =
+                normalizeSearchText(
+                    group.name
+                );
+
+
+            if (
+                objectName === targetName ||
+                objectName.includes(targetName) ||
+                targetName.includes(objectName)
+            ) {
+
+                return group;
+
+            }
+
+        }
+
+    }
+
+
+    return null;
+}
+
+
+/* =========================================================
+   ANIMACIÓN DE CÁMARA
+   ========================================================= */
+
+/**
+ * Anima suavemente la cámara hacia un objeto.
+ *
+ * La cámara conserva la orientación actual.
+ * No se teletransporta directamente al objetivo.
+ *
+ * @param {THREE.Object3D} object Objeto seleccionado.
+ */
+function focusCameraOnObject(object) {
+
+    if (
+        !object ||
+        !camera ||
+        !controls
+    ) {
+
+        return;
+    }
+
+
+    const box =
+        new THREE.Box3();
+
+
+    box.setFromObject(
+        object
+    );
+
+
+    const center =
+        box.getCenter(
+            new THREE.Vector3()
+        );
+
+
+    const size =
+        box.getSize(
+            new THREE.Vector3()
+        );
+
+
+    const maxDim =
+        Math.max(
+            size.x,
+            size.y,
+            size.z
+        );
+
+
+    /*
+     * Conservar la dirección actual
+     * de la cámara.
+     */
+    const direction =
+        new THREE.Vector3()
+            .subVectors(
+                camera.position,
+                controls.target
+            )
+            .normalize();
+
+
+    /*
+     * Distancia final.
+     *
+     * Para objetos pequeños utilizamos
+     * una distancia mínima razonable.
+     */
+    const distance =
+        Math.max(
+            maxDim * 3.0,
+            controls.minDistance + 10
+        );
+
+
+    const targetPosition =
+        center.clone();
+
+
+    const cameraPosition =
+        center.clone()
+            .add(
+                direction.multiplyScalar(
+                    distance
+                )
+            );
+
+
+    /*
+     * Guardar posiciones iniciales.
+     */
+    const startPosition =
+        camera.position.clone();
+
+
+    const startTarget =
+        controls.target.clone();
+
+
+    /*
+     * Duración de la animación.
+     *
+     * 1800 ms = 1.8 segundos.
+     *
+     * Puedes aumentarlo a 2200 o 2500
+     * si quieres una animación todavía más lenta.
+     */
+    const duration = 4800;
+
+
+    const startTime =
+        performance.now();
+
+
+    /*
+     * Evitar que una animación anterior
+     * siga ejecutándose.
+     */
+    if (
+        window.cameraFocusAnimation
+    ) {
+
+        cancelAnimationFrame(
+            window.cameraFocusAnimation
+        );
+
+    }
+
+
+    /**
+     * Función de suavizado.
+     *
+     * Empieza lentamente,
+     * acelera en el centro
+     * y termina lentamente.
+     */
+    function easeInOutCubic(t) {
+
+        return t < 0.5
+            ? 4 * t * t * t
+            : 1 -
+            Math.pow(
+                -2 * t + 2,
+                3
+            ) / 2;
+
+    }
+
+
+    function animateCameraFocus(currentTime) {
+
+        const elapsed =
+            currentTime -
+            startTime;
+
+
+        let progress =
+            elapsed /
+            duration;
+
+
+        progress =
+            Math.min(
+                progress,
+                1
+            );
+
+
+        const easedProgress =
+            easeInOutCubic(
+                progress
+            );
+
+
+        /*
+         * Mover cámara.
+         */
+        camera.position.lerpVectors(
+            startPosition,
+            cameraPosition,
+            easedProgress
+        );
+
+
+        /*
+         * Mover objetivo.
+         */
+        controls.target.lerpVectors(
+            startTarget,
+            targetPosition,
+            easedProgress
+        );
+
+
+        controls.update();
+
+
+        if (
+            progress < 1
+        ) {
+
+            window.cameraFocusAnimation =
+                requestAnimationFrame(
+                    animateCameraFocus
+                );
+
+        } else {
+
+            window.cameraFocusAnimation =
+                null;
+
+        }
+
+    }
+
+
+    window.cameraFocusAnimation =
+        requestAnimationFrame(
+            animateCameraFocus
+        );
+
+}
+
+
+/* =========================================================
+   CERRAR RESULTADOS
+   ========================================================= */
+
+/**
+ * Cierra el panel de resultados.
+ */
+function closeSearchResults() {
+
+    const searchResults =
+        document.getElementById(
+            'map-search-results'
+        );
+
+
+    if (searchResults) {
+
+        searchResults.classList.remove(
+            'visible'
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   INICIALIZAR BUSCADOR
+   ========================================================= */
+
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
+
+        setupMapSearch();
+
+    }
+);
+
+
+/* =========================================================
+   MOSTRAR INFORMACIÓN GENÉRICA
+   ========================================================= */
+
+/**
+ * Muestra información básica de cualquier elemento
+ * encontrado desde la base de datos.
+ *
+ * @param {Object} resultado Resultado seleccionado.
+ *
+ * @author Cristobal Torres Ramos
+ * @version 1.4
+ */
+function showGenericSearchDetails(
+    resultado
+) {
+
+    const cardTitle =
+        document.getElementById(
+            'card-title'
+        );
+
+
+    const cardBody =
+        document.getElementById(
+            'card-body'
+        );
+
+
+    if (
+        !cardTitle ||
+        !cardBody
+    ) {
+
+        return;
+
+    }
+
+
+    const nombre =
+        resultado.nombre ||
+        'Elemento del campus';
+
+
+    const tipo =
+        resultado.type ||
+        'otro';
+
+
+    const tipoTexto =
+        obtenerTextoTipo(
+            tipo
+        );
+
+
+    cardTitle.textContent =
+        nombre;
+
+
+    cardBody.innerHTML = `
+
+        <div class="info-row">
+
+            <div class="label">
+                Tipo
+            </div>
+
+            <div class="value">
+                ${tipoTexto}
+            </div>
+
+        </div>
+
+    `;
+
+
+    openDetailsCard();
+
+}
+
+
+/* =========================================================
+   TEXTO DEL TIPO
+   ========================================================= */
+
+/**
+ * Convierte el tipo interno en texto visible.
+ *
+ * @param {string} tipo Tipo interno.
+ * @return {string} Texto visible.
+ */
+function obtenerTextoTipo(tipo) {
+
+    switch (
+    tipo
+    ) {
+
+        case 'edificio':
+            return 'Edificio';
+
+        case 'area-verde':
+            return 'Zona verde';
+
+        case 'estacionamiento':
+            return 'Estacionamiento';
+
+        case 'presa':
+            return 'Presa';
+
+        case 'invernadero':
+            return 'Invernadero';
+
+        case 'huerta':
+            return 'Huerta';
+
+        case 'cancha':
+            return 'Cancha';
+
+        default:
+            return 'Lugar del campus';
+
+    }
+
+}
+
+
+/* =========================================================
+   SCROLL DEL BUSCADOR
+   Evita que OrbitControls mueva el mapa mientras el
+   usuario desplaza los resultados.
+   ========================================================= */
+
+function bloquearScrollMapaDesdeBuscador() {
+
+    const searchContainer =
+        document.getElementById('map-search-container');
+
+    const searchResults =
+        document.getElementById('map-search-results');
+
+    if (searchContainer) {
+
+        searchContainer.addEventListener(
+            'wheel',
+            function (event) {
+
+                event.stopPropagation();
+
+            },
+            {
+                passive: true
+            }
+        );
+
+    }
+
+    if (searchResults) {
+
+        searchResults.addEventListener(
+            'wheel',
+            function (event) {
+
+                event.stopPropagation();
+
+            },
+            {
+                passive: true
+            }
+        );
+
+    }
+
+}
+if (document.readyState === 'loading') {
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        bloquearScrollMapaDesdeBuscador
+    );
+
+} else {
+
+    bloquearScrollMapaDesdeBuscador();
+
+}
+
+
+/* =========================================================
+   BUSCADOR RESPONSIVO
+   En móviles comienza como una lupa y se expande
+   al tocarla.
+   ========================================================= */
+
+function configurarBuscadorResponsivo() {
+
+    const container =
+        document.getElementById('map-search-container');
+
+    const toggle =
+        document.getElementById('map-search-toggle');
+
+    const input =
+        document.getElementById('map-search-input');
+
+    const clear =
+        document.getElementById('map-search-clear');
+
+    if (!container || !toggle || !input) {
+        return;
+    }
+
+    /*
+     * Abrir buscador.
+     */
+    toggle.addEventListener('click', function (event) {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        container.classList.add('search-open');
+
+        toggle.setAttribute(
+            'aria-expanded',
+            'true'
+        );
+
+        setTimeout(function () {
+
+            input.focus();
+
+        }, 100);
+
+    });
+
+    /*
+     * Evitar que el click llegue al mapa.
+     */
+    input.addEventListener(
+        'click',
+        function (event) {
+
+            event.stopPropagation();
+
+        }
+    );
+
+    /*
+     * Limpiar búsqueda.
+     */
+    if (clear) {
+
+        clear.addEventListener(
+            'click',
+            function (event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                input.value = '';
+
+                input.dispatchEvent(
+                    new Event('input', {
+                        bubbles: true
+                    })
+                );
+
+                input.focus();
+
+            }
+        );
+
+    }
+
+    /*
+     * Si el usuario toca fuera del buscador
+     * y no hay resultados visibles, se puede cerrar.
+     */
+    document.addEventListener(
+        'pointerdown',
+        function (event) {
+
+            if (!container.contains(event.target)) {
+
+                const resultados =
+                    document.getElementById(
+                        'map-search-results'
+                    );
+
+                const tieneResultados =
+                    resultados &&
+                    resultados.children.length > 0;
+
+                if (!tieneResultados) {
+
+                    container.classList.remove(
+                        'search-open'
+                    );
+
+                    toggle.setAttribute(
+                        'aria-expanded',
+                        'false'
+                    );
+
+                }
+
+            }
+
+        }
+    );
+
+}
+if (document.readyState === 'loading') {
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        configurarBuscadorResponsivo
+    );
+
+} else {
+
+    configurarBuscadorResponsivo();
+
+}
