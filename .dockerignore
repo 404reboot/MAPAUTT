@@ -1,8 +1,10 @@
 .git
 .gitignore
+.env
 target/
 uploads/
 .vscode/
+.idea/
 .settings/
 .classpath
 .project
