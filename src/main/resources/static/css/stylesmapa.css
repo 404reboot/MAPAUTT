@@ -692,31 +692,6 @@ button:active {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* =========================================================
    UBICACIÓN + MENÚ EXPLORAR
    ========================================================= */
@@ -1024,6 +999,254 @@ button:active {
     color: #94a3b8;
 }
 
+/* =========================================================
+   CABECERA DEL MENÚ + BOTÓN CERRAR
+   ========================================================= */
+
+/* =========================================================
+   CABECERA DEL MENÚ
+   ========================================================= */
+
+.explore-menu-header {
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 7px 6px 9px 10px;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.8px;
+
+    color: #94a3b8;
+}
+
+
+.explore-menu-title {
+
+    flex: 1;
+
+    line-height: 1.2;
+}
+
+
+/* =========================================================
+   BOTÓN CERRAR
+   ========================================================= */
+
+.explore-close-button {
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 30px;
+    height: 30px;
+
+    margin: 0 0 0 8px;
+
+    padding: 0;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: transparent;
+
+    color: #64748b;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 24px;
+
+    font-weight: 400;
+
+    line-height: 30px;
+
+    text-align: center;
+
+    cursor: pointer;
+
+    flex-shrink: 0;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.explore-close-button:hover {
+
+    background: #f1f5f9;
+
+    color: #ef4444;
+
+    transform: scale(1.08);
+}
+
+
+.explore-close-button:active {
+
+    background: #e2e8f0;
+
+    color: #dc2626;
+
+    transform: scale(0.92);
+}
+
+/* =========================================================
+   BOTÓN X PARA CERRAR MENÚ EXPLORAR
+   ========================================================= */
+
+.explore-close-button {
+
+    position: relative;
+
+    z-index: 100;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 32px;
+    height: 32px;
+
+    margin: 0 0 0 8px;
+
+    padding: 0;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: transparent;
+
+    color: #64748b;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 25px;
+
+    font-weight: 400;
+
+    line-height: 1;
+
+    text-align: center;
+
+    cursor: pointer;
+
+    pointer-events: auto;
+
+    flex-shrink: 0;
+
+    user-select: none;
+
+    -webkit-user-select: none;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.explore-close-button:hover {
+
+    background: #f1f5f9;
+
+    color: #ef4444;
+
+    transform: scale(1.08);
+}
+
+
+.explore-close-button:active {
+
+    background: #e2e8f0;
+
+    color: #dc2626;
+
+    transform: scale(0.92);
+}
+
+.explore-menu-title {
+
+    flex: 1;
+
+    line-height: 1.2;
+}
+
+
+/* =========================================================
+   BOTÓN X
+   ========================================================= */
+
+.explore-close-button {
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 30px;
+    height: 30px;
+
+    margin-left: 8px;
+
+    padding: 0;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: transparent;
+
+    color: #64748b;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 24px;
+
+    font-weight: 400;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.explore-close-button:hover {
+
+    background: #f1f5f9;
+
+    color: #ef4444;
+
+    transform: scale(1.08);
+}
+
+
+.explore-close-button:active {
+
+    transform: scale(0.92);
+}
 
 /* =========================================================
    OPCIONES
@@ -1537,4 +1760,722 @@ button:active {
 .lightbox-close-btn:hover {
     background: rgba(255, 255, 255, 0.4);
     transform: scale(1.1);
+}
+
+/*
+  Autor: Cristobal Torres Ramos
+  Ano: 2026
+  Version: 1.1
+  Descripcion: Ajuste de componentes de la brujula para integrarlos fluidamente a los controles inferiores del mapa, igualando el diseno de los demas botones UI.
+*/
+
+/* Contenedor de la brujula integrado en flexbox */
+#compass-container {
+    position: relative; /* Modificado para integrarse al flujo del flexbox */
+    width: 75px; /* Alineado al tamano de los botones de control */
+    height: 75px;
+    z-index: 10;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#compass-image {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    transform-origin: center center;
+    transition: transform 0.05s linear;
+    user-select: none;
+}
+
+/* Estilos del boton norte para igualar a los botones de la clase .ui-button */
+#btn-norte {
+    position: relative; /* Mantiene el orden dentro de la columna flex */
+    width: 52px;
+    height: 52px;
+    z-index: 10;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+    color: #1e293b;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efecto hover identico a la UI del mapa */
+#btn-norte:hover {
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.25);
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Animacion al hacer click */
+#btn-norte:active {
+    transform: translateY(0px);
+    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.15);
+}
+
+/* Ajuste de tamano responsivo para coincidir con el media query original */
+@media (max-width: 768px) {
+    #compass-container,
+    #btn-norte {
+        width: 46px; 
+        height: 46px;
+    }
+}
+
+/* ==================================================
+   FLECHA DE DIRECCIÓN
+   ================================================== */
+/*
+ * Contenedor de la flecha.
+ * Se coloca exactamente en el centro de la imagen
+ * de la brújula.
+ */
+#compass-arrow {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 100%;
+    height: 100%;
+
+    transform-origin: center center;
+
+    pointer-events: none;
+}
+
+
+.arrow-head {
+
+    position: absolute;
+
+    top: 5px;
+    left: 50%;
+
+    width: 0;
+    height: 0;
+
+    transform: translateX(-50%);
+
+    border-left: 9px solid transparent;
+
+    border-right: 9px solid transparent;
+
+    border-bottom: 22px solid red;
+}
+
+
+.arrow-line {
+
+    position: absolute;
+
+    top: 22px;
+    left: 50%;
+
+    width: 4px;
+    height: 28px;
+
+    transform: translateX(-50%);
+
+    background: red;
+
+    border-radius: 4px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+    Autor: Cristobal Torres Ramos
+    Proyecto: Mapa interactivo de la UTTECAM
+    Año: 2026
+    Versión: 1.0
+    Descripción:
+    Estilos del buscador principal del mapa.
+*/
+
+#map-search-container {
+    position: fixed;
+
+    top: 20px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: min(500px, calc(100vw - 40px));
+
+    z-index: 1000;
+
+    font-family: inherit;
+}
+
+
+/* ==========================================
+   CAJA PRINCIPAL DEL BUSCADOR
+   ========================================== */
+
+#map-search-box {
+    display: flex;
+
+    align-items: center;
+
+    width: 100%;
+    height: 52px;
+
+    padding: 0 14px;
+
+    background: rgba(255, 255, 255, 0.94);
+
+    border: 1px solid rgba(255, 255, 255, 0.7);
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.25);
+
+    backdrop-filter: blur(12px);
+
+    transition:
+        box-shadow 0.25s ease,
+        transform 0.25s ease;
+}
+
+
+#map-search-box:focus-within {
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.30);
+
+    transform: translateY(-1px);
+}
+
+
+/* ==========================================
+   ICONO
+   ========================================== */
+
+#map-search-icon {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 30px;
+
+    font-size: 25px;
+
+    color: #555;
+
+    user-select: none;
+}
+
+
+/* ==========================================
+   INPUT
+   ========================================== */
+
+#map-search-input {
+    flex: 1;
+
+    min-width: 0;
+
+    height: 100%;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    padding: 0 10px;
+
+    font-size: 15px;
+
+    color: #222;
+}
+
+
+#map-search-input::placeholder {
+    color: #777;
+}
+
+
+/* ==========================================
+   BOTÓN LIMPIAR
+   ========================================== */
+
+#map-search-clear {
+    display: none;
+
+    width: 30px;
+    height: 30px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: transparent;
+
+    color: #666;
+
+    font-size: 22px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+
+#map-search-clear:hover {
+    background: rgba(0, 0, 0, 0.08);
+
+    color: #222;
+}
+
+
+/* ==========================================
+   RESULTADOS
+   ========================================== */
+
+.map-search-results {
+    display: none;
+
+    width: 100%;
+
+    margin-top: 8px;
+
+    max-height: 350px;
+
+    overflow-y: auto;
+
+    background: rgba(255, 255, 255, 0.97);
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.25);
+
+    backdrop-filter: blur(12px);
+
+    overflow-x: hidden;
+}
+
+
+.map-search-results.visible {
+    display: block;
+}
+
+
+/* ==========================================
+   ELEMENTO DE RESULTADO
+   ========================================== */
+
+.map-search-result {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+    width: 100%;
+
+    padding: 12px 16px;
+
+    border: none;
+
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+    background: transparent;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        padding-left 0.2s ease;
+}
+
+
+.map-search-result:hover {
+    background: rgba(79, 209, 197, 0.12);
+
+    padding-left: 20px;
+}
+
+
+.map-search-result:last-child {
+    border-bottom: none;
+}
+
+
+/* Nombre */
+
+.map-search-result-name {
+    font-size: 15px;
+
+    font-weight: 600;
+
+    color: #222;
+}
+
+
+/* Tipo */
+
+.map-search-result-type {
+    font-size: 12px;
+
+    color: #777;
+}
+
+
+/* Información adicional */
+
+.map-search-result-info {
+    font-size: 12px;
+
+    color: #555;
+}
+
+
+/* ==========================================
+   SIN RESULTADOS
+   ========================================== */
+
+.map-search-empty {
+    padding: 20px;
+
+    text-align: center;
+
+    font-size: 14px;
+
+    color: #777;
+}
+
+
+/* ==========================================
+   MÓVILES
+   ========================================== */
+
+@media (max-width: 768px) {
+
+    #map-search-container {
+        top: 12px;
+
+        width: calc(100vw - 24px);
+    }
+
+    #map-search-box {
+        height: 48px;
+
+        border-radius: 14px;
+    }
+
+    #map-search-input {
+        font-size: 14px;
+    }
+
+    .map-search-results {
+        max-height: 280px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   MÓVIL
+   Buscador arriba
+   Volver + Ubicación debajo del buscador
+   Explorar debajo de Ubicación
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    /* -----------------------------------------------------
+       BUSCADOR
+       ----------------------------------------------------- */
+
+    #map-search-container {
+        position: fixed;
+
+        top: 12px;
+        left: 12px;
+        right: 12px;
+
+        width: auto;
+        max-width: none;
+
+        transform: none;
+
+        z-index: 1000;
+    }
+
+    #map-search-box {
+        width: 100%;
+        height: 48px;
+        box-sizing: border-box;
+    }
+
+
+    /* -----------------------------------------------------
+       BOTÓN VOLVER
+       Debajo del buscador, a la izquierda
+       ----------------------------------------------------- */
+
+    .back-button-overlay {
+        position: fixed;
+
+        top: 68px;
+        left: 12px;
+
+        bottom: auto;
+
+        z-index: 100;
+    }
+
+    .back-button-overlay .btn-secondary {
+        height: 46px;
+        padding: 0 15px;
+
+        font-size: 13px;
+    }
+
+
+    /* -----------------------------------------------------
+       UBICACIÓN + EXPLORAR
+       Debajo del buscador, a la derecha
+       ----------------------------------------------------- */
+
+    .map-explore-overlay {
+        position: fixed;
+
+        top: 68px;
+        right: 12px;
+
+        bottom: auto;
+
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+
+        gap: 7px;
+
+        width: auto;
+
+        z-index: 100;
+    }
+
+
+    /* -----------------------------------------------------
+       BOTÓN MI UBICACIÓN
+       ----------------------------------------------------- */
+
+    .location-button {
+        width: 165px;
+        min-width: 165px;
+
+        height: 46px;
+
+        padding: 0 15px;
+
+        font-size: 13px;
+
+        border-radius: 14px;
+
+        box-sizing: border-box;
+    }
+
+
+    /* -----------------------------------------------------
+       BOTÓN EXPLORAR
+       Debajo de ubicación
+       ----------------------------------------------------- */
+
+    .explore-wrapper {
+        width: 165px;
+    }
+
+    .explore-button {
+        width: 100%;
+        height: 46px;
+
+        font-size: 13px;
+    }
+
+
+    /* -----------------------------------------------------
+       MENÚ EXPLORAR
+       ----------------------------------------------------- */
+
+    .explore-menu {
+        top: calc(100% + 7px);
+
+        bottom: auto;
+        right: 0;
+
+        width: 235px;
+
+        transform-origin: top right;
+    }
+
+    .explore-menu.open {
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* =========================================================
+   CELULARES PEQUEÑOS
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    /* Buscador */
+    #map-search-container {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+    }
+
+    #map-search-box {
+        height: 45px;
+        border-radius: 13px;
+    }
+
+    #map-search-input {
+        font-size: 13px;
+    }
+
+
+    /* Volver */
+    .back-button-overlay {
+        top: 65px;
+        left: 10px;
+    }
+
+    .back-button-overlay .btn-secondary {
+        height: 44px;
+        padding: 0 13px;
+
+        font-size: 12px;
+    }
+
+
+    /* Ubicación + Explorar */
+    .map-explore-overlay {
+        top: 65px;
+        right: 10px;
+
+        gap: 6px;
+    }
+
+    .location-button {
+        width: 150px;
+        min-width: 150px;
+
+        height: 44px;
+
+        font-size: 12px;
+    }
+
+    .explore-wrapper {
+        width: 150px;
+    }
+
+    .explore-button {
+        height: 44px;
+        font-size: 12px;
+    }
+
+    .explore-menu {
+        width: 225px;
+    }
 }

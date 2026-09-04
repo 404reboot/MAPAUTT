@@ -11,4 +11,14 @@ public interface EdificioRepository extends JpaRepository<Edificio, Integer> {
     List<Edificio> findByCodigoMeshIgnoreCase(String codigoMesh);
 
     List<Edificio> findByCodigoMesh(String codigoMesh);
+
+    /*
+     * Busca edificios cuyo nombre o carreras contengan
+     * el texto introducido por el usuario.
+     */
+    List<Edificio> findByNombreContainingIgnoreCaseOrCarrerasContainingIgnoreCase(
+            String nombre,
+            String carreras
+    );
+
 }

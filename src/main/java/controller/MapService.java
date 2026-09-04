@@ -141,4 +141,26 @@ public class MapService {
             especieRepository.deleteById(id);
         }
     }
+
+    /**
+ * Busca edificios por nombre o carrera.
+ *
+ * @param texto texto introducido por el usuario
+ * @return lista de edificios coincidentes
+ */
+public List<Edificio> buscarEdificios(String texto) {
+
+    if (texto == null || texto.trim().isEmpty()) {
+        return edificioRepository.findAll();
+    }
+
+    String busqueda = texto.trim();
+
+    return edificioRepository
+            .findByNombreContainingIgnoreCaseOrCarrerasContainingIgnoreCase(
+                    busqueda,
+                    busqueda
+            );
+}
+
 }

@@ -338,10 +338,13 @@ h2 {
 }
 
 .welcome-action:hover {
-    transform: translateY(-3px);
+    transform: translateY(-3px) scale(1.035);
 
     box-shadow:
-        0 14px 30px rgba(0, 0, 0, 0.2);
+        0 0 8px #00ffff,
+        0 0 18px #00d9ff,
+        0 0 35px #008cff,
+        0 0 50px rgba(0, 217, 255, 0.8);
 }
 
 
@@ -1393,3 +1396,164 @@ h2 {
         max-height: 38vh !important;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   BORDE FOSFORESCENTE Y PALPITACIÓN
+   PARA LOS BOTONES PRINCIPALES
+   ========================================================= */
+
+.welcome-action {
+    position: relative;
+    isolation: isolate;
+
+    border: 2px solid #00d9ff;
+
+    box-shadow:
+        0 0 5px #00d9ff,
+        0 0 10px #00d9ff,
+        0 0 20px rgba(0, 217, 255, 0.75);
+
+    animation: palpitar-boton 1.8s infinite ease-in-out;
+}
+
+/* =========================================================
+   ANIMACIÓN DE PALPITACIÓN TIPO CORAZÓN
+   ========================================================= */
+
+@keyframes palpitar-boton {
+
+    0%,
+    100% {
+        transform: scale(1);
+
+        box-shadow:
+            0 0 5px #00d9ff,
+            0 0 10px #00d9ff,
+            0 0 20px rgba(0, 217, 255, 0.75);
+    }
+
+    10% {
+        transform: scale(1.035);
+
+        box-shadow:
+            0 0 8px #00ffff,
+            0 0 16px #00d9ff,
+            0 0 32px rgba(0, 217, 255, 1);
+    }
+
+    20% {
+        transform: scale(1);
+
+        box-shadow:
+            0 0 5px #00d9ff,
+            0 0 10px #00d9ff,
+            0 0 20px rgba(0, 217, 255, 0.75);
+    }
+
+    30% {
+        transform: scale(1.025);
+
+        box-shadow:
+            0 0 7px #00ffff,
+            0 0 14px #00d9ff,
+            0 0 28px rgba(0, 217, 255, 0.9);
+    }
+
+    45% {
+        transform: scale(1);
+    }
+}
+
+
+/* =========================================================
+   AL PASAR EL CURSOR
+   ========================================================= */
+
+.welcome-action:hover {
+    box-shadow:
+        0 0 8px #00ffff,
+        0 0 18px #00d9ff,
+        0 0 35px #008cff,
+        0 0 50px rgba(0, 217, 255, 0.8);
+}
+
+
+/* =========================================================
+   AL PRESIONAR
+   ========================================================= */
+
+.welcome-action:active {
+    transform: scale(0.97);
+}
+
+
+
+
