@@ -1,0 +1,258 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Crear MANUAL_TECNICO.md con título, sección 1 (Descripción general del sistema) y sección 2 (Requisitos del entorno de desarrollo)": [
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860209215
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860236111
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860458987
+      }
+    ],
+    "1.2 Escribir sección 3 (Instalación y configuración)": [
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860210548
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860464285
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860550614
+      }
+    ],
+    "2.1 Documentar estructura de paquetes, clases y patrón MVC con diagrama de componentes Mermaid": [
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860212021
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860561502
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860741662
+      }
+    ],
+    "3.1 Documentar esquema de base de datos con diagrama ER Mermaid": [
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860213367
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860748518
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860969704
+      }
+    ],
+    "4.1 Documentar templates Thymeleaf, Three.js, archivos JS y sistema de coordenadas GPS": [
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860214776
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860980687
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786861479109
+      }
+    ],
+    "5.1 Documentar los 3 endpoints REST con tabla, parámetros, respuestas JSON y códigos HTTP": [
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860216721
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786861488944
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786861602597
+      }
+    ],
+    "5.2 Documentar autenticación HttpSession y seguridad": [
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860218506
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786861628291
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786861744299
+      }
+    ],
+    "6.1 Documentar gestión de imágenes": [
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860219909
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786861753747
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786862215330
+      }
+    ],
+    "6.2 Documentar despliegue": [
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860221205
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786862224201
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786862348301
+      }
+    ],
+    "7.1 Documentar mantenimiento y extensión": [
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860222559
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786862353384
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786863046398
+      }
+    ],
+    "7.2 Documentar problemas conocidos y limitaciones": [
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860223925
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786863054000
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786863156969
+      }
+    ],
+    "8. Checkpoint final": [
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860225584
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786863162074
+      },
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786863398257
+      }
+    ],
+    "1. Crear archivo y escribir secciones 1–3 (fundamentos del proyecto)": [
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860552641
+      }
+    ],
+    "2. Escribir sección 4 (Arquitectura del código)": [
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860742762
+      }
+    ],
+    "3. Escribir sección 5 (Base de datos)": [
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786860971009
+      }
+    ],
+    "4. Escribir sección 6 (Frontend y modelo 3D)": [
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786861482506
+      }
+    ],
+    "5. Escribir secciones 7–8 (API REST y Autenticación)": [
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786861746818
+      }
+    ],
+    "6. Escribir secciones 9–10 (Gestión de archivos y Despliegue)": [
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786862348780
+      }
+    ],
+    "7. Escribir secciones 11–12 (Mantenimiento y Problemas conocidos)": [
+      {
+        "executionId": "3d389809-a849-4b9a-b64f-2f90209e7665",
+        "chatSessionId": "sess_39ef6985-a480-445f-a1bc-4bc520823f0f",
+        "timestamp": 1786863157835
+      }
+    ]
+  }
+}
