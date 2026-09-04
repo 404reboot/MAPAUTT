@@ -24,6 +24,9 @@ public class AdminPanelController {
     @Autowired
     private MapService mapService;
 
+    @Autowired
+    private ImgurService imgurService;
+
     @Value("${app.upload.dir}")
     private String uploadDir;
 
@@ -43,6 +46,17 @@ public class AdminPanelController {
             if (contentType == null || !contentType.startsWith("image/")) {
                 return existingAssetId;
             }
+
+            // Intenta subir a la API de Imgur guardando únicamente el ID único
+            String imgurId = imgurService.uploadImage(file);
+            if (imgurId != null && !imgurId.isBlank()) {
+                if (existingAssetId != null && !existingAssetId.trim().isEmpty()) {
+                    deletePhysicalFile(existingAssetId);
+                }
+                return imgurId;
+            }
+
+            // Fallback a almacenamiento local si Imgur no está disponible o falla
             try {
                 String originalFilename = file.getOriginalFilename();
                 String ext = ".jpg";
@@ -56,7 +70,7 @@ public class AdminPanelController {
                 Path filePath = uploadPath.resolve(filename);
                 Files.write(filePath, file.getBytes());
 
-                // Delete old physical file if replaced
+                // Elimina el archivo físico anterior si fue reemplazado
                 if (existingAssetId != null && !existingAssetId.trim().isEmpty()) {
                     deletePhysicalFile(existingAssetId);
                 }
